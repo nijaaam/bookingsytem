@@ -1,7 +1,7 @@
 {% extends "header.html" %}
 
 {% block content %}
-<div class="panel panel-default">
+<div class="panel panel-default" style = "padding-top:0px; margin-top: -20px;">
   <div class="panel-heading text-center">Avaliable Rooms</div>
   <div class="table-responsive">
   <table class="table table-striped">
@@ -19,8 +19,12 @@
     <tbody>
       {% for item in query_results %}
       <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ item.room_name}}</td>
         <td>{{ item.room_size}}</td>
-        <td></td>
+        <td>{{ item.room_location}}</td>
+        <td>{{ item.room_features}}</td>
+        <td>{{ item.room_avaliability}}</td>
         <td><button type="button" class="btn btn-default">Book</button></td>
       </tr>
       {% endfor %}

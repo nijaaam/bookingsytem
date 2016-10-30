@@ -13,9 +13,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='bookings',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
-                ('booking_ref', models.CharField(max_length=60)),
-                ('room_id', models.IntegerField()),
+                ('booking_ref', models.IntegerField(serialize=False, primary_key=True)),
                 ('date', models.DateField()),
                 ('start_time', models.TimeField()),
                 ('end_time', models.TimeField()),
@@ -25,12 +23,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='rooms',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
-                ('room_id', models.IntegerField()),
+                ('room_id', models.IntegerField(serialize=False, primary_key=True)),
                 ('room_name', models.CharField(max_length=60)),
                 ('room_size', models.IntegerField()),
                 ('room_location', models.TextField()),
+                ('room_avaliability', models.TextField()),
                 ('room_features', models.TextField()),
             ],
+        ),
+        migrations.AddField(
+            model_name='bookings',
+            name='room_id',
+            field=models.ForeignKey(to='webapp.rooms'),
         ),
     ]
