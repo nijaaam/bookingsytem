@@ -1,0 +1,1 @@
+INSERT INTO webapp_rooms VALUES (1,"Room 1", 10, "Libray", "");
