@@ -3,26 +3,27 @@
 {% block content %}
 
 <div class="container">
-    <form class="form-inline" style="float: right;">
+    <form method = 'POST' action = "/find_rooms/" class="form-inline" style="float: right;">
+        {% csrf_token %}
         <div class="form-group">
             <label for="exampleInputName2">Date</label>
             <span style="display:inline-block; width: 2;"></span>
-            <input type="date" class="form-control" id="date" value = {{ cDate }}>
+            <input type="date" name = "date" class="form-control" id="date" value = {{ date }}>
         </div>
         <span style="display:inline-block; width: 10;"></span>
         <div class="form-group">
             <label for="exampleInputEmail2">Start Time</label>
             <span style="display:inline-block; width: 2;"></span>
-            <input type="time" class="form-control" id="start_time" value = {{ cTime }}>
+            <input type="time" class="form-control" name = "start_time" id="start_time" value = {{ time }}>
         </div>
         <div class="form-group">
-             <button type="submit" class="btn btn-default">Find Rooms</button>
+             <button type="submit" id = "find_room_btn" class="btn btn-default">Find Rooms</button>
         </div>
     </form>
 </div>
 </br>
 <div class="container">
-    <div class="panel panel-default" style="margin-top: -20px;">
+    <div class="panel panel-default">
         <div class="panel-heading text-center">Avaliable Rooms</div>
         <div class="table-responsive">
             <table class="table table-striped">
@@ -46,7 +47,7 @@
                         <td>{{ item.room_location}}</td>
                         <td>{{ item.room_features}}</td>
                         <td>{{ item.room_avaliability}}</td>
-                        <td><button type="button" class="btn btn-default">Book</button></td>
+                        <td><form method="GET" action = "/view_room/{{item.room_id}}"><button type="submit" class="btn btn-default">Book</button></form></td>
                     </tr>
                     {% endfor %}
                 </tbody>

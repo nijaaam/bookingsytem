@@ -1,0 +1,62 @@
+{% extends "header.html" %}
+
+{% block content %}
+<div class="container">
+    <div id="row">
+        <div class="col-md-6">
+            <ul class="list-group">
+                {% for item in room_details %}
+                <li class="list-group-item inline">
+                    <div class="row">
+                        <label class="col-md-6" for="exampleInputEmail1">Name</label>
+                        <div class="col-md-6"><span class="pull-right">{{ item.room_name }}</span></div>
+                    </div>
+                </li>
+                <li class="list-group-item inline">
+                    <div class="row">
+                        <label class="col-md-6" for="exampleInputEmail1">Size</label>
+                        <div class="col-md-6"><span class="pull-right">{{ item.room_size }}</span></div>
+                    </div>
+                </li>
+                <li class="list-group-item inline">
+                    <div class="row">
+                        <label class="col-md-6" for="exampleInputEmail1">Location</label>
+                        <div class="col-md-6"><span class="pull-right">{{ item.room_location }}</span></div>
+                    </div>
+                </li>
+                <li class="list-group-item inline">
+                    <div class="row">
+                        <label class="col-md-6" for="exampleInputEmail1">Features</label>
+                        <div class="col-md-6"><span class="pull-right">{{ item.room_features }}</span></div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item inline">
+                    <div class="row">
+                        <label class="col-md-6" for="exampleInputEmail1">Duration</label>
+                        <div class="col-md-6"><span class="pull-right"></span></div>
+                    </div>
+                </li>
+                <li class="list-group-item inline">
+                    <div class="row">
+                        <label class="col-md-6" for="exampleInputEmail1">Contact</label>
+                        <div class="col-md-6"><span class="pull-right"></span></div>
+                    </div>
+                </li>
+                <li class="list-group-item inline">
+                    <div class="row">
+                        <label class="col-md-6" for="exampleInputEmail1">Description</label>
+                        <div class="col-md-6">
+                            <span class="pull-right"></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
