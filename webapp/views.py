@@ -55,7 +55,8 @@ def book_room(request):
 	min = int(minutes) + 60*hours
 	calc_time = start_time + timedelta(minutes=min)
 	end_time = str(calc_time.hour) + ":" + str(calc_time.minute)
-	entry = bookings(booking_ref=1,room_id=1,start_time=start_time,end_time=end_time,contact="X",description="Y")
+	room_id = request.session['bk_rm_id']
+	entry = bookings(room_id= room_id,start_time=start_time,end_time=end_time,contact=contact,description=description)
 	entry.save()
 
 
@@ -64,5 +65,6 @@ def queryRoom(id):
 	return res
 
 def view_room(request,id):
+	request.session['bk_rm_id'] = id
 	return render_to_response('room_details.html',{"room_details":queryRoom(id)})
 	

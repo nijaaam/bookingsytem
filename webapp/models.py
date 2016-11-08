@@ -8,10 +8,10 @@ class rooms(models.Model):
 	room_features   = models.TextField(null = False)
 
 class bookings(models.Model):
-	booking_ref = models.IntegerField(primary_key =True, null = False)
+	booking_ref = models.AutoField(primary_key=True)
 	room        = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
 	date        = models.DateField(auto_now_add=True)
 	start_time  = models.TimeField(null = False)
 	end_time    = models.TimeField(null = False)
-	contact     = models.CharField(max_length=60)
-	description = models.CharField(max_length=60)
+	contact     = models.CharField(max_length=60, null = False)
+	description = models.CharField(max_length=60, null = False)
