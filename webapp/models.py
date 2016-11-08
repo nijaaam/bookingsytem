@@ -13,4 +13,5 @@ class bookings(models.Model):
 	date        = models.DateField(auto_now_add=True)
 	start_time  = models.TimeField(null = False)
 	end_time    = models.TimeField(null = False)
-
+	contact     = models.CharField(max_length=60)
+	description = models.CharField(max_length=60)
