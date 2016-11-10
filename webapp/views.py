@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.db import models
-from django_modalview.generic.base import View
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 from .models import rooms,bookings
