@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.db import models
+from django_modalview.generic.base import ModalTemplateView
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 from .models import rooms,bookings
@@ -16,7 +17,7 @@ def index(request):
 def queryDB(date,time,request):
 	request.session['bk_date'] = date
 	request.session['bk_time'] = time
-	res = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id NOT IN (SELECT room_id FROM webapp_bookings WHERE date = '2016-11-01' AND start_time > '12:50' AND start_time < '13:00')")
+	res = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id NOT IN (SELECT room_id FROM webapp_bookings WHERE date = '2016-11-08' AND start_time < '19:12' AND end_time < '19:27')")
 	obj = {'query_results': res, 'date':date, 'time':time}
 	return obj
 
