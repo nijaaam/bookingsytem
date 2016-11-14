@@ -5,7 +5,7 @@
   </div>
   <div class="modal-body">
        {% csrf_token %}
-       {{form.as_p}} <!-- {{form|crispy}} if you use django-crispy-forms -->
+       {{form.as_p}} 
   </div>
   <div class="modal-footer">
        <input class="btn btn-primary" type="submit" value="Save" />
