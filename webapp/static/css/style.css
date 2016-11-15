@@ -2,3 +2,5 @@
 .navbar {
   padding-left: 20px
 }
+
+.table-overflow { overflow: auto; } 

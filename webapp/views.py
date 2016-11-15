@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 from .models import rooms,bookings
@@ -12,6 +13,13 @@ def index(request):
 	cTime = time.strftime("%H:%M")
 	res = queryDB(cDate,cTime,request)
 	return render_to_response('home.html',res)
+
+def viewBooking(request):
+	return render_to_response('viewBooking.html',{})
+
+def loadRoom(request):
+	id = request.POST['booking_id']
+	print id
 
 def queryDB(date,time,request):
 	request.session['bk_date'] = date
@@ -40,6 +48,10 @@ def getMinutes(request):
 	elif radio[0] == "otherDuration":
 		return request.POST['durValue'] 
 
+
+def showEvents(a,b,c):
+	return render_to_response('events_table.html',{'res':'ddd'})
+
 @csrf_exempt
 def book_room(request):
 	contact	     = request.POST['contact']
@@ -67,5 +79,8 @@ def queryRoom(id):
 
 def view_room(request,id):
 	request.session['bk_rm_id'] = id
-	return render_to_response('room_details.html',{"room_details":queryRoom(id)})
+	query = bookings.objects.raw("SELECT * FROM webapp_bookings WHERE room_id = %s",[id])
+	dt = time.strftime("%d-%m-%Y")
+	weekNo = start = dt - timedelta(days = (dt.weekday() + 1) % 7)
+	return render_to_response('room_details.html',{"room_details":queryRoom(id),"query_results":query,"weekNo":weekNo})
 	
