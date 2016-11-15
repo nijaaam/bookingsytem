@@ -58,6 +58,7 @@ def book_room(request):
 	room_id = request.session['bk_rm_id']
 	entry = bookings(room_id= room_id,start_time=start_time,end_time=end_time,contact=contact,description=description)
 	entry.save()
+	return render_to_response('modal.html',{})
 
 
 def queryRoom(id):
