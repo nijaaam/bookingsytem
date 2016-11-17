@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.db import models
+from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
@@ -17,9 +18,40 @@ def index(request):
 def viewBooking(request):
 	return render_to_response('viewBooking.html',{})
 
-def loadRoom(request):
-	id = request.POST['booking_id']
-	print id
+def showWeek(request):
+	dt = datetime.now()
+	dt_str = dt.strftime("%Y-%m-%d")
+	start = dt - timedelta(days = dt.weekday())
+	end = start + timedelta(days=6)
+	start1	 = str(start.strftime("%d-%m-%y"))
+	start = str(start.strftime("%Y-%m-%d"))
+	request.session['weekNo'] = start
+	end = str(end.strftime("%Y-%m-%d"))
+	res = rooms.objects.raw("SELECT * FROM webapp_bookings WHERE room_id = %s AND date > %s AND date < %s",[request.session['bk_rm_id'],start,end])
+	return render_to_response('events_table.html',{"query_results":res,"weekNo":start1})
+
+def getBookingsforWeek(request,x):
+	dt = request.session['weekNo']
+	dt = datetime.strptime(dt,"%Y-%m-%d")
+	if x == "-":
+	    start = dt - timedelta(days = 7)
+	elif x == "+":
+		start = dt + timedelta(days = 7)
+	end = start + timedelta(days=6)
+	start1	 = str(start.strftime("%d-%m-%y"))
+	start = str(start.strftime("%Y-%m-%d"))
+	request.session['weekNo'] = start
+	end = str(end.strftime("%Y-%m-%d")) 
+	res = rooms.objects.raw("SELECT * FROM webapp_bookings WHERE room_id = %s AND date > %s AND date < %s",[request.session['bk_rm_id'],start,end])
+	return start1,res
+
+def prevWeek(request):
+	(weekNo,res) = getBookingsforWeek(request,"-")
+	return render_to_response('events_table.html',{"query_results":res,"weekNo":weekNo})
+
+def nextWeek(request):
+	(weekNo,res) = getBookingsforWeek(request,"+")
+	return render_to_response('events_table.html',{"query_results":res,"weekNo":weekNo})
 
 def queryDB(date,time,request):
 	request.session['bk_date'] = date
@@ -48,15 +80,12 @@ def getMinutes(request):
 	elif radio[0] == "otherDuration":
 		return request.POST['durValue'] 
 
-
-def showEvents(a,b,c):
-	return render_to_response('events_table.html',{'res':'ddd'})
-
 @csrf_exempt
 def book_room(request):
 	contact	     = request.POST['contact']
 	description	 = request.POST['description']
 	minutes = getMinutes(request)
+	print contact,description,minutes
 	start_time = request.session['bk_time']
 	start_time = datetime.strptime(start_time,"%H:%M")
 	date = request.session['bk_date']
@@ -70,8 +99,7 @@ def book_room(request):
 	room_id = request.session['bk_rm_id']
 	entry = bookings(room_id= room_id,start_time=start_time,end_time=end_time,contact=contact,description=description)
 	entry.save()
-	return render_to_response('modal.html',{})
-
+	return  HttpResponse("SUCCCes")
 
 def queryRoom(id):
 	res = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id = %s",[id])
@@ -79,8 +107,4 @@ def queryRoom(id):
 
 def view_room(request,id):
 	request.session['bk_rm_id'] = id
-	query = bookings.objects.raw("SELECT * FROM webapp_bookings WHERE room_id = %s",[id])
-	dt = time.strftime("%d-%m-%Y")
-	weekNo = start = dt - timedelta(days = (dt.weekday() + 1) % 7)
-	return render_to_response('room_details.html',{"room_details":queryRoom(id),"query_results":query,"weekNo":weekNo})
-	
+	return render_to_response('room_details.html',{"room_details":queryRoom(id)})
