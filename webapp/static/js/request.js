@@ -8,3 +8,16 @@ $(document).ready(function(){
         },
     });
 });
+
+$('#booking_details').submit(function(){
+	$.ajax({
+		type: "POST",
+		url: "/book_room/",
+		dataType: "html",
+		data: $('#booking_details').serialize(),
+		success: function(data){
+            $('#showModal').html(data);
+        },
+	});
+	return false;
+});

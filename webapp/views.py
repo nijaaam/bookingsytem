@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.db import models
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from datetime import datetime, timedelta
 from .models import rooms,bookings
 import time
@@ -80,31 +80,30 @@ def getMinutes(request):
 	elif radio[0] == "otherDuration":
 		return request.POST['durValue'] 
 
-@csrf_exempt
 def book_room(request):
-	contact	     = request.POST['contact']
-	description	 = request.POST['description']
-	minutes = getMinutes(request)
-	print contact,description,minutes
-	start_time = request.session['bk_time']
-	start_time = datetime.strptime(start_time,"%H:%M")
-	date = request.session['bk_date']
-	min = 10
-	hours = minutes[0] + minutes[1]
-	hours = int(hours)
-	minutes = minutes[3]+ minutes[4]
-	min = int(minutes) + 60*hours
-	calc_time = start_time + timedelta(minutes=min)
-	end_time = str(calc_time.hour) + ":" + str(calc_time.minute)
-	room_id = request.session['bk_rm_id']
-	entry = bookings(room_id= room_id,start_time=start_time,end_time=end_time,contact=contact,description=description)
-	entry.save()
-	return  HttpResponse("SUCCCes")
-
+	#contact	     = request.POST['contact']
+	#description	 = request.POST['description']
+	#minutes = getMinutes(request)
+	#print contact,description,minutes
+	#start_time = request.session['bk_time']
+	#start_time = datetime.strptime(start_time,"%H:%M")
+	#date = request.session['bk_date']
+	#min = 10
+	#hours = minutes[0] + minutes[1]
+	#hours = int(hours)
+	#minutes = minutes[3]+ minutes[4]
+	#min = int(minutes) + 60*hours
+	#calc_time = start_time + timedelta(minutes=min)
+	#end_time = str(calc_time.hour) + ":" + str(calc_time.minute)
+	#room_id = request.session['bk_rm_id']
+	#entry = bookings(room_id= room_id,start_time=start_time,end_time=end_time,contact=contact,description=description)
+	#entry.save()
+	return render_to_response('navbar.html',{})
 def queryRoom(id):
 	res = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id = %s",[id])
 	return res
 
 def view_room(request,id):
 	request.session['bk_rm_id'] = id
-	return render_to_response('room_details.html',{"room_details":queryRoom(id)})
+	res = {"room_details":queryRoom(id)}
+	return render(request,'room_details.html',res)
