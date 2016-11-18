@@ -10,10 +10,14 @@ from .models import rooms,bookings
 import time
 
 def index(request):
-	cDate = time.strftime("%d-%m-%Y")
-	cTime = time.strftime("%H:%M")
+	try:
+		cDate = request.session['bk_date']
+		cTime = request.session['bk_time']  
+	except KeyError:
+		cTime = time.strftime("%H:%M")
+		cDate = time.strftime("%d-%m-%Y")
 	res = queryDB(cDate,cTime,request)
-	return render_to_response('home.html',res)
+	return render(request,'home.html',res)
 
 def viewBooking(request):
 	return render_to_response('viewBooking.html',{})
@@ -60,12 +64,12 @@ def queryDB(date,time,request):
 	obj = {'query_results': res, 'date':date, 'time':time}
 	return obj
 
-@csrf_exempt
 def find_rooms(request):
 	date = request.POST['date']
 	time = request.POST['start_time']
+	#Date and time shouldnt be less than curren time
 	res = queryDB(date,time,request)
-	return render_to_response('home.html',res)
+	return render(request,'home.html',res)
 
 def getMinutes(request):
 	radio = request.POST.getlist("duration_radio")
@@ -80,30 +84,38 @@ def getMinutes(request):
 	elif radio[0] == "otherDuration":
 		return request.POST['durValue'] 
 
+def convertMinutes(request):
+	minutes = getMinutes(request)
+	hours = minutes[0] + minutes[1]
+	hours = int(hours)
+	minutes1 = minutes[3]+ minutes[4]
+	min = int(minutes1) + 60*hours
+	return minutes,min
+
 def book_room(request):
-	#contact	     = request.POST['contact']
-	#description	 = request.POST['description']
-	#minutes = getMinutes(request)
-	#print contact,description,minutes
-	#start_time = request.session['bk_time']
-	#start_time = datetime.strptime(start_time,"%H:%M")
-	#date = request.session['bk_date']
-	#min = 10
-	#hours = minutes[0] + minutes[1]
-	#hours = int(hours)
-	#minutes = minutes[3]+ minutes[4]
-	#min = int(minutes) + 60*hours
-	#calc_time = start_time + timedelta(minutes=min)
-	#end_time = str(calc_time.hour) + ":" + str(calc_time.minute)
-	#room_id = request.session['bk_rm_id']
-	#entry = bookings(room_id= room_id,start_time=start_time,end_time=end_time,contact=contact,description=description)
-	#entry.save()
-	return render_to_response('navbar.html',{})
-def queryRoom(id):
-	res = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id = %s",[id])
-	return res
+	contact	     = request.POST['contact']
+	description	 = request.POST['description']
+	date = request.session['bk_date']
+	start_time = request.session['bk_time']
+	start_time = datetime.strptime(start_time,"%H:%M")
+	(minutes,min) = convertMinutes(request)
+	calc_time = start_time + timedelta(minutes=min)
+	end_time = str(calc_time.hour) + ":" + str(calc_time.minute)
+	room_id = request.session['bk_rm_id']
+	entry = bookings(room_id= room_id,start_time=start_time,end_time=end_time,contact=contact,description=description)
+	entry.save()
+	queryRoom = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id = %s",[room_id])
+	room_name = list(queryRoom)[0].room_name
+	print room_name
+	return render(request,'modal.html',{
+		"booking_id":entry.booking_ref,
+		"room_name": room_name,
+		"start_time":start_time.strftime("%H:%M"),
+		"duration":minutes,
+		})
 
 def view_room(request,id):
 	request.session['bk_rm_id'] = id
-	res = {"room_details":queryRoom(id)}
+	query = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id = %s",[id])
+	res = {"room_details":query}
 	return render(request,'room_details.html',res)

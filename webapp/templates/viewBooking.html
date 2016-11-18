@@ -13,11 +13,11 @@
         {% include "navbar.html" %}
     {% endblock %}
     <div class="container">
-        <form class="form-inline" method='POST' action="/find_rooms/">
+        <form id ="findBookingForm" class="form-inline" method='POST'>
             <div class="form-group">
                 <label for="exampleInputName2">Booking Id</label>
                 <span style="display:inline-block; width: 2;"></span>
-                <input type="date" name="date" class="form-control" id="booking_id" value="booking_id">
+                <input type="date" name="date" class="form-control" id="booking_id" value="">
             </div>
             <span style="display:inline-block; width: 10;"></span>
             <div class="form-group">
@@ -27,6 +27,7 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/request.js' %}" type="text/javascript"></script>
     </div>
 </body>
 

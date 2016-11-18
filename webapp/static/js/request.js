@@ -17,7 +17,9 @@ $('#booking_details').submit(function(){
 		data: $('#booking_details').serialize(),
 		success: function(data){
             $('#showModal').html(data);
+            $('#modal').modal('show');
         },
 	});
 	return false;
 });
+
