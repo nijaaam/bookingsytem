@@ -25,7 +25,7 @@ SECRET_KEY = 'x3h)318k2awulf%&e@z08!tswh21&tbt!wdya4osy5o797l_7('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['bookingsystem-d.azurewebsites.net',]
 
 
 # Application definition
