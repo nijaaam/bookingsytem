@@ -25,7 +25,9 @@ SECRET_KEY = 'x3h)318k2awulf%&e@z08!tswh21&tbt!wdya4osy5o797l_7('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['bookingsystem-d.azurewebsites.net',]
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -77,13 +79,14 @@ WSGI_APPLICATION = 'bookingsystem.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'booking1',
-        'USER': 'root',
-        'PASSWORD': '123',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bookingsystemdev',
+        'USER': 'bdce20670a0714',
+        'PASSWORD': '49e1faea',
+        'HOST': 'us-cdbr-azure-east-c.cloudapp.net',   # Or an IP Addre$
     }
 }
+
 
 LOCAL_DB = {
     'default': {
