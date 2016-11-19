@@ -85,6 +85,25 @@ DATABASES = {
     }
 }
 
+LOCAL_DB = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'booking1',
+        'USER': 'root',
+        'PASSWORD': '123',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+    }
+}
+
+AZURE_DB = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bookingsystemdev',
+        'USER': 'bdce20670a0714',
+        'PASSWORD': '49e1faea',
+        'HOST': 'us-cdbr-azure-east-c.cloudapp.net',   # Or an IP Addre$
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
