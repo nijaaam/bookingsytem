@@ -81,7 +81,7 @@ def getMinutes(request):
 		return "00:45"
 	elif radio[0] == "onehour":
 		return "01:00"
-	elif radio[0] == "otherDuration":
+	elif radio[0] == "userDuration":
 		return request.POST['durValue'] 
 
 def convertMinutes(request):
