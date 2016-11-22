@@ -20,7 +20,7 @@ def index(request):
 	return render(request,'home.html',res)
 
 def viewBooking(request):
-	return render_to_response('viewBooking.html',{})
+	return render(request,'viewBooking.html',{})
 
 def showWeek(request):
 	dt = datetime.now()
@@ -91,6 +91,11 @@ def convertMinutes(request):
 	minutes1 = minutes[3]+ minutes[4]
 	min = int(minutes1) + 60*hours
 	return minutes,min
+
+@csrf_exempt
+def find_booking(request):
+	res = rooms.objects.raw("SELECT * FROM webapp_bookings,webapp_rooms WHERE booking_ref = %s AND webapp_bookings.room_id = webapp_rooms.room_id;",[request.POST['booking_id']]);
+	return render(request,'showResult.html',{"query_results":res,"duration":"X"})
 
 def book_room(request):
 	contact	     = request.POST['contact']

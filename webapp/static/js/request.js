@@ -1,88 +1,4 @@
-$(document).ready(function() {
-    $.ajax({
-        type: "get",
-        url: "/showWeek/",
-        dataType: "html",
-        success: function(data) {
-            $('#upcomingEvents').html(data);
-        },
-    });
-    $.validator.addMethod("checkIfEmpty",function(value,element){
-        if ($('input[name=duration_radio]:checked').val() == "userDuration"){
-            var timeValue = $('input[name=durValue]').val();
-            if (timeValue == ""){
-                return false;
-            }
-        }
-        return true;
-    },"This field is required.");
-    
-    $.validator.addMethod("checkIfValidFormat",function(value,element){
-        if ($('input[name=duration_radio]:checked').val() == "userDuration"){
-            var timeValue = $('input[name=durValue]').val();
-            var regex = new RegExp('(1?[0-9]|2[0-3]):[0-5][0-9]');
-            if (regex.test(timeValue) == false){
-                return false;
-            }
-        }
-        return true;
-    },"Invalid Format");
-    $("#booking_details").validate({
-        rules: {
-            'contact': {
-                required: true
-            },
-            'description': {
-                required: true
-            },
-            'duration_radio': {
-                required: true,
-                checkIfEmpty: true,
-                checkIfValidFormat: true,
-            },
-        },
-        highlight: function(element,errorClass,validClass) {
-            alert("HIGH" + element.name);
-            if (element.name == "duration_radio"){
-                $(element).closest('.form-group').addClass('has-error');
-            } else if (element.name == "durValue"){
-                $(element).closest('.form-group').addClass('has-error');
-            } else {
-                var error = "#" + $(element).attr("id") + "_error";
-                $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
-                $(error).addClass('glyphicon-remove');
-            }
-        },
-        unhighlight: function(element,errorClass,validClass) {
-            alert("UNHIGH" + element.name);
-            if (element.name == "duration_radio"){
-                //$(element).closest('.form-group').removeClass('has-error');
-                $(element).closest('.form-group').remove('span');
-            } else if (element.name == "durValue"){
-                if (validateTime(element.value)){
-                    $('input[name=durValue]:last').next().remove('span');
-                }
-            } else {
-               var error = "#" + $(element).attr("id") + "_error";
-               $(element).closest('.form-group').removeClass('has-error has-feedback');
-               $(error).removeClass('glyphicon-remove'); 
-            } 
-        },
-        errorElement: 'span',
-        errorClass: 'help-block',
-        errorPlacement: function(error, element) {
-            if (element.attr("type") == "radio") {
-                error.insertAfter($('input[name=durValue]:last'));
-            } else {
-                if (element.parent('.input-group').length) {
-                    error.insertAfter(element.parent());
-                } else {
-                    error.insertAfter(element);
-                }
-            }
-        },
-    });
-});
+
 
 function validateTime(time){
     var arr = time.split(":");
@@ -101,7 +17,6 @@ function validateTime(time){
     }
     return true;
 }
-
 
 $("input[name=duration_radio]").click(function(){
     if (this.value == "userDuration"){
@@ -124,6 +39,19 @@ $('#booking_details').submit(function() {
                 $('#modal').modal('show');
             }
         },
+    });
+    return false;
+});
+
+$('#findBookingForm').submit(function(){
+    $.ajax({
+        type: "POST",
+        url: "/find_booking/",
+        dataType: "html",
+        data: $('#findBookingForm').serialize(),
+        success: function(data){
+            $('#result').html(data);
+        }
     });
     return false;
 });

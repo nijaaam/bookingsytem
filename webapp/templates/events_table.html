@@ -1,5 +1,4 @@
-
-{% block events_table %}
+s{% block events_table %}
 <div class="container">
     <div class="panel panel-default">
         <div class="panel-heading text-center">Bookings for Week {{ weekNo }}
@@ -45,12 +44,8 @@
             url: "/prevWeek/",
             dataType: "html",
             success: function(data) {
-
                 $('#upcomingEvents').html(data);
             },
-            error: function() {
-
-            }
         });
     });
 
@@ -62,9 +57,6 @@
             success: function(data) {
                 $('#upcomingEvents').html(data);
             },
-            error: function() {
-
-            }
         });
     });
 </script>
