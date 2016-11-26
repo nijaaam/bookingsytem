@@ -9,5 +9,6 @@ urlpatterns = [ url(r'^$',views.index, name = 'index'),
                 url(r'^showWeek/$',views.showWeek, name = 'showWeek'),
                 url(r'^prevWeek/$',views.prevWeek, name = 'prevWeek'),
                 url(r'^nextWeek/$',views.nextWeek, name = 'nextWeek'),
-                url(r'^find_booking/$',views.find_booking, name = 'find_booking'),
+                url(r'^findBooking/$',views.findBooking, name = 'findBooking'),
+                url(r'^updateBooking/$',views.updateBooking, name = 'updateBooking'),
               ]

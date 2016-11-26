@@ -1,5 +1,3 @@
-
-
 function validateTime(time){
     var arr = time.split(":");
     if (arr.length != 2){
@@ -46,7 +44,7 @@ $('#booking_details').submit(function() {
 $('#findBookingForm').submit(function(){
     $.ajax({
         type: "POST",
-        url: "/find_booking/",
+        url: "/findBooking/",
         dataType: "html",
         data: $('#findBookingForm').serialize(),
         success: function(data){

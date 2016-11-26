@@ -5,7 +5,7 @@ from django.db import models
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from .models import rooms,bookings
 import time
 
@@ -17,6 +17,15 @@ def index(request):
 		cTime = time.strftime("%H:%M")
 		cDate = time.strftime("%d-%m-%Y")
 	res = queryDB(cDate,cTime,request)
+	return render(request,'home.html',res)
+
+def find_rooms(request):
+	cTime = time.strftime("%H:%M")
+	bk_date = request.POST['bk_date']
+	bk_time = request.POST['bk_time']
+	if time < cTime:
+		bk_time = cTime
+	res = queryDB(bk_date,bk_time,request)
 	return render(request,'home.html',res)
 
 def viewBooking(request):
@@ -60,16 +69,10 @@ def nextWeek(request):
 def queryDB(date,time,request):
 	request.session['bk_date'] = date
 	request.session['bk_time'] = time
+	print date, time
 	res = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id NOT IN (SELECT room_id FROM webapp_bookings WHERE date = '2016-11-08' AND start_time < '19:12' AND end_time < '19:27')")
-	obj = {'query_results': res, 'date':date, 'time':time}
+	obj = {'query_results': res, 'bk_date':date, 'bk_time':time}
 	return obj
-
-def find_rooms(request):
-	date = request.POST['date']
-	time = request.POST['start_time']
-	#Date and time shouldnt be less than curren time
-	res = queryDB(date,time,request)
-	return render(request,'home.html',res)
 
 def getMinutes(request):
 	radio = request.POST.getlist("duration_radio")
@@ -93,9 +96,19 @@ def convertMinutes(request):
 	return minutes,min
 
 @csrf_exempt
-def find_booking(request):
+def findBooking(request):
 	res = rooms.objects.raw("SELECT * FROM webapp_bookings,webapp_rooms WHERE booking_ref = %s AND webapp_bookings.room_id = webapp_rooms.room_id;",[request.POST['booking_id']]);
-	return render(request,'showResult.html',{"query_results":res,"duration":"X"})
+	start = list(res)[0].start_time.strftime("%H:%M")
+	end = list(res)[0].end_time.strftime("%H:%M")
+	duration = "end - start"
+	start_arr = start.split(":")
+	hours = int(end.split(":")[0]) - int(start.split(":")[0])
+	minutes = int(end.split(":")[1]) - int(start.split(":")[1])
+	if minutes < 0:
+		hours = hours - 1
+		minutes = 60 + minutes
+	duration = str(hours) + ":" + str(minutes)
+	return render(request,'showResult.html',{"query_results":res,"duration":duration})
 
 def book_room(request):
 	contact	     = request.POST['contact']
@@ -124,3 +137,6 @@ def view_room(request,id):
 	query = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id = %s",[id])
 	res = {"room_details":query}
 	return render(request,'room_details.html',res)
+
+def updateBooking(request):
+	print request
