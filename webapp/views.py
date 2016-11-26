@@ -54,8 +54,10 @@ def getBookingsforWeek(request,x):
 	start1	 = str(start.strftime("%d-%m-%y"))
 	start = str(start.strftime("%Y-%m-%d"))
 	request.session['weekNo'] = start
-	end = str(end.strftime("%Y-%m-%d")) 
+	end = str(end.strftime("%Y-%m-%d"))
+	#res1 = bookings.objects.filter(room_id=request.session['bk_rm_id']).filter(date__end__lte = 0).filter(date__start__gte = 0) 
 	res = rooms.objects.raw("SELECT * FROM webapp_bookings WHERE room_id = %s AND date > %s AND date < %s",[request.session['bk_rm_id'],start,end])
+	#print list(res1),list(res)
 	return start1,res
 
 def prevWeek(request):
@@ -95,7 +97,6 @@ def convertMinutes(request):
 	min = int(minutes1) + 60*hours
 	return minutes,min
 
-@csrf_exempt
 def findBooking(request):
 	res = rooms.objects.raw("SELECT * FROM webapp_bookings,webapp_rooms WHERE booking_ref = %s AND webapp_bookings.room_id = webapp_rooms.room_id;",[request.POST['booking_id']]);
 	start = list(res)[0].start_time.strftime("%H:%M")
@@ -107,6 +108,8 @@ def findBooking(request):
 	if minutes < 0:
 		hours = hours - 1
 		minutes = 60 + minutes
+	elif minutes == 0:
+		minutes = "00"
 	duration = str(hours) + ":" + str(minutes)
 	return render(request,'showResult.html',{"query_results":res,"duration":duration})
 
@@ -122,7 +125,7 @@ def book_room(request):
 	room_id = request.session['bk_rm_id']
 	entry = bookings(room_id= room_id,start_time=start_time,end_time=end_time,contact=contact,description=description)
 	entry.save()
-	queryRoom = rooms.objects.raw("SELECT * FROM webapp_rooms WHERE room_id = %s",[room_id])
+	queryRoom = rooms.objects.filter(room_id=room_id)
 	room_name = list(queryRoom)[0].room_name
 	print room_name
 	return render(request,'modal.html',{
@@ -139,4 +142,26 @@ def view_room(request,id):
 	return render(request,'room_details.html',res)
 
 def updateBooking(request):
-	print request
+	booking_id = request.POST['booking_id']
+	res = bookings.objects.filter(booking_ref=booking_id)
+	description = request.POST['description']
+	contact = request.POST['contact']
+	duration =""
+	room_name = " KJLKJ KL"
+	if description != list(res)[0].description:
+		bookings.objects.filter(booking_ref=booking_id).update(description=description)
+	if contact != list(res)[0].contact:
+		bookings.objects.filter(booking_ref=booking_id).update(contact=contact)
+	return render(request,"updatedBKModal.html",{
+		"booking_id": booking_id,
+		"room_name": room_name,
+		"description": description,
+		"contact": contact,
+		"duration": duration,
+		})
+	
+
+def cancelBooking(request):
+	booking_id = request.POST['booking_id']
+	bookings.objects.filter(booking_ref=booking_id).delete()
+	return HttpResponse("Booking Canceled")
