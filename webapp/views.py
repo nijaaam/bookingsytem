@@ -7,6 +7,8 @@ from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from datetime import datetime, timedelta, date
 from .models import rooms,bookings
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
 import time
 
 def index(request):
@@ -82,12 +84,13 @@ def nextWeek(request):
 
 def findBooking(request):
 	booking_id = request.POST['booking_id']
-	booking = bookings.objects.get(booking_ref=booking_id)
-	room = rooms.objects.get(room_id=booking.room_id)
-	start = booking.start_time.strftime("%H:%M")
-	end = booking.end_time.strftime("%H:%M")
-	duration = convertDuration(start,end)
-	return render(request,'showResult.html',{
+	try:
+		booking = bookings.objects.get(booking_ref=booking_id)
+		room = rooms.objects.get(room_id=booking.room_id)
+		start = booking.start_time.strftime("%H:%M")
+		end = booking.end_time.strftime("%H:%M")
+		duration = convertDuration(start,end)
+		return render(request,'showResult.html',{
 		"room_name": room.room_name,
 		"room_size": room.room_size,
 		"room_location": room.room_location,
@@ -95,15 +98,20 @@ def findBooking(request):
 		"contact": booking.contact,
 		"description": booking.description,
 		"duration": duration,
-	})
+		})
+	except ObjectDoesNotExist:
+		error_msg = "Booking not found for " + booking_id
+		html = "<span class = 'help-block' style ='color:#a94442'>" + error_msg + "</span>"
+		return HttpResponse(html)
 
 def updateBooking(request):
 	booking_id = request.POST['booking_id']
 	res = bookings.objects.filter(booking_ref=booking_id)
 	description = request.POST['description']
 	contact = request.POST['contact']
-	duration = ""
-	room_name = " KJLKJ KL"
+	booking = bookings.objects.get(booking_ref=booking_id)
+	room = rooms.objects.get(room_id=booking.room_id)
+	room_name = room.room_name
 	if description != list(res)[0].description:
 		bookings.objects.filter(booking_ref=booking_id).update(description=description)
 	if contact != list(res)[0].contact:
@@ -113,13 +121,20 @@ def updateBooking(request):
 		"room_name": room_name,
 		"description": description,
 		"contact": contact,
-		"duration": duration,
-		})
+	})
+
+def changeDuration(request):
+	booking_id = request.POST['booking_id']
+	return render(request,"changeDuration.html",{"room_avail":"X"})
 
 def cancelBooking(request):
 	booking_id = request.POST['booking_id']
 	bookings.objects.filter(booking_ref=booking_id).delete()
 	return HttpResponse("Booking Canceled")
+
+def getBKDateTime(request):
+	booking = bookings.objects.get(booking_ref = request.GET['booking_id'])
+	return JsonResponse({'start_time':booking.start_time,'end_time':booking.end_time,'date':booking.date})
 
 def getBookingsforWeek(request,x):
 	dt = request.session['weekNo']

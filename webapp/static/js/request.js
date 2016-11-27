@@ -49,7 +49,7 @@ $('#findBookingForm').submit(function(){
         data: $('#findBookingForm').serialize(),
         success: function(data){
             $('#result').html(data);
-        }   
+        }
     });
     return false;
 });
