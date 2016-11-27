@@ -2,29 +2,28 @@
     <div id="row">
         <div class="col-md-6">
             <ul class="list-group">
-                {% for item in query_results %}
                 <li class="list-group-item inline">
                     <div class="row">
                         <label class="col-md-6" for="exampleInputEmail1">Name</label>
-                        <div class="col-md-6"><span class="pull-right">{{ item.room_name }}</span></div>
+                        <div class="col-md-6"><span class="pull-right">{{ room_name }}</span></div>
                     </div>
                 </li>
                 <li class="list-group-item inline">
                     <div class="row">
                         <label class="col-md-6" for="exampleInputEmail1">Size</label>
-                        <div class="col-md-6"><span class="pull-right">{{ item.room_size }}</span></div>
+                        <div class="col-md-6"><span class="pull-right">{{ room_size }}</span></div>
                     </div>
                 </li>
                 <li class="list-group-item inline">
                     <div class="row">
                         <label class="col-md-6" for="exampleInputEmail1">Location</label>
-                        <div class="col-md-6"><span class="pull-right">{{ item.room_location }}</span></div>
+                        <div class="col-md-6"><span class="pull-right">{{ room_location }}</span></div>
                     </div>
                 </li>
                 <li class="list-group-item inline">
                     <div class="row">
                         <label class="col-md-6" for="exampleInputEmail1">Features</label>
-                        <div class="col-md-6"><span class="pull-right">{{ item.room_features }}</span></div>
+                        <div class="col-md-6"><span class="pull-right">{{ room_features }}</span></div>
                     </div>
                 </li>
             </ul>
@@ -35,14 +34,14 @@
                 <div class="form-group has-feedback">
                     <label for="contact" class="col-sm-2 control-label">Contact</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="contact" name="contact" value={{ item.contact }}>
+                        <input type="text" class="form-control" id="contact" name="contact" value={{ contact }}>
                         <span class="glyphicon form-control-feedback" id="contact_error"></span>
                     </div>
                 </div>
                 <div class="form-group has-feedback">
                     <label for="description" class="col-sm-2 control-label">Description</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="description" name="description" value={{ item.description }}>
+                        <input type="text" class="form-control" id="description" name="description" value={{ description }}>
                         <span class="glyphicon form-control-feedback" id="description_error"></span>
                     </div>
                 </div>
@@ -84,7 +83,6 @@
             </div>
         </div>
     </div>
-    {% endfor %}
 </div>
 <div id="showUpdateBKModal"></div>
 <div id="CancelBookingModal"></div>
