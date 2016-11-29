@@ -32,7 +32,9 @@ ALLOWED_HOSTS = ['*']
 BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 
 STATICFILES_FINDERS = (
-    'djangobower.finders.BowerFinder',
+    "djangobower.finders.BowerFinder",
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 )
 
 BOWER_INSTALLED_APPS = (

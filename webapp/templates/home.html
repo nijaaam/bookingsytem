@@ -6,7 +6,7 @@
     <meta charset="utf-8" /> {% load staticfiles %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
-    <link rel="stylesheet" href="{% static 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css' %} " />
+    <link rel="stylesheet" href="{% static 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css' %}" />
 </head>
 
 <body class="body">
@@ -17,7 +17,7 @@
             <div class="form-group">
                 <label for="exampleInputName2">Date</label>
                 <span style="display:inline-block; width: 2;"></span>
-                <div class='input-group date' id='datepicker1'>
+                <div class='input-group date' id='datepicker'>
                     <input type="text" name="bk_date" class="form-control" value={{ bk_date }}>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
@@ -28,12 +28,13 @@
             <div class="form-group">
                 <label for="exampleInputEmail2">Start Time</label>
                 <span style="display:inline-block; width: 2;"></span>
-                <div class='input-group date' id='timepicker1'>
+                <div class='input-group date' id='timepicker'>
                     <input type="text" class="form-control" name="bk_time" value={{ bk_time }}>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-time"></span>
                     </span>
                 </div>
+                <span style="display:inline-block; width: 2;"></span>
             </div>
             <div class="form-group">
                 <button type="submit" id="find_room_btn" class="btn btn-default">Find Rooms</button>
