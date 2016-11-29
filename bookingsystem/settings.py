@@ -29,11 +29,21 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 ALLOWED_HOSTS = ['*']
 
+BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
+
+STATICFILES_FINDERS = (
+    'djangobower.finders.BowerFinder',
+)
+
+BOWER_INSTALLED_APPS = (
+    'eonasdan-bootstrap-datetimepicker#latest',
+)
 
 # Application definition
 
 INSTALLED_APPS = (
     'webapp',
+    'djangobower',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
