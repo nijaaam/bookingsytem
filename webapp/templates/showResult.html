@@ -52,7 +52,7 @@
                         <span class="glyphicon form-control-feedback" id="duration_error"></span>
                     </div>
                 </div>
-                <div id = "additionalFields"></div>
+                <div id="additionalFields"></div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <div class="btn-group" role="group" style="float: right;">
@@ -72,17 +72,17 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button id = "exit1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button id="exit1" type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
                     <h4 class="modal-title text-center">Cancel Booking</h4>
                 </div>
                 <div class="modal-body">
-                    <p id = "modalText" align="center">Are you sure you want to cancel this booking</p>
+                    <p id="modalText" align="center">Are you sure you want to cancel this booking</p>
                 </div>
                 <div class="modal-footer">
-                    <button id = "cancelBooking2" type="button" class="btn btn-danger">Yes</button>
-                    <button id = "exit" type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button id="cancelBooking2" type="button" class="btn btn-danger">Yes</button>
+                    <button id="exit" type="button" class="btn btn-default" data-dismiss="modal">No</button>
                 </div>
                 </form>
             </div>
@@ -92,21 +92,132 @@
 </div>
 <div id="showUpdateBKModal"></div>
 <div id="CancelBookingModal"></div>
+
+<div class="btn-toolbar" role="toolbar" style="text-align:center;">
+    <div class="btn-group pull-left" role="group">
+        <button id="prevBtn" type="button" class="btn btn-default">Prev</button>
+        <button id="nextBtn" type="button" class="btn btn-default">Next</button>
+    </div>
+    <button id="todayBtn" type="button" class="btn btn-default">Today</button>
+    <span id="calendarDate" style="text-align:center;"></span>
+    <div class="btn-group pull-right" role="group">
+        <button id = "dayView" type="button" class="btn btn-default">Day</button>
+        <button id = "weekView" type="button" class="btn btn-default">Week</button>
+        <button id = "monthView" type="button" class="btn btn-default">Month</button>
+    </div>
+</div>
+<div id="calendar"></div>
+
 <script type="text/javascript">
-    $('#cancelBooking').click(function(){
+    function updateTitle(){
+        var currentView = $('#calendar').fullCalendar('getView');
+        $('#calendarDate').text(currentView.title); 
+    }
+    function blockToday(){
+        var date = $('#calendar').fullCalendar('getDate');
+        if (date.format("DD/MM/YYYY") == moment().format("DD/MM/YYYY")){
+            return true;
+        }
+        return false;
+    }
+    $('#prevBtn').click(function(){
+        $('#calendar').fullCalendar('prev');
+        updateTitle();
+        $('#todayBtn').attr('disabled',blockToday());
+    });
+    $('#nextBtn').click(function(){
+        $('#calendar').fullCalendar('next');
+        updateTitle();
+        $('#todayBtn').attr('disabled',blockToday());
+    });
+    $('#todayBtn').click(function(){
+        $('#calendar').fullCalendar('changeView','agendaDay');
+        $('#calendar').fullCalendar('today');
+        updateTitle();
+        $('#todayBtn').attr('disabled',true);
+    });
+    $('#dayView').click(function(){
+        $('#calendar').fullCalendar( 'changeView', 'agendaDay');
+        updateTitle();
+    });
+    $('#monthView').click(function(){
+        $('#calendar').fullCalendar( 'changeView', 'month');
+        updateTitle();
+    });
+    $('#weekView').click(function(){
+        $('#calendar').fullCalendar( 'changeView', 'agendaWeek');
+        updateTitle();
+    });
+    $(document).ready(function() {
+        function loadJSON() {
+            var json = (("{{jsonResponse}}").replace(/&(l|g|quo)t;/g, function(a, b) {
+                return {
+                    l: '<',
+                    g: '>',
+                    quo: '"'
+                }[b];
+            }));
+            json = JSON.parse(json);
+            return json;
+        }
+
+        function event(title, start, end) {
+            return {
+                title: 'Meeting',
+                start: '2016-12-01T14:30:00',
+                end: '2016-12-01T16:30:00',
+            };
+        }
+
+        function getEvents() {
+            var json = loadJSON();
+            var events = [event('Meeting', '2016-12-01T14:30:00', '2016-12-01T16:30:00')]
+            return events;
+        }
+
+        $('#calendar').fullCalendar({
+            header: {
+                left: '',
+                center: '',
+                right: ''
+            },
+            buttonText: {
+                today: "Today",
+                month: "Month",
+                day: "Day",
+                week: "Week",
+            },
+            weekends: false,
+            firstDay: 1,
+            minTime: "07:00:00",
+            height: 'auto',
+            margin: '0 auto',
+            defaultView: 'agendaWeek',
+            maxTime: "20:00:00",
+            allDaySlot: false,
+            navLinks: true, // can click day/week names to navigate views
+            editable: true,
+            eventLimit: true,
+            eventOverlap: false, // allow "more" link when too many events
+            events: getEvents(),
+        });
+        var currentView = $('#calendar').fullCalendar('getView');
+        $('#calendarDate').text(currentView.title);
+    });
+    $('#cancelBooking').click(function() {
         $('#cancelBookingModal').modal('show');
     });
-    
-    $('#cancelBooking2').click(function(){
+
+    $('#cancelBooking2').click(function() {
         var booking_id = $('input[name=booking_id]').val();
         var input = $input = $('<input type="text" name="booking_id" hidden/>').val(booking_id);
         $('#viewBooking').append(input);
         $.ajax({
             type: "POST",
-             url: "/cancelBooking/",
-             dataType: "html",
-             data: $('#viewBooking').serialize(),
-             success: function(data){
+            url: "/cancelBooking/",
+            dataType: "html",
+            data: $('#viewBooking').serialize(),
+            success: function(data) {
                 $('#modalText').text(data);
                 $('#cancelBooking2').remove();
                 $('#exit').text('Close').button("refresh");
@@ -116,65 +227,11 @@
                 $("[id='exit1']").click(function() {
                     window.location = "/";
                 });
-             }
+            }
         });
-    });
-
-    $('#update').click(function() {
-        var booking_id = $('input[name=booking_id]').val();
-        var input = $input = $('<input type="text" name="booking_id" hidden/>').val(booking_id);
-        $('#viewBooking').append(input);
-        $.ajax({
-            type: "POST",
-            url: "/updateBooking/",
-            dataType: "html",
-            data: $('#viewBooking').serialize(),
-            success: function(data) {
-                $('#showUpdateBKModal').html(data);
-                $('#updatedBKModal').modal('show');
-            },
-        });
-        return false;
-    });
-
-    $('#changeDuration').click(function() {
-        $('input[name=duration]').attr("readonly", false);
     });
 
     $('#changeDateTime').click(function() {
-        $('#additionalFields').append(getTemplate("Date","date"));
-        $('#additionalFields').append(getTemplate("Start Time","start_time"));
-        $('#additionalFields').append(getTemplate("End Time","end_time"));
-        $.ajax({
-            type: "GET",
-            url: "/getBKDateTime/",
-            dataType: "json",
-            data: {booking_id: $('input[name=booking_id]').val()},
-            success: function(data){
-                $('input[name=start_time]').val(data.start_time);
-                $('input[name=date]').val(data.date);
-                $('input[name=end_time]').val(data.end_time);
-            },
-        });
+
     });
-
-    function getTemplate(name,id){
-        var div = $('<div class="form-group has-feedback">');
-        var label = $('<label for=' + name + ' class="col-sm-2 control-label">' + name + '</label>');
-        var input = $('<input>').attr({
-            type: 'text',
-            class: "form-control",
-            id:id,
-            name:id,
-            value:"{{id}}",
-        });
-        var div2 = $('<div class="col-sm-10">');
-        var span = $('<span class="glyphicon form-control-feedback" id="duration_error"></span>');
-        div2.append(input);
-        div2.append(span);
-        div.append(label);
-        div.append(div2);
-        return div;
-    }
-
 </script>

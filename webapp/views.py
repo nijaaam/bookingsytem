@@ -10,6 +10,9 @@ from .models import rooms,bookings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 import time
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+
 
 def index(request):
 	try:
@@ -98,6 +101,7 @@ def findBooking(request):
 		"contact": booking.contact,
 		"description": booking.description,
 		"duration": duration,
+		"jsonResponse": json.dumps({'foo': 'bar'}),
 		})
 	except ObjectDoesNotExist:
 		error_msg = "Booking not found for " + booking_id

@@ -1,0 +1,28 @@
+<div id="changeDurationModal" class="modal fade">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="exit1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title text-center">Cancel Duration</h4>
+            </div>
+            <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group has-feedback">
+                            <label for="contact" class="col-sm-2 control-label">Room Avaliability</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="room_avail" name="room_avail" value="{{ room_avail }}">
+                                <span class="glyphicon form-control-feedback" id="contact_error"></span>
+                            </div>
+                        </div>
+                    </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelBooking2" type="button" class="btn btn-default">Change</button>
+                <button id="exit" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
