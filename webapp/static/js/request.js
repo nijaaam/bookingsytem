@@ -19,6 +19,17 @@ function validateTime(time) {
     return true;
 }
 
+function performAJAX(url,dataType,data,callback){
+    $.ajax({
+        type: 'POST',
+        url: url,
+        dataType: dataType,
+        data: data,
+        success: callback,
+    });
+    return false;
+}
+
 $("input[name=duration_radio]").click(function() {
     if (this.value == "userDuration") {
         $("input[name=durValue]").prop('disabled', false);
@@ -57,7 +68,6 @@ $('#findBookingForm').submit(function() {
     return false;
 });
 
-
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -73,6 +83,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
         function getCookie(name) {
@@ -96,67 +107,25 @@ $.ajaxSetup({
         }
     }
 });
-/*
-$('#day,#month,#week').click(function(){
-    var view = 'month';
-    if (this.id == 'day'){
-        view = 'agendaDay';
-    } else if (this.id == 'month'){
-        view = this.id;
-    } else if (this.id == 'week'){
-        view = this.id == 'agendaWeek';
-    }
-    $('#calendar').fullCalendar('changeView', view);
-    var date = $('#calendar').fullCalendar('getDate').format("YYYY-MM-DD");
-    var room_name = $('#room_name').text();
-});
-*/
 
-function performAJAX(url,dataType,data,callback){
-    $.ajax({
-        type: 'POST',
-        url: url,
-        dataType: dataType,
-        data: data,
-        success: callback,
-    });
-}
-$('#day').click(function() {
-    $('#calendar').fullCalendar('changeView', 'agendaDay');
-    var date = $('#calendar').fullCalendar('getDate').format("YYYY-MM-DD");
-    var room_name = $('#room_name').text();
-    updateTitle();
-    var data = {
-        day: date,
-        room_name, room_name,
-    };
-    var callback = function(data){
-        var events = [];
-        $.each(data, function(index,item){
-            var title = item.description
-            var start = item.date+"T"+item.start_time;
-            var end = item.date+"T"+item.end_time;
-            events.push({
-                title: item.description,
-                start: new Date(start),
-                end: new Date(end),
-            });
+
+
+var callback = function(data){
+    var events = [];
+    $.each(data, function(index,item){
+        var title = item.description
+        var start = item.date+"T"+item.start_time;
+        var end = item.date+"T"+item.end_time;
+        events.push({
+            title: item.description,
+            start: new Date(start),
+            end: new Date(end),
         });
-        $('#calendar').fullCalendar("removeEvents");        
-        $('#calendar').fullCalendar('addEventSource', events);      
-        $('#calendar').fullCalendar('refetchEvents');
-    };
-    performAJAX('/getBookingsDay/','json',data,callback);
-});
-
-$('#month').click(function() {
-    $('#calendar').fullCalendar('changeView', 'month');
-    updateTitle();
-});
-$('#week').click(function() {
-    $('#calendar').fullCalendar('changeView', 'agendaWeek');
-    updateTitle();
-});
+    });
+    $('#calendar').fullCalendar("removeEvents");        
+    $('#calendar').fullCalendar('addEventSource', events);      
+    $('#calendar').fullCalendar('refetchEvents');
+};
 
 $('#cancelBooking').click(function() {
     $('#cancelBookingModal').modal('show');

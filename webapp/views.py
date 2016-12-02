@@ -216,10 +216,11 @@ def convertDuration(start,end):
 	duration = str(hours) + ":" + str(minutes)
 	return duration
 
-def getBookingsDay(request):
-	date = request.POST['day']
+def getBookings(request):
+	start = request.POST['start']
+	end = request.POST['end']
 	room_name = request.POST['room_name']
 	room = rooms.objects.get(room_name=room_name)
-	booking = bookings.objects.filter(room_id=room.room_id,date=date)
-	results = [bk_instance.getJSON() for bk_instance in booking]
+	booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end]) 
+	results = [bk_instance.getJSON() for bk_instance in booking_list]
 	return HttpResponse(json.dumps(results), content_type="application/json")
