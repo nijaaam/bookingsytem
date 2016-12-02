@@ -5,7 +5,7 @@
                 <li class="list-group-item inline">
                     <div class="row">
                         <label class="col-md-6" for="exampleInputEmail1">Name</label>
-                        <div class="col-md-6"><span class="pull-right">{{ room_name }}</span></div>
+                        <div class="col-md-6"><span id="room_name" class="pull-right">{{ room_name }}</span></div>
                     </div>
                 </li>
                 <li class="list-group-item inline">
@@ -95,86 +95,22 @@
 
 <div class="btn-toolbar" role="toolbar" style="text-align:center;">
     <div class="btn-group pull-left" role="group">
-        <button id="prevBtn" type="button" class="btn btn-default">Prev</button>
-        <button id="nextBtn" type="button" class="btn btn-default">Next</button>
+        <button id="prev" type="button" class="btn btn-default">Prev</button>
+        <button id="next" type="button" class="btn btn-default">Next</button>
     </div>
-    <button id="todayBtn" type="button" class="btn btn-default">Today</button>
+    <button id="today" type="button" class="btn btn-default">Today</button>
     <span id="calendarDate" style="text-align:center;"></span>
     <div class="btn-group pull-right" role="group">
-        <button id = "dayView" type="button" class="btn btn-default">Day</button>
-        <button id = "weekView" type="button" class="btn btn-default">Week</button>
-        <button id = "monthView" type="button" class="btn btn-default">Month</button>
+        <button id="day" type="button" class="btn btn-default">Day</button>
+        <button id="week" type="button" class="btn btn-default">Week</button>
+        <button id="month" type="button" class="btn btn-default">Month</button>
     </div>
 </div>
 <div id="calendar"></div>
-
+{% load staticfiles %}
+<script src="{% static 'js/request.js' %}" type="text/javascript"></script>
 <script type="text/javascript">
-    function updateTitle(){
-        var currentView = $('#calendar').fullCalendar('getView');
-        $('#calendarDate').text(currentView.title); 
-    }
-    function blockToday(){
-        var date = $('#calendar').fullCalendar('getDate');
-        if (date.format("DD/MM/YYYY") == moment().format("DD/MM/YYYY")){
-            return true;
-        }
-        return false;
-    }
-    $('#prevBtn').click(function(){
-        $('#calendar').fullCalendar('prev');
-        updateTitle();
-        $('#todayBtn').attr('disabled',blockToday());
-    });
-    $('#nextBtn').click(function(){
-        $('#calendar').fullCalendar('next');
-        updateTitle();
-        $('#todayBtn').attr('disabled',blockToday());
-    });
-    $('#todayBtn').click(function(){
-        $('#calendar').fullCalendar('changeView','agendaDay');
-        $('#calendar').fullCalendar('today');
-        updateTitle();
-        $('#todayBtn').attr('disabled',true);
-    });
-    $('#dayView').click(function(){
-        $('#calendar').fullCalendar( 'changeView', 'agendaDay');
-        updateTitle();
-    });
-    $('#monthView').click(function(){
-        $('#calendar').fullCalendar( 'changeView', 'month');
-        updateTitle();
-    });
-    $('#weekView').click(function(){
-        $('#calendar').fullCalendar( 'changeView', 'agendaWeek');
-        updateTitle();
-    });
     $(document).ready(function() {
-        function loadJSON() {
-            var json = (("{{jsonResponse}}").replace(/&(l|g|quo)t;/g, function(a, b) {
-                return {
-                    l: '<',
-                    g: '>',
-                    quo: '"'
-                }[b];
-            }));
-            json = JSON.parse(json);
-            return json;
-        }
-
-        function event(title, start, end) {
-            return {
-                title: 'Meeting',
-                start: '2016-12-01T14:30:00',
-                end: '2016-12-01T16:30:00',
-            };
-        }
-
-        function getEvents() {
-            var json = loadJSON();
-            var events = [event('Meeting', '2016-12-01T14:30:00', '2016-12-01T16:30:00')]
-            return events;
-        }
-
         $('#calendar').fullCalendar({
             header: {
                 left: '',
@@ -199,39 +135,26 @@
             editable: true,
             eventLimit: true,
             eventOverlap: false, // allow "more" link when too many events
-            events: getEvents(),
         });
+        updateTitle();
+    });
+
+    function updateTitle() {
         var currentView = $('#calendar').fullCalendar('getView');
         $('#calendarDate').text(currentView.title);
-    });
-    $('#cancelBooking').click(function() {
-        $('#cancelBookingModal').modal('show');
-    });
-
-    $('#cancelBooking2').click(function() {
-        var booking_id = $('input[name=booking_id]').val();
-        var input = $input = $('<input type="text" name="booking_id" hidden/>').val(booking_id);
-        $('#viewBooking').append(input);
-        $.ajax({
-            type: "POST",
-            url: "/cancelBooking/",
-            dataType: "html",
-            data: $('#viewBooking').serialize(),
-            success: function(data) {
-                $('#modalText').text(data);
-                $('#cancelBooking2').remove();
-                $('#exit').text('Close').button("refresh");
-                $("[id='exit']").click(function() {
-                    window.location = "/";
-                });
-                $("[id='exit1']").click(function() {
-                    window.location = "/";
-                });
-            }
-        });
-    });
-
-    $('#changeDateTime').click(function() {
-
+    }
+    $('#prev,#next,#today').click(function(){
+        if (this.id == "today"){
+            $('#calendar').fullCalendar('changeView', 'agendaDay');
+        }
+        $('#calendar').fullCalendar(this.id);
+        updateTitle();
+        var date = $('#calendar').fullCalendar('getDate');
+        if (date.format("DD/MM/YYYY") == moment().format("DD/MM/YYYY")) {
+            $('#today').attr('disabled', true);
+        } else {
+            $('#today').attr('disabled', false);
+        }
+        
     });
 </script>

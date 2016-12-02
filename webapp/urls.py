@@ -14,4 +14,5 @@ urlpatterns = [ url(r'^$',views.index, name = 'index'),
                 url(r'^cancelBooking/$',views.cancelBooking, name = 'cancelBooking'),
                 url(r'^changeDuration/$',views.changeDuration, name = 'changeDuration'),
                 url(r'^getBKDateTime/$',views.getBKDateTime, name = 'getBKDateTime'),
+                url(r'^getBookingsDay/$',views.getBookingsDay, name = 'getBookingsDay'),
               ]

@@ -7,6 +7,15 @@ class rooms(models.Model):
 	room_location   = models.TextField(null = False)
 	room_features   = models.TextField(null = False)
 
+	def getJSON(self):
+		return dict(
+			room_id = self.room_id,
+			room_name = self.room_name,
+			room_size = self.room_size,
+			room_location = self.room_location,
+			room_features = self.room_features,
+		)
+
 class bookings(models.Model):
 	booking_ref = models.AutoField(primary_key=True)
 	room        = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
@@ -15,3 +24,14 @@ class bookings(models.Model):
 	end_time    = models.TimeField(null = False)
 	contact     = models.CharField(max_length=60, null = False)
 	description = models.CharField(max_length=60, null = False)
+
+	def getJSON(self):
+		return dict(
+			booking_ref = self.booking_ref,
+			room_id = self.room_id,
+			date = str(self.date),
+			start_time = str(self.start_time),
+			end_time = str(self.end_time),
+			contact = self.contact,
+			description = self.description
+		)
