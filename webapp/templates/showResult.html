@@ -77,11 +77,9 @@
             </div>
         </div>
     </div>
-
 </div>
 <div id="showUpdateBKModal"></div>
 <div id="CancelBookingModal"></div>
-
 <div class="btn-toolbar" role="toolbar" style="text-align:center;">
     <div class="btn-group pull-left" role="group">
         <button id="prev" type="button" class="btn btn-default">Prev</button>
@@ -98,75 +96,32 @@
 <div id="calendar"></div>
 {% load staticfiles %}
 <script src="{% static 'js/request.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/calendar.js' %}" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#calendar').fullCalendar({
-            header: {
-                left: '',
-                center: '',
-                right: ''
-            },
-            weekends: false,
-            firstDay: 1,
-            minTime: "07:00:00",
-            height: '500',
-            margin: '0 auto',
-            defaultView: 'agendaWeek',
-            maxTime: "20:00:00",
-            allDaySlot: false,
-            editable: true,
-            eventLimit: true,
-            eventOverlap: false,
-            slotDuration: '00:10:00',
-            nowIndicator: true,
-            scrollTime: '09:00:00',
-        });
-        updateTitle();
-        loadEvents();
+    $('#calendar').fullCalendar({
+        header: {
+            left: '',
+            center: '',
+            right: ''
+        },
+        weekends: false,
+        firstDay: 1,
+        minTime: "07:00:00",
+        height: '500',
+        margin: '0 auto',
+        defaultView: 'agendaWeek',
+        maxTime: "20:00:00",
+        allDaySlot: false,
+        editable: true,
+        eventLimit: true,
+        eventOverlap: false,
+        slotDuration: '00:10:00',
+        nowIndicator: true,
+        scrollTime: '09:00:00',
     });
+    updateTitle();
+    loadEvents();
+});
 
-    function loadEvents() {
-        var start = $('#calendar').fullCalendar('getDate').startOf('month').format("YYYY-MM-DD");
-        var end = $('#calendar').fullCalendar('getDate').endOf('month').format("YYYY-MM-DD");
-        var data = {
-            room_name: $('#room_name').text(),
-            start: start,
-            end: end,
-        };
-        performAJAX('/getBookings/', 'json', data, callback);
-    }
-
-    function updateTitle() {
-        var currentView = $('#calendar').fullCalendar('getView');
-        $('#calendarDate').text(currentView.title);
-    }
-    $('#prev,#next,#today').click(function() {
-        if (this.id == "today") {
-            $('#calendar').fullCalendar('changeView', 'agendaDay');
-        }
-        $('#calendar').fullCalendar(this.id);
-        updateTitle();
-        var date = $('#calendar').fullCalendar('getDate');
-        if (date.format("DD/MM/YYYY") == moment().format("DD/MM/YYYY")) {
-            $('#today').attr('disabled', true);
-        } else {
-            $('#today').attr('disabled', false);
-        }
-        return false;
-    });
-
-    $('#day,#month,#week').click(function() {
-        var view = 'month';
-        if (this.id == 'day') {
-            view = 'agendaDay';
-        } else if (this.id == 'month') {
-            view = this.id;
-            loadEvents();
-        } else if (this.id == 'week') {
-            view = 'agendaWeek';
-        }
-        $('#calendar').fullCalendar('changeView', view);
-        updateTitle();
-        return false;
-    });
 </script>

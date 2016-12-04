@@ -19,7 +19,7 @@ function validateTime(time) {
     return true;
 }
 
-function performAJAX(url,dataType,data,callback){
+function performAJAX(url, dataType, data, callback) {
     $.ajax({
         type: 'POST',
         url: url,
@@ -40,31 +40,31 @@ $("input[name=duration_radio]").click(function() {
 });
 
 $('#booking_details').submit(function() {
-    $.ajax({
-        type: "POST",
-        url: "/book_room/",
-        dataType: "html",
-        data: $('#booking_details').serialize(),
-        success: function(data) {
-            if ($('#booking_details').valid() == true) {
-                $('#showModal').html(data);
-                $('#modal').modal('show');
-            }
-        },
-    });
+    var event = $("#calendar").fullCalendar('clientEvents', 999)[0];
+    var start = event.start.format("HH:mm:ss");
+    var end = event.end.format("HH:mm:ss");
+    var date = $("#calendar").fullCalendar('getDate').format("YYYY-MM-DD");
+    var data = {
+        'start': start,
+        'end': end,
+        'date': date,
+    };
+    data = $('#booking_details').serialize() + '&' + $.param(data);
+    var callback = function(data){
+        $('#showModal').html(data);
+        $('#modal').modal('show');
+    };  
+    if ($('#booking_details').valid() == true) {
+        performAJAX("/book_room/","html",data,callback);
+    }
     return false;
 });
 
 $('#findBookingForm').submit(function() {
-    $.ajax({
-        type: "POST",
-        url: "/findBooking/",
-        dataType: "html",
-        data: $('#findBookingForm').serialize(),
-        success: function(data) {
-            $('#result').html(data);
-        }
-    });
+    var callback = function(data){
+        $('#result').html(data);
+    };
+    performAJAX('/findBooking/','html',$('#findBookingForm').serialize(),callback);
     return false;
 });
 
@@ -107,25 +107,6 @@ $.ajaxSetup({
         }
     }
 });
-
-
-
-var callback = function(data){
-    var events = [];
-    $.each(data, function(index,item){
-        var title = item.description
-        var start = item.date+"T"+item.start_time;
-        var end = item.date+"T"+item.end_time;
-        events.push({
-            title: item.description,
-            start: new Date(start),
-            end: new Date(end),
-        });
-    });
-    $('#calendar').fullCalendar("removeEvents");        
-    $('#calendar').fullCalendar('addEventSource', events);      
-    $('#calendar').fullCalendar('refetchEvents');
-};
 
 $('#cancelBooking').click(function() {
     $('#cancelBookingModal').modal('show');

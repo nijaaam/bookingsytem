@@ -25,41 +25,35 @@ def index(request):
 	return render(request,'home.html',res)
 
 def find_rooms(request):
-	cTime = time.strftime("%H:%M")
 	bk_date = request.POST['bk_date']
 	bk_time = request.POST['bk_time'] 	 	
-	if bk_time < cTime:
-		bk_time = cTime
 	res = queryDB(bk_date,bk_time,request)
 	return render(request,'home.html',res)
 
 def view_room(request,id):
 	request.session['bk_rm_id'] = id
 	query = rooms.objects.filter(room_id=id)
-	res = {"room_details":query}
+	start_time = request.session['bk_date'] + "T" + request.session['bk_time']
+	res = {"room_details":query, "start_time":start_time}
 	return render(request,'room_details.html',res)
 
 def book_room(request):
 	contact	     = request.POST['contact']
 	description	 = request.POST['description']
-	date = request.session['bk_date']
-	start_time = request.session['bk_time']
-	start_time = datetime.strptime(start_time,"%H:%M")
-	(minutes,min) = convertMinutes(request)
-	calc_time = start_time + timedelta(minutes=min)
-	end_time = str(calc_time.hour) + ":" + str(calc_time.minute)
+	start = request.POST['start']
+	end =  request.POST['end']
+	date =  request.POST['date']
 	room_id = request.session['bk_rm_id']
-	entry = bookings(room_id= room_id,start_time=start_time,end_time=end_time,contact=contact,description=description)
+	entry = bookings(room_id= room_id,date=date,start_time=start,end_time=end,contact=contact,description=description)
 	entry.save()
 	queryRoom = rooms.objects.filter(room_id=room_id)
 	room_name = list(queryRoom)[0].room_name
-	print room_name
 	return render(request,'modal.html',{
 		"booking_id":entry.booking_ref,
 		"room_name": room_name,
-		"start_time":start_time.strftime("%H:%M"),
-		"duration":minutes,
-		})
+		"start_time":start,
+		"end":end,
+	})
 
 def viewBooking(request):
 	return render(request,'viewBooking.html',{})
