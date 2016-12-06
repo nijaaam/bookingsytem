@@ -1,6 +1,6 @@
 function loadEvents() {
-    var start = $('#calendar').fullCalendar('getDate').startOf('month').format("YYYY-MM-DD");
-    var end = $('#calendar').fullCalendar('getDate').endOf('month').format("YYYY-MM-DD");
+    var start = $('#calendar').fullCalendar('getDate').startOf('month').format("DD-MM-YYYY");
+    var end = $('#calendar').fullCalendar('getDate').endOf('month').format("DD-MM-YYYY");
     var data = {
         room_name: $('#room_name').text(),
         start: start,

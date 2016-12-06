@@ -104,12 +104,12 @@
                     },
                 },
             });
-            var scroll_time = "{{ start_time }}";
-            var time = moment(scroll_time).subtract(1,'hours').format("hh:mm:ss");
-            var date = moment(scroll_time);
-            var end = moment(scroll_time).add(15,'minutes');
-            var start = date.format('HH:mm:ss');
-            var end = end.format('HH:mm:ss');
+            var time = "{{ start_time }}";
+            var date = "{{ date }}";
+            date = moment(date,"DD-MM-YYYY");
+            var scrollTime = moment(time,"hh:mm").subtract(1,'hours').format("hh:mm:ss");
+            var start = moment(time,"hh:mm").format("hh:mm:ss");
+            var end = moment(time,"hh:mm").add(15,'minutes').format("hh:mm:ss");
             $('#calendar').fullCalendar({
                 header: {
                     left: '',
@@ -130,7 +130,7 @@
                 eventOverlap: false,
                 slotDuration: '00:10:00',
                 nowIndicator: true,
-                scrollTime: time,
+                scrollTime: scrollTime,
             });
             updateTitle();
             loadEvents();
