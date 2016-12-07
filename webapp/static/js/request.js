@@ -55,7 +55,7 @@ $('#booking_details').submit(function() {
         $('#modal').modal('show');
     };  
     if ($('#booking_details').valid() == true) {
-        performAJAX("/book_room/","html",data,callback);
+        performAJAX("/book_room/","html",data,callback);    
     }
     return false;
 });
@@ -134,3 +134,22 @@ $('#cancelBooking2').click(function() {
         }
     });
 });
+
+$('#update').click(function() {
+        var booking_id = $('input[name=booking_id]').val();
+        var input = $input = $('<input type="text" name="booking_id" hidden/>').val(booking_id);
+        $('#viewBooking').append(input);
+        $.ajax({
+            type: "POST",
+            url: "/updateBooking/",
+            dataType: "html",
+            data: $('#viewBooking').serialize(),
+            success: function(data) {
+                if ($('#viewBooking').valid() == true) {
+                    $('#showUpdateBKModal').html(data);
+                    $('#updatedBKModal').modal('show');
+                }
+            },
+        });
+        return false;
+    });

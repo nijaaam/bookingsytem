@@ -13,37 +13,35 @@
     {% block navbar %} {% include "navbar.html" %} {% endblock %}
     <div class="container">
         <div id="row">
-            <div id = "findBK">
-                <form id="findBookingForm" class="form-inline" method='POST'>
-                    {% csrf_token %}
-                    <div class="form-group has-feedback">
-                        <label for="booking_id">Booking Id</label>
-                        <span style="display:inline-block; width: 2;"></span>
+            <form id="findBookingForm" class="form-inline" method='POST'>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputAmount"></label>
+                    <div class="input-group">
+                        <div class="input-group-addon">Booking ID</div>
                         <input type="text" class="form-control" id="booking_id" name="booking_id">
-                        <span class="glyphicon form-control-feedback" id="booking_id_error"></span>
+                        <span class="input-group-btn">
+                            <button type="submit" id="find_room_btn" class="btn btn-default pull-right">Find Rooms</button>
+                        </span>
                     </div>
-                    <span style="display:inline-block; width: 10;"></span>
-                    <div class="form-group">
-                        <button type="submit" id="find_room_btn" class="btn btn-default pull-right">Find Rooms</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
         <div id="result"></div>
     </div>
     <script type="text/javascript" src="{% static 'moment/min/moment.min.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript"></script>
-    <script type="text/javascript" src = "{% static 'fullcalendar/dist/fullcalendar.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'fullcalendar/dist/fullcalendar.min.js' %}"></script>
     <script src="{% static 'js/request.js' %}" type="text/javascript"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js" type="text/javascript"></script>
-    <script src = "http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/additional-methods.min.js" type="text/javascript"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/additional-methods.min.js" type="text/javascript"></script>
     <script src="{% static 'js/form_validation.js' %}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('#findBookingForm').validate({
                 rules: {
-                    'booking_id':{
+                    'booking_id': {
                         required: true,
                         number: true,
                     }

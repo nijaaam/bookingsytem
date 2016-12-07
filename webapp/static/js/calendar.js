@@ -1,12 +1,43 @@
-function loadEvents() {
+function loadEvents(booking_id) {
     var start = $('#calendar').fullCalendar('getDate').startOf('month').format("DD-MM-YYYY");
     var end = $('#calendar').fullCalendar('getDate').endOf('month').format("DD-MM-YYYY");
     var data = {
-        room_name: $('#room_name').text(),
+        room_name: $('input[id=room_name]').val(),
         start: start,
         end: end,
     };
-    performAJAX('/getBookings/', 'json', data, callback);
+    getJSON(data,function(json){
+        $.each(json, function(index, item) {
+            var title = item.description
+            var start = item.date + "T" + item.start_time;
+            var end = item.date + "T" + item.end_time;
+            var event = {
+                id: item.booking_ref,
+                title: item.description,
+                start: new Date(start),
+                end: new Date(end),
+                editable: false,
+            };
+            if (booking_id != "undefined" && event.id == booking_id){
+                event.editable = true;
+                event.color = "#66cc00";
+            }
+            $('#calendar').fullCalendar('renderEvent', event);
+        });
+    });
+}
+
+var getJSON = function(data,callback){
+    $.ajax({
+        type: 'POST',
+        url: /getBookings/,
+        dataType: 'json',
+        data: data,
+        success: function(data){
+            callback(data);
+        },
+    });
+    return false;
 }
 
 function updateTitle() {
@@ -40,20 +71,3 @@ $('#day,#month,#week').click(function() {
     updateTitle();
     return false;
 });
-
-var callback = function(data){
-    var events = [];
-    $.each(data, function(index,item){
-        var title = item.description
-        var start = item.date+"T"+item.start_time;
-        var end = item.date+"T"+item.end_time;
-        events.push({
-            title: item.description,
-            start: new Date(start),
-            end: new Date(end),
-        });
-    });
-    $('#calendar').fullCalendar("removeEvents");        
-    $('#calendar').fullCalendar('addEventSource', events);      
-    $('#calendar').fullCalendar('refetchEvents');
-};

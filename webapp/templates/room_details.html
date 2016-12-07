@@ -6,7 +6,7 @@
     <meta charset="utf-8" /> {% load staticfiles %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'fullcalendar/dist/fullcalendar.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 </head>
 
 <body class="body">
@@ -19,7 +19,7 @@
                     <li class="list-group-item inline">
                         <div class="row">
                             <label class="col-md-6" for="exampleInputEmail1">Name</label>
-                            <div class="col-md-6"><span class="pull-right">{{ item.room_name }}</span></div>
+                            <div class="col-md-6"><span id ="room_name" class="pull-right">{{ item.room_name }}</span></div>
                         </div>
                     </li>
                     <li class="list-group-item inline">
@@ -69,6 +69,8 @@
             </div>
         </div>
         <div id="showModal"></div>
+    </div>
+    <div class = "container">
         <div class="btn-toolbar" role="toolbar" style="text-align:center;">
             <div class="btn-group pull-left" role="group">
                 <button id="prev" type="button" class="btn btn-default">Prev</button>
@@ -106,10 +108,13 @@
             });
             var time = "{{ start_time }}";
             var date = "{{ date }}";
-            date = moment(date,"DD-MM-YYYY");
-            var scrollTime = moment(time,"hh:mm").subtract(1,'hours').format("hh:mm:ss");
-            var start = moment(time,"hh:mm").format("hh:mm:ss");
-            var end = moment(time,"hh:mm").add(15,'minutes').format("hh:mm:ss");
+            var datetime = moment(date+"T"+time,"DD-MM-YYYYThh:mm:ss");
+            var scrollTime = moment(date+"T"+time,"DD-MM-YYYYThh:mm:ss").subtract(1,"hours").format("HH:mm:ss");
+            var newEvent = {
+                id: 999,
+                start: datetime.format("HH:mm:ss"),
+                end : datetime.add(15,'minutes').format("HH:mm:ss"),
+            };
             $('#calendar').fullCalendar({
                 header: {
                     left: '',
@@ -121,25 +126,20 @@
                 minTime: "07:00:00",
                 height: '500',
                 margin: '0 auto',
-                defaultDate: date,
+                defaultDate: datetime,
                 defaultView: 'agendaDay',
                 maxTime: "20:00:00",
                 allDaySlot: false,
                 editable: true,
                 eventLimit: true,
                 eventOverlap: false,
-                slotDuration: '00:10:00',
+                slotDuration: '00:05:00',
                 nowIndicator: true,
                 scrollTime: scrollTime,
             });
             updateTitle();
             loadEvents();
-            var newEvent = {
-                id: 999,
-                start: start,
-                end : end,
-            };
-            $('#calendar').fullCalendar( 'renderEvent', newEvent);
+            $('#calendar').fullCalendar('renderEvent', newEvent);
         });
     </script>
 </body>

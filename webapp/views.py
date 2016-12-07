@@ -20,9 +20,33 @@ def index(request):
 		cTime = request.session['bk_time']
 	except KeyError:
 		cTime = time.strftime("%H:%M")
-		cDate = time.strftime("%Y-%m-%d")
+		cDate = time.strftime("%d-%m-%Y")
 	res = queryDB(cDate,cTime,request)
 	return render(request,'home.html',res)
+
+def validateTime(cDate,cTime,request):
+	print cDate,time.strftime("%d-%m-%Y")
+	print cTime,time.strftime("%H:%M")
+	if cDate < time.strftime("%d-%m-%Y"):
+		cTime = time.strftime("%H:%M")
+		cDate = time.strftime("%d-%m-%Y")
+	if cTime < time.strftime("%H:%M"):
+		if cDate == time.strftime("%d-%m-%Y"):
+			cTime = time.strftime("%H:%M")
+	request.session['bk_date'] = cDate
+	request.session['bk_time'] = cTime
+	return cDate,cTime
+
+def queryDB(date,time,request):
+	(date,time) = validateTime(date,time,request)
+	end = datetime.strptime(time,"%H:%M") + timedelta(minutes=15)
+	end = end.strftime("%H:%M")
+	booked_room_ids = bookings.objects.filter(
+		date = datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d")
+		,start_time__lte=time,end_time__gte=end).values_list('room_id',flat=True)
+	avaliable_rooms = rooms.objects.exclude(room_id__in = booked_room_ids)
+	obj = {'query_results': avaliable_rooms, 'bk_date':date, 'bk_time':time}
+	return obj
 
 def find_rooms(request):
 	bk_date = request.POST['bk_date']
@@ -50,6 +74,7 @@ def book_room(request):
 	room_name = list(queryRoom)[0].room_name
 	return render(request,'modal.html',{
 		"booking_id":entry.booking_ref,
+		"event_id": str(room_id) + "," + str(entry.booking_ref),
 		"room_name": room_name,
 		"start_time":start,
 		"end":end,
@@ -63,8 +88,6 @@ def findBooking(request):
 	try:
 		booking = bookings.objects.get(booking_ref=booking_id)
 		room = rooms.objects.get(room_id=booking.room_id)
-		start = booking.start_time.strftime("%H:%M")
-		end = booking.end_time.strftime("%H:%M")
 		return render(request,'showResult.html',{
 		"room_name": room.room_name,
 		"room_size": room.room_size,
@@ -72,6 +95,10 @@ def findBooking(request):
 		"room_features": room.room_features,
 		"contact": booking.contact,
 		"description": booking.description,
+		"start":booking.start_time.strftime("%H:%M"),
+		"end":booking.end_time.strftime("%H:%M"),
+		"date":booking.date.strftime("%d-%m-%Y"),
+		"booking_id":booking_id,
 		})
 	except ObjectDoesNotExist:
 		error_msg = "Booking not found for " + booking_id
@@ -95,6 +122,7 @@ def updateBooking(request):
 		"room_name": room_name,
 		"description": description,
 		"contact": contact,
+		"date": str(booking.date.strftime("%d-%m-%Y")) + " " + str(booking.start_time) + " - " + str(booking.end_time)
 	})
 
 def changeDuration(request):
@@ -134,33 +162,13 @@ def calculateDifference(now,start):
 	result = datetime.strptime(result,"%H:%M:%S")
 	return result.strftime("%H:%M")
 
-
-def validateTime(cDate,cTime,request):
-	if cDate < time.strftime("%Y-%m-%d"):
-			cTime = time.strftime("%H:%M")
-			cDate = time.strftime("%Y-%m-%d")
-	if cTime < time.strftime("%H:%M"):
-			cTime = time.strftime("%H:%M")
-	request.session['bk_date'] = cDate
-	request.session['bk_time'] = cTime
-	return cDate,cTime
-
-def queryDB(date,time,request):
-	(date,time) = validateTime(date,time,request)
-	date = datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d")
-	end = datetime.strptime(time,"%H:%M") + timedelta(minutes=15)
-	end = end.strftime("%H:%M")
-	booked_room_ids = bookings.objects.filter(date=date,start_time__lte=time,end_time__gte=end).values_list('room_id',flat=True)
-	avaliable_rooms = rooms.objects.exclude(room_id__in = booked_room_ids)
-	date = datetime.strptime(date,"%Y-%m-%d").strftime("%d-%m-%Y")
-	obj = {'query_results': avaliable_rooms, 'bk_date':date, 'bk_time':time}
-	return obj
-
 def getBookings(request):
 	start = request.POST['start']
 	end = request.POST['end']
 	room_name = request.POST['room_name']
 	room = rooms.objects.get(room_name=room_name)
+	start = datetime.strptime(start,"%d-%m-%Y").strftime("%Y-%m-%d")
+	end = datetime.strptime(end,"%d-%m-%Y").strftime("%Y-%m-%d")
 	booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end]) 
 	results = [bk_instance.getJSON() for bk_instance in booking_list]
 	return HttpResponse(json.dumps(results), content_type="application/json")
