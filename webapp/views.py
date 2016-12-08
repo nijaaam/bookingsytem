@@ -125,42 +125,10 @@ def updateBooking(request):
 		"date": str(booking.date.strftime("%d-%m-%Y")) + " " + str(booking.start_time) + " - " + str(booking.end_time)
 	})
 
-def changeDuration(request):
-	booking_id = request.POST['booking_id']
-	return render(request,"changeDuration.html",{"room_avail":"X"})
-
 def cancelBooking(request):
 	booking_id = request.POST['booking_id']
 	bookings.objects.filter(booking_ref=booking_id).delete()
 	return HttpResponse("Booking Canceled")
-
-def getBKDateTime(request):
-	booking = bookings.objects.get(booking_ref = request.GET['booking_id'])
-	return JsonResponse({'start_time':booking.start_time,'end_time':booking.end_time,'date':booking.date})
-
-def getBookingsforWeek(request,x):
-	dt = request.session['weekNo']
-	room_id = request.session['bk_rm_id']
-	dt = datetime.strptime(dt,"%Y-%m-%d")
-	if x == "-":
-	    start = dt - timedelta(days = 7)
-	elif x == "+":
-		start = dt + timedelta(days = 7)
-	end = start + timedelta(days=6)
-	start1	 = str(start.strftime("%d-%m-%y"))
-	start = str(start.strftime("%Y-%m-%d"))
-	request.session['weekNo'] = start
-	end = str(end.strftime("%Y-%m-%d"))
-	res = bookings.objects.filter(room_id=room_id,date__range=[start,end]) 
-	return start1,res
-
-def calculateDifference(now,start):
-	start = start.strftime("%H:%M")
-	start = datetime.strptime(start,"%H:%M")
-	now = datetime.strptime(now,"%H:%M")
-	result = str(start - now)
-	result = datetime.strptime(result,"%H:%M:%S")
-	return result.strftime("%H:%M")
 
 def getBookings(request):
 	start = request.POST['start']

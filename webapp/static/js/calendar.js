@@ -1,5 +1,4 @@
 function loadEvents(booking_id) {
-    alert(booking_id)
     $('#calendar').fullCalendar("removeEvents");
     var start = $('#calendar').fullCalendar('getDate').startOf('month').format("DD-MM-YYYY");
     var end = $('#calendar').fullCalendar('getDate').endOf('month').format("DD-MM-YYYY");
@@ -10,6 +9,7 @@ function loadEvents(booking_id) {
     };
     getJSON(data,function(json){
         $.each(json, function(index, item) {
+            alert(item);
             var title = item.description
             var start = item.date + "T" + item.start_time;
             var end = item.date + "T" + item.end_time;

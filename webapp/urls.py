@@ -9,7 +9,5 @@ urlpatterns = [ url(r'^$',views.index, name = 'index'),
                 url(r'^findBooking/$',views.findBooking, name = 'findBooking'),
                 url(r'^updateBooking/$',views.updateBooking, name = 'updateBooking'),
                 url(r'^cancelBooking/$',views.cancelBooking, name = 'cancelBooking'),
-                url(r'^changeDuration/$',views.changeDuration, name = 'changeDuration'),
-                url(r'^getBKDateTime/$',views.getBKDateTime, name = 'getBKDateTime'),
                 url(r'^getBookings/$',views.getBookings, name = 'getBookings'),
               ]
