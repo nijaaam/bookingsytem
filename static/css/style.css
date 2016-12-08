@@ -2,3 +2,10 @@
   padding-left: 20px
 }
 
+input[readonly] {
+    background-color: #ffffff;	
+}
+
+@media (max-width: 767px) {
+    /* CSS goes here */
+}
