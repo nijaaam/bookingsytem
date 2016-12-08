@@ -14,34 +14,35 @@
     <div class="container">
         <div id="row">
             <div class="col-md-6">
-                <ul class="list-group">
-                    {% for item in room_details %}
-                    <li class="list-group-item inline">
-                        <div class="row">
-                            <label class="col-md-6" for="exampleInputEmail1">Name</label>
-                            <div class="col-md-6"><span id ="room_name" class="pull-right">{{ item.room_name }}</span></div>
-                        </div>
-                    </li>
-                    <li class="list-group-item inline">
-                        <div class="row">
-                            <label class="col-md-6" for="exampleInputEmail1">Size</label>
-                            <div class="col-md-6"><span class="pull-right">{{ item.room_size }}</span></div>
-                        </div>
-                    </li>
-                    <li class="list-group-item inline">
-                        <div class="row">
-                            <label class="col-md-6" for="exampleInputEmail1">Location</label>
-                            <div class="col-md-6"><span class="pull-right">{{ item.room_location }}</span></div>
-                        </div>
-                    </li>
-                    <li class="list-group-item inline">
-                        <div class="row">
-                            <label class="col-md-6" for="exampleInputEmail1">Features</label>
-                            <div class="col-md-6"><span class="pull-right">{{ item.room_features }}</span></div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
+            <form class="form-horizontal">
+            {% for item in room_details %}
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Name</div>
+                        <input id="room_name" style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_name }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Size</div>
+                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_size }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Location</div>
+                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_location }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Features</div>
+                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_features }}">
+                    </div>
+                </div>
+                <hr class="visible-xs visible-sm">
+            </form>
+                {% endfor %}
             </div>
             <div class="col-md-6">
                 <form class="form-horizontal" method="POST" id="booking_details">
@@ -141,7 +142,7 @@
             });
             updateTitle();
             loadEvents();
-            $('#calendar').fullCalendar('renderEvent', newEvent);
+            //$('#calendar').fullCalendar('renderEvent', newEvent);
         });
     </script>
 </body>

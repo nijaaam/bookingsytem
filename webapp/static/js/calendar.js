@@ -9,7 +9,6 @@ function loadEvents(booking_id) {
     };
     getJSON(data,function(json){
         $.each(json, function(index, item) {
-            alert(item);
             var title = item.description
             var start = item.date + "T" + item.start_time;
             var end = item.date + "T" + item.end_time;
