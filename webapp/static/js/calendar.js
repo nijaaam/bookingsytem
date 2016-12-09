@@ -1,3 +1,7 @@
+function isMobile(){
+    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent));
+}
+
 function loadEvents(booking_id) {
     $('#calendar').fullCalendar("removeEvents");
     var start = $('#calendar').fullCalendar('getDate').startOf('month').format("DD-MM-YYYY");
@@ -7,6 +11,9 @@ function loadEvents(booking_id) {
         start: start,
         end: end,
     };
+    if (booking_id == 99999999){
+        alert($('#calendar').fullCalendar('clientEvents',99999999).id);
+    }
     getJSON(data,function(json){
         $.each(json, function(index, item) {
             var title = item.description
@@ -65,7 +72,11 @@ $('#day,#month,#week').click(function() {
         view = 'agendaDay';
     } else if (this.id == 'month') {
         view = this.id;
-        loadEvents(booking_id.value);
+        var id = $('input[id=booking_id]').val();
+        if (id == "undefined"){
+            id = 999;
+        }
+        loadEvents(id);
     } else if (this.id == 'week') {
         view = 'agendaWeek';
     }

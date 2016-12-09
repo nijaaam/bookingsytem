@@ -14,34 +14,34 @@
     <div class="container">
         <div id="row">
             <div class="col-md-6">
-            <form class="form-horizontal">
-            {% for item in room_details %}
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-addon">Name</div>
-                        <input id="room_name" style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_name }}">
+                <form class="form-horizontal">
+                    {% for item in room_details %}
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">Name</div>
+                            <input id="room_name" style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_name }}">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-addon">Size</div>
-                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_size }}">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">Size</div>
+                            <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_size }}">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-addon">Location</div>
-                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_location }}">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">Location</div>
+                            <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_location }}">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-addon">Features</div>
-                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_features }}">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">Features</div>
+                            <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_features }}">
+                        </div>
                     </div>
-                </div>
-                <hr class="visible-xs visible-sm">
-            </form>
+                    <hr class="visible-xs visible-sm">
+                </form>
                 {% endfor %}
             </div>
             <div class="col-md-6">
@@ -71,18 +71,41 @@
         </div>
         <div id="showModal"></div>
     </div>
-    <div class = "container">
-        <div class="btn-toolbar" role="toolbar" style="text-align:center;">
-            <div class="btn-group pull-left" role="group">
-                <button id="prev" type="button" class="btn btn-default">Prev</button>
-                <button id="next" type="button" class="btn btn-default">Next</button>
+    <div class="container">
+        <div id="toolbar">
+            <div class="btn-toolbar hidden-xs" role="toolbar" style="text-align:center;">
+                <div class="btn-group pull-left" role="group">
+                    <button id="prev" type="button" class="btn btn-default ">Prev</button>
+                    <button id="next" type="button" class="btn btn-default">Next</button>
+                </div>
+                <button id="today" type="button" class="btn btn-default">Today</button>
+                <span id="calendarDate" style="text-align:center;"></span>
+                <div class="btn-group pull-right" role="group">
+                    <button id="day" type="button" class="btn btn-default">Day</button>
+                    <button id="week" type="button" class="btn btn-default">Week</button>
+                    <button id="month" type="button" class="btn btn-default">Month</button>
+                </div>
             </div>
-            <button id="today" type="button" class="btn btn-default">Today</button>
-            <span id="calendarDate" style="text-align:center;"></span>
-            <div class="btn-group pull-right" role="group">
-                <button id="day" type="button" class="btn btn-default">Day</button>
-                <button id="week" type="button" class="btn btn-default">Week</button>
-                <button id="month" type="button" class="btn btn-default">Month</button>
+            <div class="btn-toolbar visible-xs" role="toolbar" style="text-align:center;">
+                <div class="btn-group pull-left" role="group">
+                    <button id="prev" type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
+                    <button id="next" type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+                </div>
+                <span id="calendarDateMobile" style="text-align:center;"></span>
+                <button id="today" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-calendar"></span></button>
+                <span id="calendarDate" style="text-align:center;"></span>
+                <div class="btn-group pull-right" role="group">
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Change View<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li><a id="day">Day</a></li>
+                            <li><a id="week">Week</a></li>
+                            <li><a id="month">Month</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="calendar"></div>
@@ -92,11 +115,20 @@
     <script src="{% static 'js/calendar.js' %}" type="text/javascript"></script>
     <script type="text/javascript" src="{% static 'moment/min/moment.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript"></script>
-    <script type="text/javascript" src="{% static 'fullcalendar/dist/fullcalendar.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'fullcalendar/dist/fullcalendar.min.js'%}"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js" type="text/javascript"></script>
     <script src="{% static 'js/form_validation.js' %}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            $(window).on("orientationchange", function(event) {
+                if (event.orientation == "portrait") {
+                    $('#calendar').fullCalendar('changeView', 'agendaDay');
+                    updateTitle();
+                } else if (event.orientation == "landscape") {
+                    $('#calendar').fullCalendar('changeView', 'agendaWeek');
+                    updateTitle();
+                }
+            });
             $("#booking_details").validate({
                 rules: {
                     'contact': {
@@ -109,12 +141,13 @@
             });
             var time = "{{ start_time }}";
             var date = "{{ date }}";
-            var datetime = moment(date+"T"+time,"DD-MM-YYYYThh:mm:ss");
-            var scrollTime = moment(date+"T"+time,"DD-MM-YYYYThh:mm:ss").subtract(1,"hours").format("HH:mm:ss");
+            var datetime = moment(date + "T" + time, "DD-MM-YYYYThh:mm:ss");
+            var scrollTime = moment(date + "T" + time, "DD-MM-YYYYThh:mm:ss").subtract(1, "hours").format("HH:mm:ss");
+            var start = datetime.format("YYYY-MM-DDTHH:mm:ss");
+            var end = datetime.add(15, 'minutes').format("YYYY-MM-DDTHH:mm:ss");
             var newEvent = {
-                id: 999,
-                start: datetime.format("HH:mm:ss"),
-                end : datetime.add(15,'minutes').format("HH:mm:ss"),
+                start: start,
+                end: end,
                 editable: true,
                 color: "#66cc00",
             };
@@ -130,7 +163,7 @@
                 height: '500',
                 margin: '0 auto',
                 defaultDate: datetime,
-                defaultView: 'agendaDay',
+                defaultView: 'agendaWeek',
                 maxTime: "20:00:00",
                 allDaySlot: false,
                 editable: true,
@@ -142,7 +175,14 @@
             });
             updateTitle();
             loadEvents();
-            //$('#calendar').fullCalendar('renderEvent', newEvent);
+            $('#day').click();
+            $('#month').unbind('click').click(function(){
+                $('#calendar').fullCalendar('changeView', 'month');
+                updateTitle();
+                loadEvents();
+                $('#calendar').fullCalendar('renderEvent', newEvent);
+            });
+            $('#calendar').fullCalendar('renderEvent', newEvent);
         });
     </script>
 </body>
