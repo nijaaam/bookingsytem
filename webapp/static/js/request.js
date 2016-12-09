@@ -40,7 +40,7 @@ $("input[name=duration_radio]").click(function() {
 });
 
 $('#booking_details').submit(function() {
-    var event = $("#calendar").fullCalendar('clientEvents', 999)[0];
+    var event = $("#calendar").fullCalendar('clientEvents', "new_event")[0];
     var start = event.start.format("HH:mm:ss");
     var end = event.end.format("HH:mm:ss");
     var date = $("#calendar").fullCalendar('getDate').format("YYYY-MM-DD");
