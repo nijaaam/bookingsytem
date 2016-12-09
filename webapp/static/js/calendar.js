@@ -11,9 +11,6 @@ function loadEvents(booking_id) {
         start: start,
         end: end,
     };
-    if (booking_id == 99999999){
-        alert($('#calendar').fullCalendar('clientEvents',99999999).id);
-    }
     getJSON(data,function(json){
         $.each(json, function(index, item) {
             var title = item.description
