@@ -21,7 +21,7 @@ def index(request):
 	except KeyError:
 		cTime = time.strftime("%H:%M")
 		cDate = time.strftime("%d-%m-%Y")
-	res = queryDB(cDate,cTime,request)
+	res = generateResponse(cDate,cTime,request)
 	return render(request,'home.html',res)
 
 def validateTime(cDate,cTime,request):
@@ -37,22 +37,39 @@ def validateTime(cDate,cTime,request):
 	request.session['bk_time'] = cTime
 	return cDate,cTime
 
-def queryDB(date,time,request):
-	(date,time) = validateTime(date,time,request)
-	end = datetime.strptime(time,"%H:%M") + timedelta(minutes=15)
-	end = end.strftime("%H:%M")
-	booked_room_ids = bookings.objects.filter(
-		date = datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d")
-		,start_time__lte=time,end_time__gte=end).values_list('room_id',flat=True)
-	avaliable_rooms = rooms.objects.exclude(room_id__in = booked_room_ids)
-	obj = {'query_results': avaliable_rooms, 'bk_date':date, 'bk_time':time}
-	return obj
-
 def find_rooms(request):
 	bk_date = request.POST['bk_date']
 	bk_time = request.POST['bk_time'] 	 	
-	res = queryDB(bk_date,bk_time,request)
+	res = generateResponse(bk_date,bk_time,request)
 	return render(request,'home.html',res)
+
+def queryDB(date,time):
+	end = datetime.strptime(time,"%H:%M") + timedelta(minutes=15)
+	end = end.strftime("%H:%M")
+	query_date = datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d")
+	booked_room_ids = bookings.objects.filter(date = query_date,start_time__lte=time,end_time__gte=end).values_list('room_id',flat=True)
+	avaliable_rooms = rooms.objects.exclude(room_id__in = booked_room_ids)
+	rooms_json = [rm_instance.getJSON() for rm_instance in avaliable_rooms]
+	room_bookings = []
+	for rm_instance in avaliable_rooms:
+		booking_list = bookings.objects.filter(room_id=rm_instance.room_id,date=datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d"))
+		room_bookings.append([bk_instance.getJSON() for bk_instance in booking_list])
+	return avaliable_rooms,room_bookings,rooms_json
+
+def generateResponse(date,time,request):
+	(date,time) = validateTime(date,time,request)
+	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
+	(avaliable_rooms,room_bookings,rooms_json) = queryDB(date,time)
+	response = {
+    	'scroll_time': scroll_time.strftime("%H:%M"),
+    	'rooms': json.dumps(rooms_json), 
+    	'bookings': json.dumps(room_bookings),
+    	'bk_date':date,
+    	'bk_time':time,
+    	'query_results':avaliable_rooms,
+    	'current_date':datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d") }
+	return response
+    
 
 def view_room(request,id):
 	request.session['bk_rm_id'] = id
