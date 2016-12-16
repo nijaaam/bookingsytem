@@ -42,6 +42,7 @@ STATICFILES_FINDERS = (
 BOWER_INSTALLED_APPS = (
     'eonasdan-bootstrap-datetimepicker#latest',
     'fullcalendar',
+    'fullcalendar-scheduler',
 )
 
 # Application definition
@@ -118,9 +119,9 @@ AZURE_DB = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bookingsystemdev',
-        'USER': 'bdce20670a0714',
-        'PASSWORD': '49e1faea',
-        'HOST': 'us-cdbr-azure-east-c.cloudapp.net',   # Or an IP Addre$
+        'USER': 'b1dabd8ebcdfc4',
+        'PASSWORD': '8a83b3cf',
+        'HOST': 'us-cdbr-azure-southcentral-f.cloudapp.net',
     }
 }
 

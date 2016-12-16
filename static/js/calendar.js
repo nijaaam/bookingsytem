@@ -1,4 +1,19 @@
+function isMobile(){
+    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent));
+}
+
+function getRoomsEvents(json){
+    var rooms = [];
+    var date = $('#calendar').fullCalendar('getDate').format("DD-MM-YYYY");
+    var events = [];
+    $.each(json, function(index, item) {
+        rooms.push(createRoom(item.room_id,item.room_name,item.room_size));
+    });
+    return [rooms,events];
+}
+
 function loadEvents(booking_id) {
+    $('#calendar').fullCalendar("removeEvents");
     var start = $('#calendar').fullCalendar('getDate').startOf('month').format("DD-MM-YYYY");
     var end = $('#calendar').fullCalendar('getDate').endOf('month').format("DD-MM-YYYY");
     var data = {
@@ -16,6 +31,7 @@ function loadEvents(booking_id) {
                 title: item.description,
                 start: new Date(start),
                 end: new Date(end),
+                isUserCreated: true,
                 editable: false,
             };
             if (booking_id != "undefined" && event.id == booking_id){
@@ -63,7 +79,11 @@ $('#day,#month,#week').click(function() {
         view = 'agendaDay';
     } else if (this.id == 'month') {
         view = this.id;
-        loadEvents();
+        var id = $('input[id=booking_id]').val();
+        if (id == "undefined"){
+            id = 999;
+        }
+        loadEvents(id);
     } else if (this.id == 'week') {
         view = 'agendaWeek';
     }
