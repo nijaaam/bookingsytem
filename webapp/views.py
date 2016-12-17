@@ -25,8 +25,6 @@ def index(request):
 	return render(request,'home.html',res)
 
 def validateTime(cDate,cTime,request):
-	print cDate,time.strftime("%d-%m-%Y")
-	print cTime,time.strftime("%H:%M")
 	if cDate < time.strftime("%d-%m-%Y"):
 		cTime = time.strftime("%H:%M")
 		cDate = time.strftime("%d-%m-%Y")
@@ -43,15 +41,31 @@ def find_rooms(request):
 	res = generateResponse(bk_date,bk_time,request)
 	return render(request,'home.html',res)
 
+def getRoomsBookings(request):
+	start = request.POST['start']
+	end = request.POST['end']
+	all_rooms = rooms.objects.all()
+	rooms_json = [rm_instance.getJSON() for rm_instance in all_rooms]
+	room_bookings = []
+	for rm_instance in all_rooms:
+		booking_list = bookings.objects.filter(room_id=rm_instance.room_id,date__range=[start,end]) 
+		room_bookings.append([bk_instance.getJSON() for bk_instance in booking_list])
+	results = {
+    	'bookings': json.dumps(room_bookings)
+	}
+	return HttpResponse(json.dumps(results), content_type="application/json")
+	
+
 def queryDB(date,time):
 	end = datetime.strptime(time,"%H:%M") + timedelta(minutes=15)
 	end = end.strftime("%H:%M")
 	query_date = datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d")
 	booked_room_ids = bookings.objects.filter(date = query_date,start_time__lte=time,end_time__gte=end).values_list('room_id',flat=True)
 	avaliable_rooms = rooms.objects.exclude(room_id__in = booked_room_ids)
-	rooms_json = [rm_instance.getJSON() for rm_instance in avaliable_rooms]
+	all_rooms = rooms.objects.all()
+	rooms_json = [rm_instance.getJSON() for rm_instance in all_rooms]
 	room_bookings = []
-	for rm_instance in avaliable_rooms:
+	for rm_instance in all_rooms:
 		booking_list = bookings.objects.filter(room_id=rm_instance.room_id,date=datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d"))
 		room_bookings.append([bk_instance.getJSON() for bk_instance in booking_list])
 	return avaliable_rooms,room_bookings,rooms_json
@@ -70,7 +84,6 @@ def generateResponse(date,time,request):
     	'current_date':datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d") }
 	return response
     
-
 def view_room(request,id):
 	request.session['bk_rm_id'] = id
 	query = rooms.objects.filter(room_id=id)

@@ -103,8 +103,8 @@
                 <span id="calendarDate" style="text-align:center;"></span>
                 <div class="btn-group pull-right" role="group">
                     <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Change View<span class="caret"></span>
-                </button>
+                        <button class="btn btn-default dropdown-toggle" type="button" id="  dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Change View<span class="caret"></span>
+                        </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                             <li><a id="day">Day</a></li>
                             <li><a id="week">Week</a></li>
@@ -122,11 +122,43 @@
     <script type="text/javascript" src="{% static 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'fullcalendar/dist/fullcalendar.min.js'%}"></script>
     <script type="text/javascript" src="{% static 'fullcalendar-scheduler/dist/scheduler.min.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/request.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/calendar.js'%}"></script>
     <script type="text/javascript">
-        $('#prev,#next,#today').bind('click', function() {
+        function getRoomsBookings(bookings) {
+            var events = []
+            $.each(bookings, function(index, item) {
+                $.each(item, function(index, item) {
+                    events.push({
+                        id: item.booking_ref,
+                        resourceId: item.room_id,
+                        start: item.start_time,
+                        start: item.date + "T" + item.start_time,
+                        end: item.date + "T" + item.end_time,
+                        title: item.description,
+                        color: "#66cc00",
+                    });
+                });
+            });
+            return events
+        }
+        var callback = function(json) {
+            var events = getRoomsBookings($.parseJSON(json.bookings));
+            $('#scheduler').fullCalendar('renderEvent', events[0]);
+        };
+        $('#prev,#next,#today').unbind('click').click(function() {
             $('#scheduler').fullCalendar(this.id);
-            updateTitle();
+            var currentView = $('#scheduler').fullCalendar('getView');
+            if (currentView.name == "month") {
+                var start = $('#scheduler').fullCalendar('getDate').startOf('month').format("DD-MM-YYYY");
+                var end = $('#scheduler').fullCalendar('getDate').endOf('month').format("DD-MM-YYYY");
+                var data = {
+                    start: start,
+                    end: end,
+                };
+                performAJAX(/getRoomsBookings/, 'json', data, callback);
+            }
+            $('#calendarDate').text(currentView.title);
             var date = $('#scheduler').fullCalendar('getDate');
             if (date.format("DD/MM/YYYY") == moment().format("DD/MM/YYYY")) {
                 $('#today').attr('disabled', true);
@@ -136,32 +168,38 @@
             return false;
         });
 
-        $('#day,#month,#week').bind('click', function() {
+        $('#day,#month,#week').unbind('click').click(function() {
             var view = 'month';
             if (this.id == 'day') {
                 view = 'timelineDay';
             } else if (this.id == 'month') {
-                view = this.id;
-                var id = $('input[id=booking_id]').val();
-                if (id == "undefined") {
-                    id = 999;
-                }
-                loadEvents(id);
+                view = "month";
+                var start = $('#scheduler').fullCalendar('getDate').startOf('month').format("YYYY-MM-DD");
+                var end = $('#scheduler').fullCalendar('getDate').endOf('month').format("YYYY-MM-DD");
+                var data = {
+                    start: start,
+                    end: end,
+                };
+                performAJAX(/getRoomsBookings/, 'json', data, callback);
             } else if (this.id == 'week') {
                 view = 'agendaWeek';
             }
             $('#scheduler').fullCalendar('changeView', view);
-            updateTitle();
+            var currentView = $('#scheduler').fullCalendar('getView');
+            $('#calendarDate').text(currentView.title);
             return false;
         });
+
         $(document).ready(function() {
             $(window).on("orientationchange", function(event) {
                 if (event.orientation == "portrait") {
                     $('#scheduler').fullCalendar('changeView', 'agendaDay');
-                    updateTitle();
+                    var currentView = $('#scheduler').fullCalendar('getView');
+                    $('#calendarDate').text(currentView.title);
                 } else if (event.orientation == "landscape") {
                     $('#scheduler').fullCalendar('changeView', 'agendaWeek');
-                    updateTitle();
+                    var currentView = $('#scheduler').fullCalendar('getView');
+                    $('#calendarDate').text(currentView.title);
                 }
             });
             $('#datepicker').datetimepicker({
@@ -186,8 +224,8 @@
                     events.push({
                         id: item.booking_ref,
                         resourceId: item.room_id,
-                        start: new Date(item.start_time),
-                        end: new Date(item.end_time),
+                        start: item.date + "T" + item.start_time,
+                        end: item.date + "T" + item.end_time,
                         title: item.description,
                         color: "#66cc00",
                     });

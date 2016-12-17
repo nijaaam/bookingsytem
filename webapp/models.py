@@ -19,7 +19,7 @@ class rooms(models.Model):
 class bookings(models.Model):
 	booking_ref = models.AutoField(primary_key=True)
 	room        = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
-	date        = models.DateField(auto_now_add=True)
+	date        = models.DateField()
 	start_time  = models.TimeField(null = False)
 	end_time    = models.TimeField(null = False)
 	contact     = models.CharField(max_length=60, null = False)

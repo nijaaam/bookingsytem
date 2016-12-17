@@ -44,6 +44,7 @@ $('#booking_details').submit(function() {
     var start = event.start.format("HH:mm:ss");
     var end = event.end.format("HH:mm:ss");
     var date = $("#calendar").fullCalendar('getDate').format("YYYY-MM-DD");
+    alert(date);
     var data = {
         'start': start,
         'end': end,
