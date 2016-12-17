@@ -20,7 +20,7 @@
                 <label for="exampleInputName2">Date</label>
                 <span style="display:inline-block; width: 2;"></span>
                 <div class='input-group date' id='datepicker'>
-                    <input type="text" name="bk_date" class="form-control" value={{ bk_date }}>
+                    <input type="text" id = "bk_date" name="bk_date" class="form-control" value={{ bk_date }}>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -31,7 +31,7 @@
                 <label for="exampleInputEmail2">Start Time</label>
                 <span style="display:inline-block; width: 2;"></span>
                 <div class='input-group date' id='timepicker'>
-                    <input type="text" class="form-control" name="bk_time" value={{ bk_time }}>
+                    <input type="text" class="form-control" id = "bk_time" name="bk_time" value={{ bk_time }}>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-time"></span>
                     </span>
@@ -47,8 +47,8 @@
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-heading text-center">Avaliable Rooms</div>
-            <div class="table-responsive">
-                <table class="table table-striped">
+            <div class="table-responsive" style="height:250px; overflow-y: auto">
+                <table class="table table-striped" >
                     <thead>
                         <tr>
                             <th>#</th>
@@ -59,7 +59,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody >
                         {% for item in query_results %}
                         <tr>
                             <td>{{ forloop.counter}}</td>
