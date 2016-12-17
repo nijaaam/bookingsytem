@@ -144,14 +144,16 @@
         }
         var callback = function(json) {
             var events = getRoomsBookings($.parseJSON(json.bookings));
-            $('#scheduler').fullCalendar('renderEvent', events[0]);
+            $.each(events, function(index,item){
+                $('#scheduler').fullCalendar('renderEvent', item);
+            });
         };
         $('#prev,#next,#today').unbind('click').click(function() {
             $('#scheduler').fullCalendar(this.id);
             var currentView = $('#scheduler').fullCalendar('getView');
             if (currentView.name == "month") {
-                var start = $('#scheduler').fullCalendar('getDate').startOf('month').format("DD-MM-YYYY");
-                var end = $('#scheduler').fullCalendar('getDate').endOf('month').format("DD-MM-YYYY");
+                var start = $('#scheduler').fullCalendar('getDate').startOf('month').format("YYYY-MM-DD");
+                var end = $('#scheduler').fullCalendar('getDate').endOf('month').format("YYYY-MM-DD");
                 var data = {
                     start: start,
                     end: end,
