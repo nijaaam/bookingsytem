@@ -6,7 +6,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from datetime import datetime, timedelta, date
-from .models import rooms,bookings
+from .models import rooms,bookings, reservations
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 import time
@@ -56,12 +56,31 @@ def getRoomsBookings(request):
 	return HttpResponse(json.dumps(results), content_type="application/json")
 	
 
+def checkIfExpired(id):
+	reserve = reservations.objects.get(room_id=id)
+	expires =  reserve.expiry.replace(tzinfo=None)
+	elapsed_time = datetime.now() - expires
+	if (elapsed_time - timedelta(minutes = 2)).total_seconds() > 0:
+		return 1
+	else:
+		return 0
+
 def queryDB(date,time):
 	end = datetime.strptime(time,"%H:%M") + timedelta(minutes=15)
 	end = end.strftime("%H:%M")
 	query_date = datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d")
 	booked_room_ids = bookings.objects.filter(date = query_date,start_time__lte=time,end_time__gte=end).values_list('room_id',flat=True)
 	avaliable_rooms = rooms.objects.exclude(room_id__in = booked_room_ids)
+	reserved_rooms = []
+	for room in avaliable_rooms:
+		try:
+			reserved_room = reservations.objects.get(room_id=room.room_id)
+			if checkIfExpired(room.room_id):
+				reservations.objects.get(room_id=room.room_id).delete()
+				reserved_rooms.append(room)				
+		except ObjectDoesNotExist:
+			reserved_rooms.append(room)
+	avaliable_rooms = reserved_rooms
 	all_rooms = rooms.objects.all()
 	rooms_json = [rm_instance.getJSON() for rm_instance in all_rooms]
 	room_bookings = []
@@ -85,6 +104,7 @@ def generateResponse(date,time,request):
 	return response
     
 def view_room(request,id):
+	reservations(room_id=id).save()
 	request.session['bk_rm_id'] = id
 	query = rooms.objects.filter(room_id=id)
 	start_time = request.session['bk_date'] + "T" + request.session['bk_time']

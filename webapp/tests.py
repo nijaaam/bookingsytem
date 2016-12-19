@@ -58,40 +58,31 @@ class ViewBookingLiveTest(LiveServerTestCase):
 		found = resolve('/viewBooking/')
 		self.assertEqual(found.func,viewBooking)
 
-'''
-
 class BookRoomLiveTest(LiveServerTestCase):
 	def setUp(self):  
 		self.browser = webdriver.Firefox()
 		self.browser.get("http://localhost:8000/")
+		self.browser.get("http://localhost:8000/view_room/1/")
 
 	def tearDown(self):  
 		self.browser.quit()
 
-#	def testIfOrientationChanges(self):
-	
 	def testIfBookedRoomsAppearsOnTable(self):
 		browser = self.browser
 		browser.implicitly_wait(3)
 		table = browser.find_elements_by_tag_name('tbody')
 		rows = browser.find_elements_by_tag_name('tr')
 		name = ""
-		size = ""
-		location = ""
-		features = ""
 		for row in rows:
 			col = row.find_elements_by_tag_name('td')	
 			if len(col) > 0:
 				name = col[0].text
-				size = col[1].text
-				location = col[2].text
-				features = col[3].text
+				browser.implicitly_wait(3)
 				col[4].find_elements_by_tag_name('form')[0].find_elements_by_tag_name('button')[0].click()
 				break
-		print name,size,location,features
 		browser.find_element_by_id('contact').send_keys("contact")
 		browser.find_element_by_id('description').send_keys("description")
-		browser.implicitly_wait(1)
+		browser.implicitly_wait(3)
 		browser.find_element_by_id('book_button').click()
 		browser.implicitly_wait(1)
 		self.browser.get("http://localhost:8000/")
@@ -100,11 +91,10 @@ class BookRoomLiveTest(LiveServerTestCase):
 		for row in rows:
 			col = row.find_elements_by_tag_name('td')	
 			if len(col) > 0:
-				print col[0].text, col[1].text, col[2].text, col[3].text
 				self.assertNotEqual(col[0].text,name)
-				self.assertNotEqual(col[1].text,size)
-				self.assertNotEqual(col[2].text,location)
-				self.assertNotEqual(col[3].text,features)
 				break
 		
 	
+	
+
+'''

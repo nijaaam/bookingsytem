@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 class rooms(models.Model):
 	room_id         = models.IntegerField(primary_key =True, null = False)
@@ -15,6 +16,11 @@ class rooms(models.Model):
 			room_location = self.room_location,
 			room_features = self.room_features,
 		)
+
+class reservations(models.Model):
+	reservations_id = models.AutoField(primary_key = True, null = False)
+	room       	    = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
+	expiry 			= models.DateTimeField(auto_now_add=True)
 
 class bookings(models.Model):
 	booking_ref = models.AutoField(primary_key=True)
@@ -35,3 +41,4 @@ class bookings(models.Model):
 			contact = self.contact,
 			description = self.description
 		)
+
