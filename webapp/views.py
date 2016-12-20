@@ -95,6 +95,10 @@ def generateResponse(date,time,request):
 	(date,time) = validateTime(date,time,request)
 	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
 	(avaliable_rooms,room_bookings,rooms_json) = queryDB(date,time)
+	if len(avaliable_rooms) < 4:
+		rowCount = len(avaliable_rooms)*67 + 39
+	else:
+		rowCount = 250
 	response = {
     	'scroll_time': scroll_time.strftime("%H:%M"),
     	'rooms': json.dumps(rooms_json), 
@@ -102,7 +106,9 @@ def generateResponse(date,time,request):
     	'bk_date':date,
     	'bk_time':time,
     	'query_results':avaliable_rooms,
-    	'current_date':datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d") }
+    	'current_date':datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d"),
+    	'table_height': rowCount,
+    }
 	return response
     
 def view_room(request,id):
