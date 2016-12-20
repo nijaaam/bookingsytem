@@ -1,6 +1,6 @@
 from django.test import TestCase
 from .models import rooms, bookings
-
+'''
 class RoomsBookingsTest(TestCase):
 	def testDB(self):
 		room = rooms(1,"Room Test 1", 11, "TEST LOC", "TEST FEA")
@@ -10,3 +10,4 @@ class RoomsBookingsTest(TestCase):
 
 
 
+'''

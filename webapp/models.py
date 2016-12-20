@@ -2,7 +2,7 @@ from django.db import models
 from datetime import datetime
 
 class rooms(models.Model):
-	room_id         = models.IntegerField(primary_key =True, null = False)
+	room_id         = models.AutoField(primary_key=True)
 	room_name       = models.CharField(max_length=60, null = False)
 	room_size       = models.IntegerField(null = False)
 	room_location   = models.TextField(null = False)

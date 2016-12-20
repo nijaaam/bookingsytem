@@ -72,6 +72,7 @@ def queryDB(date,time):
 	booked_room_ids = bookings.objects.filter(date = query_date,start_time__lte=time,end_time__gte=end).values_list('room_id',flat=True)
 	avaliable_rooms = rooms.objects.exclude(room_id__in = booked_room_ids)
 	reserved_rooms = []
+	'''
 	for room in avaliable_rooms:
 		try:
 			reserved_room = reservations.objects.get(room_id=room.room_id)
@@ -81,6 +82,7 @@ def queryDB(date,time):
 		except ObjectDoesNotExist:
 			reserved_rooms.append(room)
 	avaliable_rooms = reserved_rooms
+	'''
 	all_rooms = rooms.objects.all()
 	rooms_json = [rm_instance.getJSON() for rm_instance in all_rooms]
 	room_bookings = []
@@ -104,7 +106,7 @@ def generateResponse(date,time,request):
 	return response
     
 def view_room(request,id):
-	reservations(room_id=id).save()
+	#reservations(room_id=id).save()
 	request.session['bk_rm_id'] = id
 	query = rooms.objects.filter(room_id=id)
 	start_time = request.session['bk_date'] + "T" + request.session['bk_time']

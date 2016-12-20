@@ -7,6 +7,35 @@ from webapp.views import index, viewBooking
 import time
 from datetime import datetime, timedelta, date
 
+class globalTestMethods():
+
+	def __init__(self, browser):
+		self.browser = browser
+
+	def book_room(self):
+		browser = self.browser
+		browser.find_element_by_id('view_room_btn').click()
+		browser.implicitly_wait(3) 	
+		browser.find_element_by_id('contact').send_keys("contact")
+		browser.find_element_by_id('description').send_keys("description")
+		time.sleep(2)
+		browser.find_element_by_id('book_button').click()
+		time.sleep(2)
+
+	def updateInput(self,id,value):
+		browser = self.browser
+		browser.find_element_by_id(id).clear()
+		browser.find_element_by_id(id).send_keys(value)
+
+	def viewBooking(self,id):
+		browser = self.browser
+		browser.get("http://localhost:8081/viewBooking/")
+		browser.implicitly_wait(3)
+		browser.find_element_by_id('booking_id').send_keys(id)
+		browser.find_element_by_id('find_room_btn').click()
+		browser.implicitly_wait(3)
+		time.sleep(2)
+
 '''
 class HomePageTest(TestCase):
 
