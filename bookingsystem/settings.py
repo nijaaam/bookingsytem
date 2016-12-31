@@ -48,7 +48,7 @@ BOWER_INSTALLED_APPS = (
 # Application definition
 
 INSTALLED_APPS = (
-    'webapp',
+    'bksys',
     'djangobower',
     'django.contrib.admin',
     'django.contrib.auth',
