@@ -50,6 +50,7 @@ BOWER_INSTALLED_APPS = (
 INSTALLED_APPS = (
     'bksys',
     'djangobower',
+    'tablet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

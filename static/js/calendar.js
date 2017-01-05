@@ -2,16 +2,6 @@ function isMobile(){
     return (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent));
 }
 
-function getRoomsEvents(json){
-    var rooms = [];
-    var date = $('#calendar').fullCalendar('getDate').format("DD-MM-YYYY");
-    var events = [];
-    $.each(json, function(index, item) {
-        rooms.push(createRoom(item.room_id,item.room_name,item.room_size));
-    });
-    return [rooms,events];
-}
-
 function loadEvents(booking_id) {
     $('#calendar').fullCalendar("removeEvents");
     var start = $('#calendar').fullCalendar('getDate').startOf('month').format("DD-MM-YYYY");
