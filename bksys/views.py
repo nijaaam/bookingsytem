@@ -164,22 +164,31 @@ def findBooking(request):
 		return HttpResponse(html)
 
 def updateBooking(request):
-	booking_id = request.POST['booking_id']
-	res = bookings.objects.filter(booking_ref=booking_id)
+	date = request.POST['date']
+	start = request.POST['start']
+	end = request.POST['end']
+	print start,date,end
 	description = request.POST['description']
 	contact = request.POST['contact']
+	booking_id = request.POST['booking_id']
 	booking = bookings.objects.get(booking_ref=booking_id)
+	for key in request.POST:
+		value = request.POST[key]
+		if value != " " and key != 'booking_id':
+			if key == 'description':
+				bookings.objects.filter(booking_ref=booking_id).update(description=description)
+			if key == 'contact':
+				bookings.objects.filter(booking_ref=booking_id).update(contact=contact)
+			if key == 'date' or key == 'start' or key == 'end':
+				bookings.objects.filter(booking_ref=booking_id).update(date=date,start_time=start,end_time=end)
 	room = rooms.objects.get(room_id=booking.room_id)
 	room_name = room.room_name
-	if description != list(res)[0].description:
-		bookings.objects.filter(booking_ref=booking_id).update(description=description)
-	if contact != list(res)[0].contact:
-		bookings.objects.filter(booking_ref=booking_id).update(contact=contact)
+	booking = bookings.objects.get(booking_ref=booking_id)
 	return render(request,"updatedBKModal.html",{
 		"booking_id": booking_id,
 		"room_name": room_name,
-		"description": description,
-		"contact": contact,
+		"description": booking.description,
+		"contact": booking.contact,
 		"date": str(booking.date.strftime("%d-%m-%Y")) + " " + str(booking.start_time) + " - " + str(booking.end_time)
 	})
 

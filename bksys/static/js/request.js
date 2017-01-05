@@ -134,16 +134,42 @@ $('#cancelBooking2').click(function() {
         }
     });
 });
+function getVAR(x) {
+    var initial = $('#' + x).prop("defaultValue");
+    var changed_val = $('#' + x).val();
+    if (initial == changed_val) {
+        return " ";
+    } else {
+        return changed_val;
+    }
+}
 
 $('#update').click(function() {
         var booking_id = $('input[name=booking_id]').val();
-        var input = $input = $('<input type="text" name="booking_id" hidden/>').val(booking_id);
-        $('#viewBooking').append(input);
+        var booking = $("#calendar").fullCalendar('clientEvents', booking_id);
+        var start= " ";
+        var end = " ";
+        var date = " ";
+        var start = booking[0].start;
+        if (start != undefined){
+            start = booking[0].start.format("HH:mm:ss");
+            date =  booking[0].start.format("YYYY-MM-DD");
+            end = booking[0].end.format("HH:mm:ss");    
+        } else {
+            start = " ";
+        }
         $.ajax({
             type: "POST",
             url: "/updateBooking/",
             dataType: "html",
-            data: $('#viewBooking').serialize(),
+            data: {
+                "description":getVAR('description'),
+                "contact":getVAR('contact'),
+                "start":start,
+                "end":end,
+                "date":date,
+                "booking_id": booking_id,    
+            },
             success: function(data) {
                 if ($('#viewBooking').valid() == true) {
                     $('#showUpdateBKModal').html(data);
