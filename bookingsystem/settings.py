@@ -98,14 +98,12 @@ WSGI_APPLICATION = 'bookingsystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'booking1',
-        'USER': 'root',
-        'PASSWORD': '123',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'NAME': 'bookingsystem_dev',
+        'USER': 'bd492123cb348c',
+        'PASSWORD': 'b455df58',
+        'HOST': 'us-cdbr-azure-southcentral-f.cloudapp.net',
     }
 }
-
-
 
 LOCAL_DB = {
     'default': {
@@ -119,10 +117,10 @@ LOCAL_DB = {
 
 AZURE_DB = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bookingsystemdev',
-        'USER': 'b1dabd8ebcdfc4',
-        'PASSWORD': '8a83b3cf',
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'bookingsystem_dev',
+        'USER': 'bd492123cb348c',
+        'PASSWORD': 'b455df58',
         'HOST': 'us-cdbr-azure-southcentral-f.cloudapp.net',
     }
 }

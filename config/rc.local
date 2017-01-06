@@ -9,6 +9,5 @@
 # bits.
 #
 # By default this script does nothing.
-/home/main/.local/bin/uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data --daemonize /var/log/uwsgi-emperor.log
-
+/usr/local/bin/uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data 
 exit 0
