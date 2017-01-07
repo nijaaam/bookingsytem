@@ -5,19 +5,19 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">Name</div>
-                        <input id="room_name" style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room_name }}">
+                        <input id="room_name" style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room.room_name }}">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">Size</div>
-                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room_size }}">
+                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room.room_size }}">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">Location</div>
-                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room_location }}">
+                        <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room.room_location }}">
                     </div>
                 </div>
                 <hr class="visible-xs visible-sm">
@@ -30,14 +30,14 @@
                     <label class="sr-only" for="exampleInputAmount"></label>
                     <div class="input-group">
                         <div class="input-group-addon">Contact</div>
-                        <input type="text" class="form-control" id="contact" name="contact" value={{ contact }}>
+                        <input type="text" class="form-control" id="contact" name="contact" value="{{ booking.contact }}">
                     </div>
                 </div>
                 <div class="form-group has-feedback">
                     <label class="sr-only" for="exampleInputAmount"></label>
                     <div class="input-group">
                         <div class="input-group-addon">Description</div>
-                        <input type="text" class="form-control" id="description" name="description" value={{ description }}>
+                        <input type="text" class="form-control" id="description" name="description" value="{{ booking.description }}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -149,40 +149,18 @@
     });
 
     function loadCalendar() {
-        var start = "{{ start }}";
-        var end = "{{ end }}";
-        var date = "{{ date }}";
-        var datetime = moment(date + "T" + start, "DD-MM-YYYYThh:mm:ss");
-        var scrollTime = moment(date + "T" + start, "DD-MM-YYYYThh:mm:ss").subtract(1, "hours").format("HH:mm:ss");
-        var booking_id = "{{ booking_id }}";
         var view = "agendaWeek";
         if (isMobile() == true){
             view = "agendaDay";
         } else {
             view = "agendaWeek";
         }
-        $('#calendar').fullCalendar({
-            header: {
-                left: '',
-                center: '',
-                right: ''
-            },
-            firstDay: 1,
-            longPressDelay: 200,
-            minTime: "07:00:00",
-            height: '500',
-            margin: '0 auto',
-            defaultDate: datetime,
-            defaultView: view,
-            maxTime: "20:00:00",
-            allDaySlot: false,
-            editable: true,
-            eventLimit: true,
-            eventOverlap: false,
-            slotDuration: '00:05:00',
-            nowIndicator: true,
-            scrollTime: scrollTime,
-        });
+        var datetime = moment("{{ datetime }}","DD-MM-YYYYTHH:mm");
+        var settings = $.parseJSON('{{ settings | safe }}');
+        settings.defaultDate = datetime;
+        settings.defaultView = view;
+        var booking_id = "{{ booking.booking_ref }}";        
+        $('#calendar').fullCalendar(settings);
         updateTitle();
         loadEvents(booking_id);
         $('#calendar').fullCalendar('removeEvents', booking_id);

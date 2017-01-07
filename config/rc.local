@@ -9,5 +9,11 @@
 # bits.
 #
 # By default this script does nothing.
-/usr/local/bin/uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data 
+
+PROJECT_PATH=/home/main/BKSYSDEPLOY
+. $PROJECT_PATH/bin/activate
+
+/home/main/BKSYSDEPLOY/bin/uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data 
 exit 0
+
+

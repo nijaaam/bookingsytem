@@ -142,41 +142,10 @@
                     },
                 },
             });
-            var time = "{{ start_time }}";
-            var date = "{{ date }}";
-            var datetime = moment(date + "T" + time, "DD-MM-YYYYThh:mm:ss");
-            var scrollTime = moment(date + "T" + time, "DD-MM-YYYYThh:mm:ss").subtract(1, "hours").format("HH:mm:ss");
-            var start = datetime.format("YYYY-MM-DDTHH:mm:ss");
-            var end = datetime.add(15, 'minutes').format("YYYY-MM-DDTHH:mm:ss");
-            var newEvent = {
-                id : "new_event",
-                start: start,
-                end: end,
-                editable: true,
-                color: "#66cc00",
-            };
-            $('#calendar').fullCalendar({
-                header: {
-                    left: '',
-                    center: '',
-                    right: ''
-                },
-                firstDay: 1,
-                longPressDelay: 200,
-                minTime: "07:00:00",
-                height: '500',
-                margin: '0 auto',
-                defaultDate: datetime,
-                defaultView: 'agendaWeek',
-                maxTime: "20:00:00",
-                allDaySlot: false,
-                editable: true,
-                eventLimit: true,
-                eventOverlap: false,
-                slotDuration: '00:05:00',
-                nowIndicator: true,
-                scrollTime: scrollTime,
-            });
+            var datetime = moment("{{ datetime }}","DD-MM-YYYYTHH:mm");
+            var settings = $.parseJSON('{{ settings | safe }}');
+            settings.defaultDate = datetime;
+            $('#calendar').fullCalendar(settings);
             updateTitle();
             loadEvents();
             $('#day').click();
@@ -186,6 +155,13 @@
                 loadEvents();
                 $('#calendar').fullCalendar('renderEvent', newEvent);
             });
+            var newEvent = {
+                id : "new_event",
+                editable: true,
+                color: "#66cc00",
+            };
+            newEvent.start = datetime.format("YYYY-MM-DDTHH:mm:ss");
+            newEvent.end = datetime.add(15, 'minutes').format("YYYY-MM-DDTHH:mm:ss");
             $('#calendar').fullCalendar('renderEvent', newEvent);
         });
     </script>

@@ -140,12 +140,14 @@
             });
             return events
         }
+
         var callback = function(json) {
             var events = getRoomsBookings($.parseJSON(json.bookings));
             $.each(events, function(index,item){
                 $('#scheduler').fullCalendar('renderEvent', item);
             });
         };
+        
         $('#prev,#next,#today').unbind('click').click(function() {
             $('#scheduler').fullCalendar(this.id);
             var currentView = $('#scheduler').fullCalendar('getView');

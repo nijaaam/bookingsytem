@@ -23,7 +23,7 @@ def index(request):
 		cDate = time.strftime("%d-%m-%Y")
 	res = generateResponse(cDate,cTime,request)
 	return render(request,'home.html',res)
-
+	
 def validateTime(cDate,cTime,request):
 	if cDate < time.strftime("%d-%m-%Y"):
 		cTime = time.strftime("%H:%M")
@@ -110,13 +110,76 @@ def generateResponse(date,time,request):
     	'table_height': rowCount,
     }
 	return response
-    
+
+def set_default_values(scrollTime):
+    return dict(
+        header = dict(
+            left = '',
+            center = '',
+            right = '',
+        ),
+        firstDay       = 1,
+        longPressDelay = 200,
+        minTime        = "07:00:00",
+        height         = '500',
+        margin         = '0 auto',
+        defaultDate  = 'datetime',
+        defaultView  = 'agendaWeek',
+        maxTime      = "20:00:00",
+        allDaySlot   = False,
+        editable     = True,
+        eventLimit   = True,
+        eventOverlap = False,
+        slotDuration = '00:05:00',
+        nowIndicator = True,
+        scrollTime   = scrollTime,
+    )
+
+def getDate(request):
+	return request.session['bk_date']
+
+def getTime(request):
+	return request.session['bk_time']
+
+def findBooking(request):
+	booking_id = request.POST['booking_id']
+	try:
+		booking = bookings.objects.get(booking_ref=booking_id)
+		room = rooms.objects.get(room_id=booking.room_id)
+		start = booking.start_time.strftime("%H:%M")
+		end = booking.end_time.strftime("%H:%M")
+		date = booking.date.strftime("%d-%m-%Y")
+		scroll_time = datetime.strptime(start,"%H:%M") - timedelta(minutes=60)
+		return render(request,'showResult.html',{
+			"room":room,
+			"booking":booking,
+			"datetime":date +"T"+ start,
+			"start":start,
+			"end":end,
+			"date":date,
+			"settings": json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),
+		})
+	except ObjectDoesNotExist:
+		error_msg = "Booking not found for " + booking_id
+		html = "<span class = 'help-block' style ='color:#a94442'>" + error_msg + "</span>"
+		return HttpResponse(html)
+
+
 def view_room(request,id):
 	#reservations(room_id=id).save()
 	request.session['bk_rm_id'] = id
 	query = rooms.objects.filter(room_id=id)
-	start_time = request.session['bk_date'] + "T" + request.session['bk_time']
-	res = {"room_details":query,"start_time":request.session['bk_time'],"date":request.session['bk_date']}
+	date = getDate(request)
+	time = getTime(request)
+	start_time = date + "T" + time
+	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
+	res = {
+		"datetime":date +"T"+ time,
+		"settings":json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),
+		"room_details":query,
+		"start_time":request.session['bk_time'],
+		"date":request.session['bk_date']
+	}
 	return render(request,'room_details.html',res)
 
 def book_room(request):
@@ -141,27 +204,6 @@ def book_room(request):
 def viewBooking(request):
 	return render(request,'viewBooking.html',{})
 
-def findBooking(request):
-	booking_id = request.POST['booking_id']
-	try:
-		booking = bookings.objects.get(booking_ref=booking_id)
-		room = rooms.objects.get(room_id=booking.room_id)
-		return render(request,'showResult.html',{
-		"room_name": room.room_name,
-		"room_size": room.room_size,
-		"room_location": room.room_location,
-		"room_features": room.room_features,
-		"contact": booking.contact,
-		"description": booking.description,
-		"start":booking.start_time.strftime("%H:%M"),
-		"end":booking.end_time.strftime("%H:%M"),
-		"date":booking.date.strftime("%d-%m-%Y"),
-		"booking_id":booking_id,
-		})
-	except ObjectDoesNotExist:
-		error_msg = "Booking not found for " + booking_id
-		html = "<span class = 'help-block' style ='color:#a94442'>" + error_msg + "</span>"
-		return HttpResponse(html)
 
 def updateBooking(request):
 	date = request.POST['date']
@@ -207,3 +249,4 @@ def getBookings(request):
 	booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end]) 
 	results = [bk_instance.getJSON() for bk_instance in booking_list]
 	return HttpResponse(json.dumps(results), content_type="application/json")
+
