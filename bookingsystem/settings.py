@@ -98,9 +98,9 @@ WSGI_APPLICATION = 'bookingsystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'bookingsystem_dev',
-        'USER': 'bd492123cb348c',
-        'PASSWORD': 'b455df58',
+        'NAME': 'bksysdev',
+        'USER': 'bdc872f41f048b',
+        'PASSWORD': '1c11843c',
         'HOST': 'us-cdbr-azure-southcentral-f.cloudapp.net',
     }
 }
@@ -115,15 +115,6 @@ LOCAL_DB = {
     }
 }
 
-AZURE_DB = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'bookingsystem_dev',
-        'USER': 'bd492123cb348c',
-        'PASSWORD': 'b455df58',
-        'HOST': 'us-cdbr-azure-southcentral-f.cloudapp.net',
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
