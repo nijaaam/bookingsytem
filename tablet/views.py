@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import time, datetime, json
 
 def index(request):
-	bk_for_day = bookings.objects.filter(room_id=23,date=time.strftime("%Y-%m-%d"))
+	bk_for_day = bookings.objects.filter(room_id=1,date=time.strftime("%Y-%m-%d"))
 	bk_list = [bk_instance.getJSON() for bk_instance in bk_for_day]
 	upcoming_events = get_upcoming_events()
 	current_event = get_on_going_event()
@@ -18,7 +18,7 @@ def index(request):
 	if not current_event:
 		if not upcoming_events:
 			next_event = "for the day"
-		else:
+		else:	
 			next_event = "until " + upcoming_events[0].start_time.strftime("%H:%M")
 	return render(request, "index.html",{
 		'room_name':"DD",
@@ -32,14 +32,14 @@ def index(request):
 def get_on_going_event():
 	cTime = time.strftime("%H:%M")
 	try:
-		ongoing = bookings.objects.get(date=time.strftime("%Y-%m-%d"),room_id=23,start_time__lte=cTime,end_time__gte=cTime)
+		ongoing = bookings.objects.get(date=time.strftime("%Y-%m-%d"),room_id=1,start_time__lte=cTime,end_time__gte=cTime)
 	except ObjectDoesNotExist:
 		ongoing = bookings.objects.none()
 	return ongoing
 
 def get_upcoming_events():
 	cTime = time.strftime("%H:%M")
-	upcoming = bookings.objects.filter(date=time.strftime("%Y-%m-%d"),room_id=23,start_time__gte=cTime)
+	upcoming = bookings.objects.filter(date=time.strftime("%Y-%m-%d"),room_id=1,start_time__gte=cTime)
 	upcoming = upcoming.order_by('start_time')[:3]
 	return upcoming
 
