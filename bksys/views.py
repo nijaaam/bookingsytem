@@ -1,23 +1,15 @@
-from django.shortcuts import render
-from django.shortcuts import render_to_response
+from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponse
-from django.db import models
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from datetime import datetime, timedelta, date
 from .models import rooms,bookings, reservations
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
-import time
-import json
-from django.core.serializers.json import DjangoJSONEncoder
-
+import time, json
 
 def index(request):
 	try:
-		cDate = request.session['bk_date']
-		cTime = request.session['bk_time']
+		cDate = getDate(request)
+		cTime = getTime(request)
 	except KeyError:
 		cTime = time.strftime("%H:%M")
 		cDate = time.strftime("%d-%m-%Y")
@@ -72,17 +64,6 @@ def queryDB(date,time):
 	booked_room_ids = bookings.objects.filter(date = query_date,start_time__lte=time,end_time__gte=end).values_list('room_id',flat=True)
 	avaliable_rooms = rooms.objects.exclude(room_id__in = booked_room_ids)
 	reserved_rooms = []
-	'''
-	for room in avaliable_rooms:
-		try:
-			reserved_room = reservations.objects.get(room_id=room.room_id)
-			if checkIfExpired(room.room_id):
-				reservations.objects.get(room_id=room.room_id).delete()
-				reserved_rooms.append(room)				
-		except ObjectDoesNotExist:
-			reserved_rooms.append(room)
-	avaliable_rooms = reserved_rooms
-	'''
 	all_rooms = rooms.objects.all()
 	rooms_json = [rm_instance.getJSON() for rm_instance in all_rooms]
 	room_bookings = []
@@ -139,7 +120,7 @@ def getDate(request):
 	return request.session['bk_date']
 
 def getTime(request):
-	return request.session['bk_time']
+	return  request.session['bk_time']
 
 def findBooking(request):
 	booking_id = request.POST['booking_id']
@@ -164,9 +145,19 @@ def findBooking(request):
 		html = "<span class = 'help-block' style ='color:#a94442'>" + error_msg + "</span>"
 		return HttpResponse(html)
 
+def if_values_are_set(f):
+    def test(request):
+        if 'room_id' in request.POST:
+            return f(request)
+        else:
+            return redirect('/')
 
-def view_room(request,id):
+    return test
+
+@if_values_are_set
+def view_room(request):
 	#reservations(room_id=id).save()
+	id = request.POST['room_id']
 	request.session['bk_rm_id'] = id
 	query = rooms.objects.filter(room_id=id)
 	date = getDate(request)
@@ -177,8 +168,8 @@ def view_room(request,id):
 		"datetime":date +"T"+ time,
 		"settings":json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),
 		"room_details":query,
-		"start_time":request.session['bk_time'],
-		"date":request.session['bk_date']
+		"start_time":getTime(request),
+		"date":getDate(request)
 	}
 	return render(request,'room_details.html',res)
 

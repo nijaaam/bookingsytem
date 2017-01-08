@@ -66,7 +66,11 @@
                             <td>{{ item.room_location}}</td>
                             <td>{{ item.room_features}}</td>
                             <td>
-                                <form method="GET" action="/view_room/{{item.room_id}}"><button id= "view_room_btn"type="submit"class="btn btn-default">Book</button></form>
+                                <form method="POST" action="/view_room/">
+                                    {% csrf_token %}
+                                    <input type="text" id="room_id" name = "room_id" value="{{item.room_id}}"hidden>
+                                    <button id= "view_room_btn"type="submit"class="btn btn-default">Book</button>
+                                </form>
                             </td>
                         </tr>
                         {% endfor %}
