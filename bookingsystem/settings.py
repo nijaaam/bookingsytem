@@ -51,7 +51,7 @@ INSTALLED_APPS = (
     'bksys',
     'djangobower',
     'tablet',
-    'gunicorn',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -14,13 +14,15 @@
 <body class="body">
     {% block navbar %} {% include "navbar.html" %} {% endblock %}
     <div class="container">
-        <form method='POST' action="/find_rooms/" class="form-inline" id="findRooms" style="float: right;">
+    {% load widget_tweaks %}
+        <form method='POST' action="" class="form-inline" id="findRooms" style="float: right;">
             {% csrf_token %}
+            
             <div class="form-group">
-                <label for="exampleInputName2">Date</label>
+                <label>Date</label>
                 <span style="display:inline-block; width: 2;"></span>
-                <div class='input-group date' id='datepicker'>
-                    <input type="text" id = "bk_date" name="bk_date" class="form-control" value={{ bk_date }}>
+                <div class='input-group' id='datepicker'>
+                    {{ form.date |add_class:"form-control" }}
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -28,10 +30,10 @@
             </div>
             <span style="display:inline-block; width: 10;"></span>
             <div class="form-group">
-                <label for="exampleInputEmail2">Start Time</label>
+                <label>Start Time</label>
                 <span style="display:inline-block; width: 2;"></span>
-                <div class='input-group date' id='timepicker'>
-                    <input type="text" class="form-control" id = "bk_time" name="bk_time" value={{ bk_time }}>
+                <div class='input-group' id='timepicker'>
+                    {{ form.time | add_class:"form-control"}}
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-time"></span>
                     </span>

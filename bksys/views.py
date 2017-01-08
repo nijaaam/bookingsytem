@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, date
 from .models import rooms,bookings, reservations
 from django.core.exceptions import ObjectDoesNotExist
 import time, json
+from .forms import DateTimeForm
 
 def index(request):
 	try:
@@ -16,23 +17,6 @@ def index(request):
 	res = generateResponse(cDate,cTime,request)
 	return render(request,'home.html',res)
 	
-def validateTime(cDate,cTime,request):
-	if cDate < time.strftime("%d-%m-%Y"):
-		cTime = time.strftime("%H:%M")
-		cDate = time.strftime("%d-%m-%Y")
-	if cTime < time.strftime("%H:%M"):
-		if cDate == time.strftime("%d-%m-%Y"):
-			cTime = time.strftime("%H:%M")
-	request.session['bk_date'] = cDate
-	request.session['bk_time'] = cTime
-	return cDate,cTime
-
-def find_rooms(request):
-	bk_date = request.POST['bk_date']
-	bk_time = request.POST['bk_time'] 	 	
-	res = generateResponse(bk_date,bk_time,request)
-	return render(request,'home.html',res)
-
 def getRoomsBookings(request):
 	start = request.POST['start']
 	end = request.POST['end']
@@ -47,7 +31,6 @@ def getRoomsBookings(request):
 	}
 	return HttpResponse(json.dumps(results), content_type="application/json")
 	
-
 def checkIfExpired(id):
 	reserve = reservations.objects.get(room_id=id)
 	expires =  reserve.expiry.replace(tzinfo=None)
@@ -72,8 +55,31 @@ def queryDB(date,time):
 		room_bookings.append([bk_instance.getJSON() for bk_instance in booking_list])
 	return avaliable_rooms,room_bookings,rooms_json
 
+def validateTime(cDate,cTime,request):
+	if cDate < time.strftime("%d-%m-%Y"):
+		cTime = time.strftime("%H:%M")
+		cDate = time.strftime("%d-%m-%Y")
+	if cTime < time.strftime("%H:%M"):
+		if cDate == time.strftime("%d-%m-%Y"):
+			cTime = time.strftime("%H:%M")
+	request.session['bk_date'] = cDate
+	request.session['bk_time'] = cTime
+	return cDate,cTime
+	
 def generateResponse(date,time,request):
-	(date,time) = validateTime(date,time,request)
+	if not request.POST:
+		form = DateTimeForm({
+			'date':date,
+			'time':time,
+		})
+	else:
+		form = DateTimeForm(request.POST)
+		if form.is_valid():
+			data = form.cleaned_data
+			date = data['date'].strftime("%d-%m-%Y")
+			time = data['time'].strftime("%H:%M")
+			(date,time) = validateTime(date,time,request)
+			form = DateTimeForm(initial={'date': date, 'time':time})
 	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
 	(avaliable_rooms,room_bookings,rooms_json) = queryDB(date,time)
 	if len(avaliable_rooms) < 4:
@@ -89,32 +95,9 @@ def generateResponse(date,time,request):
     	'query_results':avaliable_rooms,
     	'current_date':datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d"),
     	'table_height': rowCount,
+    	'form': form,
     }
 	return response
-
-def set_default_values(scrollTime):
-    return dict(
-        header = dict(
-            left = '',
-            center = '',
-            right = '',
-        ),
-        firstDay       = 1,
-        longPressDelay = 200,
-        minTime        = "07:00:00",
-        height         = '500',
-        margin         = '0 auto',
-        defaultDate  = 'datetime',
-        defaultView  = 'agendaWeek',
-        maxTime      = "20:00:00",
-        allDaySlot   = False,
-        editable     = True,
-        eventLimit   = True,
-        eventOverlap = False,
-        slotDuration = '00:05:00',
-        nowIndicator = True,
-        scrollTime   = scrollTime,
-    )
 
 def getDate(request):
 	return request.session['bk_date']
@@ -162,6 +145,7 @@ def view_room(request):
 	query = rooms.objects.filter(room_id=id)
 	date = getDate(request)
 	time = getTime(request)
+	print DateTimeForm()
 	start_time = date + "T" + time
 	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
 	res = {
@@ -241,3 +225,26 @@ def getBookings(request):
 	results = [bk_instance.getJSON() for bk_instance in booking_list]
 	return HttpResponse(json.dumps(results), content_type="application/json")
 
+def set_default_values(scrollTime):
+    return dict(
+        header = dict(
+            left = '',
+            center = '',
+            right = '',
+        ),
+        firstDay       = 1,
+        longPressDelay = 200,
+        minTime        = "07:00:00",
+        height         = '500',
+        margin         = '0 auto',
+        defaultDate  = 'datetime',
+        defaultView  = 'agendaWeek',
+        maxTime      = "20:00:00",
+        allDaySlot   = False,
+        editable     = True,
+        eventLimit   = True,
+        eventOverlap = False,
+        slotDuration = '00:05:00',
+        nowIndicator = True,
+        scrollTime   = scrollTime,
+    )
