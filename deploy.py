@@ -102,6 +102,9 @@ class DjangoDeployment(Node):
         self.virtual_env.collectstatic()
         self.virtual_env.run_uwsgi()
 
+    def run_cmd(self,cmd):
+        self.hosts.run(cmd)
+
     def fullSetup(self):
         self.hosts.sudo('apt-get update && apt-get install virtualenv uwsgi nginx libmysqlclient-dev python-pip')
         self.hosts.run('virtualenv' + virtualenv)
@@ -113,8 +116,8 @@ class DjangoDeployment(Node):
         self.setup_emperor()
 
     def upload_django_settings(self):
-        with self.hosts.open('/etc/secret_key.txt') as f:
-            print f
+        with self.hosts.open(project_dir + 'bookingsystem/settings.py') as f:
+            f.write(django_settings)
 
     def remove_defaultconf(self):
         self.hosts.sudo('rm /etc/nginx/sites-enabled/default')
