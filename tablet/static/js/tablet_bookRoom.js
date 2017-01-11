@@ -6,6 +6,7 @@ $(document).ready(function() {
     settings.defaultDate = datetime;
     settings.eventConstraint = {
         start: moment().subtract(5, 'minutes'),
+        end: moment().add(1, 'year'),
     };
     var updateTimes = function(event, delta, revertFunc) {
         var start = event.start.format("HH:mm");
