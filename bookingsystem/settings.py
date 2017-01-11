@@ -108,7 +108,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'booking1',
+        'NAME': 'bookingsystem_dev',
         'USER': 'root',
         'PASSWORD': '123',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on

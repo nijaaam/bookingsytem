@@ -100,10 +100,16 @@ def generateResponse(date,time,request):
 	return response
 
 def getDate(request):
-	return request.session['bk_date']
+	if 'bk_date' in request.session:
+		return request.session['bk_date']
+	else:
+		return time.strftime("%d-%m-%Y")
 
 def getTime(request):
-	return  request.session['bk_time']
+	if 'bk_time' in request.session:
+		return request.session['bk_time']
+	else:
+		return time.strftime("%H:%M")
 
 def findBooking(request):
 	booking_id = request.POST['booking_id']
@@ -145,7 +151,6 @@ def view_room(request):
 	query = rooms.objects.filter(room_id=id)
 	date = getDate(request)
 	time = getTime(request)
-	print DateTimeForm()
 	start_time = date + "T" + time
 	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
 	res = {

@@ -28,24 +28,12 @@
                     <span><small>{{ ongoing.contact }}</small></span>
                     <span class="pull-right">
                     <div class="btn-group" role="group" aria-label="Basic example">
-                      <button type="button" class="btn btn-default">End</button>
+                      <button id = "end" type="button" class="btn btn-default">End</button>
                       <button type="button" class="btn btn-default">Extend</button>
                     </div>
                 </span>
                 </div>
             </div>
-            {% else %}
-            <div class="row">
-                </br>
-                <h1 align="center">No events {{ next_event }}</h1></br>
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="singlebutton"></label>
-                    <div class="col-md-4 center-block">
-                        <button class="btn btn-primary btn-lg center-block">Book</button>
-                    </div>
-                </div></br></br></br>
-            </div>
-            {% endif %}
             <div class="panel panel-default">
                 <div class=" text-center panel-heading">Upcoming Events</div>
                 <div class="panel-body">
@@ -60,6 +48,38 @@
                     {% endif %}
                 </div>
             </div>
+            <div class="form-group">
+                    <label class="col-md-4 control-label" for="singlebutton"></label>
+                    <div class="col-md-4 center-block">
+                        <button id = "bookRoom" class="btn btn-primary btn-lg center-block">Book Room</button>
+                    </div>
+            </div></br></br>
+            {% else %}
+            <div class="row">
+                </br>
+                <h1 align="center">No events {{ next_event }}</h1></br>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="singlebutton"></label>
+                    <div class="col-md-4 center-block">
+                        <button class="btn btn-primary btn-lg center-block">Book</button>
+                    </div>
+                </div></br></br></br>
+            </div>
+            <div class="panel panel-default">
+                <div class=" text-center panel-heading">Upcoming Events</div>
+                <div class="panel-body">
+                    {% if upcoming.first %}
+                        {% for item in upcoming %}
+                            <span class="pull-left">{{ item.description }}</span>
+                            <span class="pull-right">{{ item.start_time }} -  {{ item.end_time }}</span>
+                            </br></br>
+                        {% endfor %}
+                    {% else %}
+                    <div class="text-center">No Events</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     <footer class="footer">
@@ -84,7 +104,7 @@
     <script type="text/javascript">
         var bookings = $.parseJSON('{{ bookings | safe }}');
     </script>
-    <script type="text/javascript" src="{% static 'js/tablet_app.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/tablet_index.js' %}"></script>
 </body>
 
 </html>
