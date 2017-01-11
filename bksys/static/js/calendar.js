@@ -73,6 +73,7 @@ $('#day,#month,#week').click(function() {
         if (id == "undefined"){
             id = 999;
         }
+        alert(id);
         loadEvents(id);
     } else if (this.id == 'week') {
         view = 'agendaWeek';

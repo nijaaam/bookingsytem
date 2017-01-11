@@ -57,13 +57,12 @@ def bookRoom(request):
 	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
 	res = {
 		"datetime":date + "T"+ time,
-		"settings":json.dumps(set_default_values(scroll_time.strftime("%H:%M"),defaultView='agendaDay')),
 		"room":rooms.objects.get(room_id=room_id),
 		"start_time":getTime(request),
 		"date": date,
 		'time': time,
+		"settings": json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),
 		'room_name':rooms.objects.get(room_id=room_id).room_name,
-		'bookings':json.dumps(get_events(request)),
 	}
 	return render(request,"book_room.html",res)
 	
