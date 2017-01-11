@@ -6,13 +6,16 @@ from deployer.host import SSHHost
 from deployer.exceptions import ActionException
 
 home = '/home/main/'
-ip = '51.140.55.58'
+ip = '51.140.51.84'
 project_name = "bookingsystem/"
 virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
 repo = 'https://github.com/nijaaam/bookingsystem.git'
 keyLocation = '/home/jamun-g/Desktop/keys/bookingsystem'
 
+django_settings = {
+    'Debug' : False,
+}
 
 class VirtualEnv(Node):
     location = required_property()
@@ -110,8 +113,8 @@ class DjangoDeployment(Node):
         self.setup_emperor()
 
     def upload_django_settings(self):
-        with self.hosts.open('~/BKSYSDEPLOY/local_settings.py') as f:
-            f.write(django_settings)
+        with self.hosts.open('/etc/secret_key.txt') as f:
+            print f
 
     def remove_defaultconf(self):
         self.hosts.sudo('rm /etc/nginx/sites-enabled/default')
