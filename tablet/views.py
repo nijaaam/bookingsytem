@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from bksys.models import rooms, bookings
+from bksys.models import rooms,bookings
 from django.core.exceptions import ObjectDoesNotExist
 import time,json
 from datetime import datetime, timedelta
@@ -25,7 +25,15 @@ def index(request):
 	bk_for_day = bookings.objects.filter(room_id=room_id,date=time.strftime("%Y-%m-%d"))
 	bk_list = [bk_instance.getJSON() for bk_instance in bk_for_day]
 	upcoming_events = get_upcoming_events()
-	current_event = get_on_going_event()
+	start = time.strftime("%H:%M")
+	end = time.strftime("%H:%M")
+	current_event = bookings.objects.filter(
+			date=time.strftime("%Y-%m-%d"),
+			end_time__gte = start,
+			start_time__lte = end
+	).order_by('start_time')
+	if current_event:
+		current_event = current_event[0]
 	if not current_event:
 		bk_id = 0
 	else:
@@ -58,7 +66,6 @@ def bookRoom(request):
 	res = {
 		"datetime":date + "T"+ time,
 		"room":rooms.objects.get(room_id=room_id),
-		"start_time":getTime(request),
 		"date": date,
 		'time': time,
 		"settings": json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),

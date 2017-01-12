@@ -12,8 +12,9 @@
 <body class="body">
     <div class="container">
         <div class="row">
+            <input id = "room_name" hidden value="{{ room_name }}">
             <span style="font-size: 170%;" class="pull-left">
-            <a  href="/tablet">
+            <a href="/tablet">
                 <span class="glyphicon glyphicon-chevron-left" style="color:black"></span>
             </a>
             </span>
@@ -23,7 +24,7 @@
         <div class="row">
             <div>
                 <div class="panel-body">
-                    <span><strong>Start Time: </strong><span id ="start">{{ start_time }}</span></span>
+                    <span><strong>Start Time: </strong><span id ="start"> -</span></span>
                     <span class = "pull-right">
                         <a href = "/tablet" class="btn btn-default">Cancel</a>
                     </span>
@@ -35,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="btn-toolbar hidden-xs" role="toolbar" style="text-align:center;">
+        <div class="btn-toolbar" role="toolbar" style="text-align:center;">
                 <div class="btn-group pull-left" role="group">
                     <button id="prev" type="button" class="btn btn-default ">Prev</button>
                     <button id="next" type="button" class="btn btn-default">Next</button>
@@ -56,6 +57,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript"></script>
     <script type="text/javascript" src="{% static 'moment/min/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'fullcalendar/dist/fullcalendar.min.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/calendar.js'%}"></script>
     <script type="text/javascript">
         var datetime = moment("{{ datetime }}","DD-MM-YYYYTHH:mm");
         var settings = $.parseJSON('{{ settings | safe }}');

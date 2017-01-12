@@ -1,3 +1,43 @@
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            // Only send the token to relative URLs i.e. locally.
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+});
+
 $(document).ready(function() {
     $('#cTime').html(new moment().format("HH:mm"));
     setInterval(function() {
@@ -16,6 +56,26 @@ $(document).ready(function() {
     };
     settings.eventDrop = updateTimes;
     settings.eventResize = updateTimes;
+    settings.dayClick = function(date, jsEvent, view) {
+        var start = date.format("YYYY-MM-DDTHH:mm:ss");
+        var end = date.add(15, 'minutes').format("YYYY-MM-DDTHH:mm:ss");
+        start = new moment(start,"YYYY-MM-DDTHH:mm:ss");
+        end = new moment(end,"YYYY-MM-DDTHH:mm:ss");
+        var view = view.name;
+        var event = $('#calendar').fullCalendar('clientEvents',"new_event");
+        if (event != ""){
+            $('#calendar').fullCalendar('removeEvents',"new_event");
+        } 
+        var newEvent = {
+            id: "new_event",
+            editable: true,
+            color: "#66cc00",
+        };
+        newEvent.start = start;
+        newEvent.end = end;
+        updateTimes(newEvent,'','');
+        $('#calendar').fullCalendar('renderEvent',newEvent);
+    }
     $('#calendar').fullCalendar(settings);
     var newEvent = {
         id: "new_event",
@@ -24,23 +84,22 @@ $(document).ready(function() {
     };
     newEvent.start = datetime.format("YYYY-MM-DDTHH:mm:ss");
     newEvent.end = datetime.add(15, 'minutes').format("YYYY-MM-DDTHH:mm:ss");
-    $('#calendar').fullCalendar('renderEvent', newEvent);
+    //$('#calendar').fullCalendar('renderEvent', newEvent);
     $('#month').unbind('click').click(function() {
         $('#calendar').fullCalendar('changeView', 'month');
         updateTitle();
         loadEvents();
-        $('#calendar').fullCalendar('renderEvent', newEvent);
+        //$('#calendar').fullCalendar('renderEvent', newEvent);
     });
     loadEvents();
 });
 
 function loadEvents(booking_id) {
-    alert("HER");
     $('#calendar').fullCalendar("removeEvents");
     var start = $('#calendar').fullCalendar('getDate').startOf('month').format("DD-MM-YYYY");
     var end = $('#calendar').fullCalendar('getDate').endOf('month').format("DD-MM-YYYY");
     var data = {
-        room_name: $('input[id=room_name]').val(),
+        room_name: $('#room_name').val(),
         start: start,
         end: end,
     };
@@ -57,10 +116,6 @@ function loadEvents(booking_id) {
                 isUserCreated: true,
                 editable: false,
             };
-            if (booking_id != "undefined" && event.id == booking_id){
-                event.editable = true;
-                event.color = "#66cc00";
-            }
             $('#calendar').fullCalendar('renderEvent', event);
         });
     });
