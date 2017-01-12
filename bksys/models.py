@@ -30,27 +30,32 @@ class BookingsManager(models.Manager):
         booking = self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description)
         return booking
 
+    def getInterval(self,value):
+    	if value == '1':
+    		return 1
+    	elif value == '2':
+    		return 7
+    	elif value == '3':
+    		return 14
+
     def newRecurringBooking(self,room_id,date,start,end,contact,description,type,recur_end):
         recur_end = datetime.strptime(recur_end,"%d-%m-%Y")
         start_date = datetime.strptime(date,"%Y-%m-%d")
         dates = []
-        frequency = 1
-        if type == 1:
-        	frequency = 1
-        elif type == 2:
-        	frequency = 7
-        elif type == 3:
-        	frequency = 14
+        weekend = set([5, 6])
         while True:
-        	start_date = start_date + timedelta(days=frequency)
+        	start_date = start_date + timedelta(days=self.getInterval(type))
         	if start_date > recur_end:
         		break;
+        	elif start_date.weekday() in weekend:
+        		print start_date
         	else:
         		dates.append(start_date)
-        print dates
         recur_end = recur_end.strftime("%Y-%m-%d")
         r_booking = recurringBookings.objects.newBooking(room_id,date,recur_end,type)
         booking = self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id)
+        for date in dates:
+        	self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id)
         return booking
 
     def getOngoingEvents(self,date,start,end):
