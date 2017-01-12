@@ -21,7 +21,7 @@
                 <div class=" text-center panel-heading">Ongoing Event</div>
                 <div class="panel-body">
                     <span class="pull-left"><strong>{{ ongoing.description }}</strong></span>
-                    <span class="pull-right">{{ ongoing.start_time }} -  {{ ongoing.end_time }}</span>
+                    <span class="pull-right">{{ ongoing.start_time | time:"H:i" }} -  {{ ongoing.end_time | time:"H:i"}}</span>
                     </br>
                     </br>
                     <input id="bk_id" hidden value = "{{ ongoing.booking_ref}}">
@@ -40,7 +40,7 @@
                     {% if upcoming.first %}
                         {% for item in upcoming %}
                             <span class="pull-left">{{ item.description }}</span>
-                            <span class="pull-right">{{ item.start_time }} -  {{ item.end_time }}</span>
+                            <span class="pull-right">{{ item.start_time| time:"H:i" }} -  {{ item.end_time| time:"H:i" }}</span>
                             </br></br>
                         {% endfor %}
                     {% else %}

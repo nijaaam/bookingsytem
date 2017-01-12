@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'fullcalendar/dist/fullcalendar.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css' %}" />
 </head>
 
 <body class="body">
@@ -15,34 +16,33 @@
         <div id="row">
             <div class="col-md-6">
                 <form class="form-horizontal">
-                    {% for item in room_details %}
                     <div class="form-group">
                         <div class="input-group">
                             <div class="input-group-addon">Name</div>
-                            <input id="room_name" style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_name }}">
+                            <input id="room_name" style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room.room_name }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="input-group">
                             <div class="input-group-addon">Size</div>
-                            <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_size }}">
+                            <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room.room_size }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="input-group">
                             <div class="input-group-addon">Location</div>
-                            <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_location }}">
+                            <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room.room_location }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="input-group">
                             <div class="input-group-addon">Features</div>
-                            <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ item.room_features }}">
+                            <input style="background-color: #ffffff" type="text" disabled class="form-control" id="inputEmail3" value="{{ room.room_features }}">
                         </div>
                     </div>
                     <hr class="visible-xs visible-sm">
                 </form>
-                {% endfor %}
+
             </div>
             <div class="col-md-6">
                 <form class="form-horizontal" method="POST" id="booking_details">
@@ -59,6 +59,31 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="description" name="description">
                             <span class="glyphicon form-control-feedback" id="description_error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label for="description" class="col-sm-2 control-label">Repeat</label>
+                        <div class="col-sm-10">
+                            <select id = "recurring" name ="recurring"class="form-control">
+                              <option value = "0"selected>Never</option>
+                              <option value="1">Daily</option>
+                              <option value="2">Weekly</option>
+                              <option value="3">Biweekly</option>
+                            </select>
+                            <span class="glyphicon form-control-feedback" id="description_error"></span>
+                        </div>
+                    </div>
+                    <div id = "end_date" hidden class="form-group has-feedback">
+                        <label for="description" class="col-sm-2 control-label">End Date</label>
+                        <div class="col-sm-10">
+                        <div class='input-group' id='datepicker'>
+                    <input type="text" class="form-control" id="recurr_end" name="recurr_end">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                            
+                            <span class="glyphicon form-control-feedback" id="end_error"></span>
                         </div>
                     </div>
         
@@ -112,6 +137,8 @@
         <div id="calendar"></div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script type="text/javascript" src="{% static 'moment/min/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
     <script src="{% static 'js/request.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/calendar.js' %}" type="text/javascript"></script>
     <script type="text/javascript" src="{% static 'moment/min/moment.min.js' %}"></script>
@@ -121,6 +148,17 @@
     <script src="{% static 'js/form_validation.js' %}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            $( "#recurring" ).change(function() {
+               var selected = $(this).val();
+                if (selected == 0){
+                    $('#end_date').hide();
+                } else {
+                    $('#end_date').show();
+               }
+            });
+            $('#recurr_end').datetimepicker({
+                format: 'DD-MM-YYYY',
+            });
             setTimeout(function(){
                 //alert("page Expires");
             }, 120000);//2 Minutes
@@ -133,6 +171,19 @@
                     updateTitle();
                 }
             });
+            var msg = "This field is required";
+            $.validator.addMethod("validate_date", function(value, element) {
+                if ($('#recurring').val() != 0){
+                    var input = $('#end').val();
+                    if (input == ""){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            }, msg);
             $("#booking_details").validate({
                 rules: {
                     'contact': {
@@ -141,6 +192,9 @@
                     'description': {
                         required: true
                     },
+                    'recurr_end' : {
+                        validate_date: true,
+                    }
                 },
             });
             var datetime = moment("{{ datetime }}","DD-MM-YYYYTHH:mm");

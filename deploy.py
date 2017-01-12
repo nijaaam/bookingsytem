@@ -97,10 +97,12 @@ class DjangoDeployment(Node):
 
     def setup(self):
         self.git.pull()
+        self.hosts.run('export DJANGO_SETTINGS_MODULE=bookingsystem.production')
         self.virtual_env.setup_env()
         self.virtual_env.update_database()
         self.virtual_env.collectstatic()
         self.virtual_env.run_uwsgi()
+
 
     def run_cmd(self,cmd):
         self.hosts.run(cmd)

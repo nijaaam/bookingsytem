@@ -22,7 +22,6 @@
         </div>
         <div class="row">
             <div>
-               
                 <div class="panel-body">
                     <span><strong>Start Time: </strong><span id ="start">{{ start_time }}</span></span>
                     <span class = "pull-right">
@@ -61,7 +60,6 @@
         var datetime = moment("{{ datetime }}","DD-MM-YYYYTHH:mm");
         var settings = $.parseJSON('{{ settings | safe }}');
     </script>
-    <script type="text/javascript" src="{% static 'js/calendar.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/tablet_bookRoom.js' %}"></script>
 </body>
 

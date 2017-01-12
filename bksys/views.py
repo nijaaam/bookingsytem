@@ -44,8 +44,8 @@ def queryDB(date,time):
 	end = datetime.strptime(time,"%H:%M") + timedelta(minutes=15)
 	end = end.strftime("%H:%M")
 	query_date = datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d")
-	booked_room_ids = bookings.objects.filter(date = query_date,start_time__lte=time,end_time__gte=end).values_list('room_id',flat=True)
-	avaliable_rooms = rooms.objects.exclude(room_id__in = booked_room_ids)
+	ongoingevents = bookings.objects.getOngoingEvents(query_date,time,end).values_list('room_id',flat=True)
+	avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents)
 	reserved_rooms = []
 	all_rooms = rooms.objects.all()
 	rooms_json = [rm_instance.getJSON() for rm_instance in all_rooms]
@@ -115,6 +115,11 @@ def findBooking(request):
 	booking_id = request.POST['booking_id']
 	try:
 		booking = bookings.objects.get(booking_ref=booking_id)
+		if datetime.strptime(str(booking.date)+str(booking.end_time),"%Y-%m-%d%H:%M:%S") < datetime.now():
+			bookings.objects.delete(booking_id)
+			error_msg = "Booking not found for " + booking_id
+			html = "<span class = 'help-block' style ='color:#a94442'>" + error_msg + "</span>"
+			return HttpResponse(html)
 		room = rooms.objects.get(room_id=booking.room_id)
 		start = booking.start_time.strftime("%H:%M")
 		end = booking.end_time.strftime("%H:%M")
@@ -148,7 +153,7 @@ def view_room(request):
 	#reservations(room_id=id).save()
 	id = request.POST['room_id']
 	request.session['bk_rm_id'] = id
-	query = rooms.objects.filter(room_id=id)
+	query = rooms.objects.get(room_id=id)
 	date = getDate(request)
 	time = getTime(request)
 	start_time = date + "T" + time
@@ -156,23 +161,25 @@ def view_room(request):
 	res = {
 		"datetime":date +"T"+ time,
 		"settings":json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),
-		"room_details":query,
+		"room":query,
 		"start_time":getTime(request),
 		"date":getDate(request)
 	}
 	return render(request,'room_details.html',res)
 
 def book_room(request):
+	recurring = request.POST.getlist('recurring')[0]
 	contact	     = request.POST['contact']
 	description	 = request.POST['description']
 	start = request.POST['start']
 	end =  request.POST['end']
 	date =  request.POST['date']
-	room_id = request.session['bk_rm_id']
-	entry = bookings(room_id= room_id,date=date,start_time=start,end_time=end,contact=contact,description=description)
-	entry.save()
-	queryRoom = rooms.objects.filter(room_id=room_id)
-	room_name = list(queryRoom)[0].room_name
+	room_id = request.session['bk_rm_id']	
+	if recurring == "0":
+		entry = bookings.objects.newBooking(room_id,date,start,end,contact,description)
+	else:
+		entry = bookings.objects.newRecurringBooking(room_id,date,start,end,contact,description,recurring,request.POST['recurr_end'])
+	room_name = rooms.objects.get_name(room_id)
 	return render(request,'modal.html',{
 		"booking_id":entry.booking_ref,
 		"event_id": str(room_id) + "," + str(entry.booking_ref),
@@ -189,7 +196,6 @@ def updateBooking(request):
 	date = request.POST['date']
 	start = request.POST['start']
 	end = request.POST['end']
-	print start,date,end
 	description = request.POST['description']
 	contact = request.POST['contact']
 	booking_id = request.POST['booking_id']
@@ -203,20 +209,17 @@ def updateBooking(request):
 				bookings.objects.filter(booking_ref=booking_id).update(contact=contact)
 			if key == 'date' or key == 'start' or key == 'end':
 				bookings.objects.filter(booking_ref=booking_id).update(date=date,start_time=start,end_time=end)
-	room = rooms.objects.get(room_id=booking.room_id)
-	room_name = room.room_name
 	booking = bookings.objects.get(booking_ref=booking_id)
 	return render(request,"updatedBKModal.html",{
 		"booking_id": booking_id,
-		"room_name": room_name,
-		"description": booking.description,
-		"contact": booking.contact,
-		"date": str(booking.date.strftime("%d-%m-%Y")) + " " + str(booking.start_time) + " - " + str(booking.end_time)
+		"room_name": rooms.objects.get_name(booking.room_id),
+		"description": bookings.objects.description(booking_id),
+		"contact": bookings.objects.contact(booking_id),
+		"date": bookings.objects.formatDate(booking_id), 
 	})
 
 def cancelBooking(request):
-	booking_id = request.POST['booking_id']
-	bookings.objects.filter(booking_ref=booking_id).delete()
+	bookings.objects.delete(request.POST['booking_id'])
 	return HttpResponse("Booking Canceled")
 
 def getBookings(request):
@@ -239,12 +242,12 @@ def set_default_values(scrollTime):
         ),
         firstDay       = 1,
         longPressDelay = 200,
-        minTime        = "07:00:00",
+        minTime        = "14:00:00",
         height         = '500',
         margin         = '0 auto',
         defaultDate  = 'datetime',
         defaultView  = 'agendaWeek',
-        maxTime      = "20:00:00",
+        maxTime      = "22:00:00",
         allDaySlot   = False,
         editable     = True,
         eventLimit   = True,
