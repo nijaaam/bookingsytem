@@ -119,6 +119,14 @@ class BookingsManagerTest(TestCase):
         )
         room.save()
 
+    def getInterval(self,value):
+        if value == "1":
+            return 1
+        elif value == "2":
+            return 7
+        elif value == "3":
+            return 14
+
     def testMethods(self):
         bookings.objects.newBooking(1,"2017-01-13","09:15:00","10:15:00","contact","description")
         self.assertEqual(bookings.objects.description(1),"description")
@@ -130,5 +138,52 @@ class BookingsManagerTest(TestCase):
         bookings.objects.delete(1)
         self.assertRaises(ObjectDoesNotExist,bookings.objects.get,booking_ref=1)
         #Weekly Repeat from Jan 13 - Feb 25 - 7 Bookings
-        bookings.objects.newRecurringBooking(1,"2017-01-13","09:15:00","10:15:00","contact","description",2,"25-02-2017")
-        print bookings.objects.all()
+        bookings.objects.newRecurringBooking(1,"2017-01-13","09:15:00","10:15:00","contact","description","2","25-02-2017")
+        query =  bookings.objects.all().order_by('date')
+        start_date = datetime.strptime("2017-01-13","%Y-%m-%d")
+        end_date = datetime.strptime("2017-02-25","%Y-%m-%d")
+        for booking in query:
+            if start_date < end_date:
+                self.assertEqual(start_date.strftime("%Y-%m-%d"),str(booking.date))
+                start_date = start_date + timedelta(days=self.getInterval("2"))
+              
+class RecurringEventsManagerTest(TestCase):
+    def setUp(self):
+        room = rooms(
+            room_id = 1,
+            room_name = "Room Test 1", 
+            room_size = 11, 
+            room_location = "Location",
+            room_features =  "Features",
+        )
+        room.save()
+
+    def testnewBooking(self):
+        booking = recurringEvents.objects.newBooking(1,"2017-01-01","2017-05-20","2")
+        self.assertEqual(recurringEvents.objects.all()[0],booking)
+
+
+class reservationsTest(TestCase):
+    def setUp(self):
+        room = rooms(
+            room_id = 1,
+            room_name = "Room Test 1", 
+            room_size = 11, 
+            room_location = "Location",
+            room_features =  "Features",
+        )
+        room.save()
+
+    def test_save_and_retreive(self):
+        start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        reservation = reservations(room_id=1)
+        reservation.save()
+        reserve = reservations.objects.get(room_id=1)
+        start_time_db =  reserve.start_time.replace(tzinfo=None)
+        self.assertEqual(start_time,str(start_time_db))
+            
+    def test_delete(self):
+    	reservations(room_id=1).save()
+        reservations.objects.get(room_id=1).delete()
+        self.assertRaises(ObjectDoesNotExist,reservations.objects.get,id=1)    
+        

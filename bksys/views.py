@@ -16,6 +16,41 @@ def index(request):
 		cDate = time.strftime("%d-%m-%Y")
 	res = generateResponse(cDate,cTime,request)
 	return render(request,'home.html',res)
+
+def generateResponse(date,time,request):
+	if not request.POST:
+		form = DateTimeForm({
+			'date':date,
+			'time':time,
+		})
+	else:
+		form = DateTimeForm(request.POST)
+		if form.is_valid():
+			data = form.cleaned_data
+			date = data['date'].strftime("%d-%m-%Y")
+			time = data['time'].strftime("%H:%M")
+			(date,time) = validateTime(date,time,request)
+			form = DateTimeForm(initial={'date': date, 'time':time})
+	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
+	(avaliable_rooms,room_bookings,rooms_json) = queryDB(date,time)
+	if len(avaliable_rooms) == 0:
+		rowCount = 79
+	elif len(avaliable_rooms) < 4:
+		rowCount = len(avaliable_rooms)*67 + 39
+	else:
+		rowCount = 250
+	response = {
+    	'scroll_time': scroll_time.strftime("%H:%M"),
+    	'rooms': json.dumps(rooms_json), 
+    	'bookings': json.dumps(room_bookings),
+    	'bk_date':date,
+    	'bk_time':time,
+    	'query_results':avaliable_rooms,
+    	'current_date':datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d"),
+    	'table_height': rowCount,
+    	'form': form,
+    }
+	return response
 	
 def getRoomsBookings(request):
 	start = request.POST['start']
@@ -66,41 +101,6 @@ def validateTime(cDate,cTime,request):
 	request.session['bk_time'] = cTime
 	return cDate,cTime
 	
-def generateResponse(date,time,request):
-	if not request.POST:
-		form = DateTimeForm({
-			'date':date,
-			'time':time,
-		})
-	else:
-		form = DateTimeForm(request.POST)
-		if form.is_valid():
-			data = form.cleaned_data
-			date = data['date'].strftime("%d-%m-%Y")
-			time = data['time'].strftime("%H:%M")
-			(date,time) = validateTime(date,time,request)
-			form = DateTimeForm(initial={'date': date, 'time':time})
-	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
-	(avaliable_rooms,room_bookings,rooms_json) = queryDB(date,time)
-	if len(avaliable_rooms) == 0:
-		rowCount = 79
-	elif len(avaliable_rooms) < 4:
-		rowCount = len(avaliable_rooms)*67 + 39
-	else:
-		rowCount = 250
-	response = {
-    	'scroll_time': scroll_time.strftime("%H:%M"),
-    	'rooms': json.dumps(rooms_json), 
-    	'bookings': json.dumps(room_bookings),
-    	'bk_date':date,
-    	'bk_time':time,
-    	'query_results':avaliable_rooms,
-    	'current_date':datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d"),
-    	'table_height': rowCount,
-    	'form': form,
-    }
-	return response
-
 def getDate(request):
 	if 'bk_date' in request.session:
 		return request.session['bk_date']

@@ -60,7 +60,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% if query_results.first%}
                             {% for item in query_results %}
                             <tr>
                                 <td>{{ item.room_name}}</td>
@@ -76,12 +75,9 @@
                                 </td>
                             </tr>
                             {% endfor %}
-                        {% else %}
+                 
                     </tbody>
                 </table>
-                <span style="padding-left:10em; margin-bottom:5px;">
-                No rooms found. Try different date/time</span>
-                {% endif %}
             </div>
         </div>
     </div>
