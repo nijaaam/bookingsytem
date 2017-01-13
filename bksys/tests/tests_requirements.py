@@ -1,4 +1,4 @@
-from selenium import webdriver
+''''from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from django.test import LiveServerTestCase
 from .models import rooms, bookings
@@ -43,3 +43,4 @@ class RequirementsTest(LiveServerTestCase):
 		browser.find_element_by_id('cancelBooking2').click()
 		time.sleep(3)
 		self.assertEqual(None,bookings.objects.last())
+'''

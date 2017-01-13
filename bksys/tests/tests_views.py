@@ -1,5 +1,5 @@
-from django.test import TestCase
-'''
+'''from django.test import TestCase
+
 class ViewsTest(TestCase):
 	def testHomePage(self):
 		response = self.client.get('/')

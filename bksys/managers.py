@@ -73,7 +73,7 @@ class BookingsManager(models.Manager):
         return self.get_queryset().get_contact(id)
 
     def formatDate(self,id):
-        return self.get_queryset.formatDate(id)
+        return self.get_queryset().formatDate(id)
 
 class recurringBookingsManager(models.Manager):
     def newBooking(self,rm_id,start,end,recur_type):

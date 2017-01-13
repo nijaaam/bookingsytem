@@ -7,7 +7,7 @@ class rooms(models.Model):
     room_size       = models.IntegerField(null = False)
     room_location   = models.TextField(null = False)
     room_features   = models.TextField(null = False)
-    in_use             = models.BooleanField(default=True)
+    in_use          = models.BooleanField(default=True)
 
     objects = RoomsManager()
     def getJSON(self):

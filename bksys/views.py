@@ -82,7 +82,9 @@ def generateResponse(date,time,request):
 			form = DateTimeForm(initial={'date': date, 'time':time})
 	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
 	(avaliable_rooms,room_bookings,rooms_json) = queryDB(date,time)
-	if len(avaliable_rooms) < 4:
+	if len(avaliable_rooms) == 0:
+		rowCount = 79
+	elif len(avaliable_rooms) < 4:
 		rowCount = len(avaliable_rooms)*67 + 39
 	else:
 		rowCount = 250
@@ -242,12 +244,12 @@ def set_default_values(scrollTime):
         ),
         firstDay       = 1,
         longPressDelay = 200,
-        minTime        = "14:00:00",
+        minTime        = "08:00:00",
         height         = '500',
         margin         = '0 auto',
         defaultDate  = 'datetime',
         defaultView  = 'agendaWeek',
-        maxTime      = "22:00:00",
+        maxTime      = "19:00:00",
         allDaySlot   = False,
         editable     = True,
         eventLimit   = True,

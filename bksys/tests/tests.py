@@ -1,9 +1,9 @@
-from selenium import webdriver
+'''from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from django.core.urlresolvers import resolve
 from django.test import LiveServerTestCase
 from django.test import TestCase
-from webapp.views import index, viewBooking
+from .views import index, viewBooking
 import time
 from datetime import datetime, timedelta, date
 
@@ -35,8 +35,6 @@ class globalTestMethods():
 		browser.find_element_by_id('find_room_btn').click()
 		browser.implicitly_wait(3)
 		time.sleep(2)
-
-'''
 class HomePageTest(TestCase):
 
     def testHomePage(self):
