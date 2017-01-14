@@ -26,23 +26,20 @@ class bksysViewTest(TestCase):
         room.save()
         booking = bookings(
             room_id    = 2,
-            date       ="2017-01-14",
-            start_time ="08:00",
-            end_time="09:00",
+            date       = time.strftime("%Y-%m-%d"),
+            start_time = time.strftime("%H:%M"),
+            end_time=time.strftime("%H:%M"),
             contact="contact",
             description="description"
         )
         booking.save()
          
-
     def testIndex(self):
         response = self.client.get('/')
         scroll_time = datetime.now() - timedelta(minutes=60)
         scroll_time = scroll_time.strftime("%H:%M")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(scroll_time,response.context['scroll_time'])
-        self.assertEqual(time.strftime("%d-%m-%Y"),response.context['bk_date'])
-        self.assertEqual(time.strftime("%H:%M"),response.context['bk_time'])
         self.assertEqual(time.strftime("%Y-%m-%d"),response.context['current_date'])
         form = response.context['form']
         self.assertEqual(form.is_valid(),True)
@@ -58,11 +55,42 @@ class bksysViewTest(TestCase):
         elif len(avaliable_rooms) < 4:
             self.assertEqual(len(avaliable_rooms)*67 + 39,response.context['table_height'])
         rooms_json = json.loads(response.context['rooms'])
-        #There should be two rooms
-        self.assertEqual(rooms_json[0]['room_name'],"Room Test 1")
-        self.assertEqual(rooms_json[1]['room_name'],"Room Test 2")
+        #rooms_json should only have room id 3
+        self.assertEqual(len(rooms_json),1)
+        self.assertEqual(rooms_json[0]['room_name'],"Room Test 2")
         bookings_json = json.loads(response.context['bookings'])
-        #Room 2 should be booked
-        self.assertEqual(bookings_json[0][0]['room_id'],2)
+        #Number of booking should be 0 since free room (Room Id 3) doesnt not have any bookings
+        self.assertEqual(len(bookings_json),0)
 
+    def testGetRoomBookings(self):
+        response = client.post('/getRoomsBookings/',{
+            'start':"2017-01-01",
+            'end':"2017-01-31",
+        })
+        self.assertEqual(response.status_code,200)
+        bookings_json = response.json()
+        self.assertEqual(len(bookings_json),1)
+        self.assertEqual(bookings_json[0]['description'],"description")
+        self.assertEqual(bookings_json[0]['contact'],"contact")
+        #New Booking to test if response has the new booking
+        booking = bookings(
+            room_id    = 3,
+            date       = time.strftime("%Y-%m-%d"),
+            start_time = time.strftime("%H:%M"),
+            end_time=time.strftime("%H:%M"),
+            contact="contact 2",
+            description="description 2"
+        )
+        booking.save()
+        response = client.post('/getRoomsBookings/',{
+            'start':"2017-01-01",
+            'end':"2017-01-31",
+        })
+        self.assertEqual(response.status_code,200)
+        bookings_json = response.json()
+        self.assertEqual(len(bookings_json),2)
+        self.assertEqual(bookings_json[0]['description'],"description")
+        self.assertEqual(bookings_json[0]['contact'],"contact")
+        self.assertEqual(bookings_json[1]['description'],"description 2")
+        self.assertEqual(bookings_json[1]['contact'],"contact 2")      
     

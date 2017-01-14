@@ -13,10 +13,6 @@ project_dir = home + virtualenv + project_name
 repo = 'https://github.com/nijaaam/bookingsystem.git'
 keyLocation = '/home/jamun-g/Desktop/keys/bookingsystem'
 
-django_settings = {
-    'Debug' : False,
-}
-
 class VirtualEnv(Node):
     location = required_property()
     requirements_files = []
@@ -85,6 +81,7 @@ class Git(Node):
         with self.hosts.cd(project_dir, expand=True):
             self.hosts.run("git checkout '%s'" % esc1(commit))
 
+    def tag(self):
 class DjangoDeployment(Node):
     class virtual_env(VirtualEnv):
         location = home + virtualenv
@@ -117,9 +114,8 @@ class DjangoDeployment(Node):
         self.restart_nginx()
         self.setup_emperor()
 
-    def upload_django_settings(self):
-        with self.hosts.open(project_dir + 'bookingsystem/settings.py') as f:
-            f.write(django_settings)
+    def load_django_settings(self):
+        self.hosts.run()
 
     def remove_defaultconf(self):
         self.hosts.sudo('rm /etc/nginx/sites-enabled/default')

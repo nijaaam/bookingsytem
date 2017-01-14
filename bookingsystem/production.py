@@ -10,3 +10,5 @@ DATABASES = {
         'HOST': 'us-cdbr-azure-southcentral-f.cloudapp.net',
     }
 }
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
