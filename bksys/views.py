@@ -7,65 +7,49 @@ from django.core.exceptions import ObjectDoesNotExist
 import time, json
 from .forms import DateTimeForm
 
-def index(request):
-	try:
-		cDate = getDate(request)
-		cTime = getTime(request)
-	except KeyError:
-		cTime = time.strftime("%H:%M")
-		cDate = time.strftime("%d-%m-%Y")
-	res = generateResponse(cDate,cTime,request)
-	return render(request,'home.html',res)
 
-def generateResponse(date,time,request):
-	if not request.POST:
-		form = DateTimeForm({
-			'date':date,
-			'time':time,
-		})
-	else:
-		form = DateTimeForm(request.POST)
-		if form.is_valid():
-			data = form.cleaned_data
-			date = data['date'].strftime("%d-%m-%Y")
-			time = data['time'].strftime("%H:%M")
-			(date,time) = validateTime(date,time,request)
-			form = DateTimeForm(initial={'date': date, 'time':time})
-	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
-	(avaliable_rooms,room_bookings,rooms_json) = queryDB(date,time)
-	if len(avaliable_rooms) == 0:
-		rowCount = 79
-	elif len(avaliable_rooms) < 4:
-		rowCount = len(avaliable_rooms)*67 + 39
-	else:
-		rowCount = 250
+def index(request):
+	form = processForm(request)
+	bk_date = getDate(request)
+	bk_date = datetime.strptime(bk_date,"%d-%m-%Y").strftime("%Y-%m-%d")
+	bk_start_time = getTime(request)
+	bk_end_time = datetime.strptime(bk_start_time,"%H:%M") + timedelta(minutes=15)
+	scroll_time = datetime.strptime(bk_start_time,"%H:%M") - timedelta(minutes=60)
+	avaliable_rooms = avaliableRooms(bk_date,bk_start_time,bk_end_time)
+	rooms_json = [rm_instance.getJSON() for rm_instance in avaliable_rooms]
+	room_bookings = []
+	for room in avaliable_rooms:
+		booking_list = bookings.objects.filter(room_id=room.room_id,date=bk_date)
+		for booking in booking_list:
+			room_bookings.append(booking.getJSON())
 	response = {
-    	'scroll_time': scroll_time.strftime("%H:%M"),
+    	'scroll_time': scroll_time,
     	'rooms': json.dumps(rooms_json), 
     	'bookings': json.dumps(room_bookings),
-    	'bk_date':date,
-    	'bk_time':time,
-    	'query_results':avaliable_rooms,
-    	'current_date':datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d"),
-    	'table_height': rowCount,
+    	'query_results': avaliable_rooms,
+    	'current_date': time.strftime("%Y-%m-%d"),
+    	'table_height': getTableHeight(len(avaliable_rooms)),
     	'form': form,
     }
-	return response
-	
+	return render(request,'home.html',response)
+
 def getRoomsBookings(request):
 	start = request.POST['start']
 	end = request.POST['end']
-	all_rooms = rooms.objects.all()
-	rooms_json = [rm_instance.getJSON() for rm_instance in all_rooms]
-	room_bookings = []
-	for rm_instance in all_rooms:
-		booking_list = bookings.objects.filter(room_id=rm_instance.room_id,date__range=[start,end]) 
-		room_bookings.append([bk_instance.getJSON() for bk_instance in booking_list])
-	results = {
-    	'bookings': json.dumps(room_bookings)
-	}
-	return HttpResponse(json.dumps(results), content_type="application/json")
-	
+	avaliable_rooms = avaliableRooms(start,getTime(request),getTime(request))
+	rooms_json = [rm_instance.getJSON() for rm_instance in avaliable_rooms]
+	bookings_list = []
+	for room in avaliable_rooms:
+		booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end])
+		for booking in booking_list:
+			bookings_list.append(booking.getJSON())
+	return HttpResponse(json.dumps(bookings_list), content_type="application/json")
+
+def avaliableRooms(date,start,end):
+	ongoingevents = bookings.objects.getOngoingEvents(date,start,end).values_list('room_id',flat=True)
+	avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents)
+	return avaliable_rooms
+
 def checkIfExpired(id):
 	reserve = reservations.objects.get(room_id=id)
 	expires =  reserve.expiry.replace(tzinfo=None)
@@ -74,21 +58,6 @@ def checkIfExpired(id):
 		return 1
 	else:
 		return 0
-
-def queryDB(date,time):
-	end = datetime.strptime(time,"%H:%M") + timedelta(minutes=15)
-	end = end.strftime("%H:%M")
-	query_date = datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d")
-	ongoingevents = bookings.objects.getOngoingEvents(query_date,time,end).values_list('room_id',flat=True)
-	avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents)
-	reserved_rooms = []
-	all_rooms = rooms.objects.all()
-	rooms_json = [rm_instance.getJSON() for rm_instance in all_rooms]
-	room_bookings = []
-	for rm_instance in all_rooms:
-		booking_list = bookings.objects.filter(room_id=rm_instance.room_id,date=datetime.strptime(date,"%d-%m-%Y").strftime("%Y-%m-%d"))
-		room_bookings.append([bk_instance.getJSON() for bk_instance in booking_list])
-	return avaliable_rooms,room_bookings,rooms_json
 
 def validateTime(cDate,cTime,request):
 	if cDate < time.strftime("%d-%m-%Y"):
@@ -258,3 +227,24 @@ def set_default_values(scrollTime):
         nowIndicator = True,
         scrollTime   = scrollTime,
     )
+
+def processForm(request):
+	if not request.POST:
+		form = DateTimeForm({'date':getDate(request),'time':getTime(request)})
+	else:
+		form = DateTimeForm(request.POST)
+		if form.is_valid():
+			form_date = form.cleaned_data['date']
+			form_time = form.cleaned_data['time']
+			request.session['bk_date'] = form_date.strftime("%d-%m-%Y")
+			request.session['bk_time'] = form_time.strftime("%H:%M")
+			form = DateTimeForm(initial={'date': form_date.strftime("%d-%m-%Y"), 'time':form_time.strftime("%H:%M")})
+	return form
+
+def getTableHeight(rowCount):
+	if rowCount == 0:
+		return 79
+	elif rowCount < 4:
+		return rowCount*67 + 39
+	else:
+		return 250

@@ -17,4 +17,14 @@ class DateTimeForm(forms.Form):
             return datetime.date.today()
         return date
 
+    def clean_time(self):
+        time = self.cleaned_data['time']
+        hour = datetime.datetime.now().hour
+        minute = datetime.datetime.now().minute
+        if time < datetime.time(hour,minute,0):
+            return datetime.time(hour,minute,0)
+        return time
+            
+
+  
     

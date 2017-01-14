@@ -129,28 +129,17 @@
     <script type="text/javascript" src="{% static 'js/request.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/calendar.js'%}"></script>
     <script type="text/javascript">
-        function getRoomsBookings(bookings) {
-            var events = []
-            $.each(bookings, function(index, item) {
-                $.each(item, function(index, item) {
-                    events.push({
-                        id: item.booking_ref,
-                        resourceId: item.room_id,
-                        start: item.start_time,
-                        start: item.date + "T" + item.start_time,
-                        end: item.date + "T" + item.end_time,
-                        title: item.description,
-                        color: "#66cc00",
-                    });
+        var insertEvents = function(json) {
+            $.each(json,function(index,item){
+                $('#scheduler').fullCalendar('renderEvent', {
+                    id: item.booking_ref,
+                    resourceId: item.room_id,
+                    start: item.start_time,
+                    start: item.date + "T" + item.start_time,
+                    end: item.date + "T" + item.end_time,
+                    title: item.description,
+                    color: "#66cc00",
                 });
-            });
-            return events
-        }
-
-        var callback = function(json) {
-            var events = getRoomsBookings($.parseJSON(json.bookings));
-            $.each(events, function(index,item){
-                $('#scheduler').fullCalendar('renderEvent', item);
             });
         };
         
@@ -164,7 +153,7 @@
                     start: start,
                     end: end,
                 };
-                performAJAX(/getRoomsBookings/, 'json', data, callback);
+                performAJAX(/getRoomsBookings/, 'json', data, insertEvents);
             }
             $('#calendarDate').text(currentView.title);
             var date = $('#scheduler').fullCalendar('getDate');
@@ -189,7 +178,7 @@
                     start: start,
                     end: end,
                 };
-                performAJAX(/getRoomsBookings/, 'json', data, callback);
+                performAJAX(/getRoomsBookings/, 'json', data, insertEvents);
             } else if (this.id == 'week') {
                 view = 'agendaWeek';
             }
@@ -229,14 +218,12 @@
                 });
             });
             $.each(bookings, function(index, item) {
-                $.each(item, function(index, item) {
-                    events.push({
-                        id: item.booking_ref,
-                        resourceId: item.room_id,
-                        start: item.date + "T" + item.start_time,
-                        end: item.date + "T" + item.end_time,
-                        color: "#66cc00",
-                    });
+                events.push({
+                    id: item.booking_ref,
+                    resourceId: item.room_id,
+                    start: item.date + "T" + item.start_time,
+                    end: item.date + "T" + item.end_time,
+                    color: "#66cc00",
                 });
             });
             $('#scheduler').fullCalendar({

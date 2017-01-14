@@ -128,15 +128,16 @@ class BookingsManagerTest(TestCase):
             return 14
 
     def testMethods(self):
-        bookings.objects.newBooking(1,"2017-01-13","09:15:00","10:15:00","contact","description")
-        self.assertEqual(bookings.objects.description(1),"description")
-        self.assertEqual(bookings.objects.contact(1),"contact")
-        self.assertEqual(bookings.objects.formatDate(1),"13-01-2017 09:15:00 - 10:15:00")
+        booking = bookings.objects.newBooking(1,"2017-01-13","09:15:00","10:15:00","contact","description")
+        id = booking.booking_ref
+        self.assertEqual(bookings.objects.description(id),"description")
+        self.assertEqual(bookings.objects.contact(id),"contact")
+        self.assertEqual(bookings.objects.formatDate(id),"13-01-2017 09:15:00 - 10:15:00")
         self.assertQuerysetEqual(bookings.objects.get_queryset(),[repr(r) for r in bookings.objects.all()])
         ongoingevent = bookings.objects.getOngoingEvents("2017-01-13","09:30","09:30")
         self.assertQuerysetEqual(bookings.objects.get_queryset(),[repr(r) for r in ongoingevent])
-        bookings.objects.delete(1)
-        self.assertRaises(ObjectDoesNotExist,bookings.objects.get,booking_ref=1)
+        bookings.objects.delete(id)
+        self.assertRaises(ObjectDoesNotExist,bookings.objects.get,booking_ref=id)
         #Weekly Repeat from Jan 13 - Feb 25 - 7 Bookings
         bookings.objects.newRecurringBooking(1,"2017-01-13","09:15:00","10:15:00","contact","description","2","25-02-2017")
         query =  bookings.objects.all().order_by('date')
