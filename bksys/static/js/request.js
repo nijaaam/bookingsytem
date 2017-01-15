@@ -41,13 +41,10 @@ $("input[name=duration_radio]").click(function() {
 
 $('#booking_details').submit(function() {
     var event = $("#calendar").fullCalendar('clientEvents', "new_event")[0];
-    var start = event.start.format("HH:mm:ss");
-    var end = event.end.format("HH:mm:ss");
-    var date = $("#calendar").fullCalendar('getDate').format("YYYY-MM-DD");
     var data = {
-        'start': start,
-        'end': end,
-        'date': date,
+        'start': event.start.format("HH:mm:ss"),
+        'end': event.end.format("HH:mm:ss"),
+        'date': $("#calendar").fullCalendar('getDate').format("YYYY-MM-DD"),
     };
     data = $('#booking_details').serialize() + '&' + $.param(data);
     var callback = function(data){

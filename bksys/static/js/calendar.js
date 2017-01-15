@@ -13,22 +13,11 @@ function loadEvents(booking_id) {
     };
     getJSON(data,function(json){
         $.each(json, function(index, item) {
-            var title = item.description
-            var start = item.date + "T" + item.start_time;
-            var end = item.date + "T" + item.end_time;
-            var event = {
-                id: item.booking_ref,
-                title: item.description,
-                start: new Date(start),
-                end: new Date(end),
-                isUserCreated: true,
-                editable: false,
-            };
-            if (booking_id != "undefined" && event.id == booking_id){
-                event.editable = true;
-                event.color = "#66cc00";
+            if (item.id == booking_id){
+                item.editable = true;
+                item.color = "#A4E786";
             }
-            $('#calendar').fullCalendar('renderEvent', event);
+            $('#calendar').fullCalendar('renderEvent', item);
         });
     });
 }
@@ -55,10 +44,18 @@ $('#prev,#next,#today').click(function() {
     $('#calendar').fullCalendar(this.id);
     updateTitle();
     var date = $('#calendar').fullCalendar('getDate');
+    if (!moment().isBefore(date,'day')){
+        $('#prev').attr('disabled', true);
+    } else {
+        $('#prev').attr('disabled', false);
+    }
     if (date.format("DD/MM/YYYY") == moment().format("DD/MM/YYYY")) {
         $('#today').attr('disabled', true);
     } else {
         $('#today').attr('disabled', false);
+    }
+    if ($('#calendar').fullCalendar('getView').name == 'month'){
+        $('#month').click();
     }
     return false;
 });
@@ -67,14 +64,8 @@ $('#day,#month,#week').click(function() {
     var view = 'month';
     if (this.id == 'day') {
         view = 'agendaDay';
-    } else if (this.id == 'month') {
-        view = this.id;
-        var id = $('input[id=booking_id]').val();
-        if (id == "undefined"){
-            id = 999;
-        }
-        alert(id);
-        loadEvents(id);
+    } else if (this.id == 'month'){
+        loadEvents($('#booking_id').val());
     } else if (this.id == 'week') {
         view = 'agendaWeek';
     }

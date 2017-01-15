@@ -179,6 +179,16 @@ def cancelBooking(request):
     bookings.objects.delete(request.POST['booking_id'])
     return HttpResponse("Booking Canceled")
 
+def getCalendarEventJson(booking):
+    return dict(
+        id = booking.booking_ref,
+        title = booking.description,
+        start = str(booking.date) + "T" + str(booking.start_time),
+        end = str(booking.date) + "T" + str(booking.end_time),
+        isUserCreated = True,
+        editable = False,
+    )
+
 def getBookings(request):
     start = request.POST['start']
     end = request.POST['end']
@@ -187,7 +197,8 @@ def getBookings(request):
     start = datetime.strptime(start,"%d-%m-%Y").strftime("%Y-%m-%d")
     end = datetime.strptime(end,"%d-%m-%Y").strftime("%Y-%m-%d")
     booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end]) 
-    results = [bk_instance.getJSON() for bk_instance in booking_list]
+    results = [getCalendarEventJson(bk_instance) for bk_instance in booking_list]
+    #results = [bk_instance.getJSON() for bk_instance in booking_list]
     return HttpResponse(json.dumps(results), content_type="application/json")
 
 def set_default_values(scrollTime):

@@ -218,6 +218,7 @@
             newEvent.start = datetime.format("YYYY-MM-DDTHH:mm:ss");
             newEvent.end = datetime.add(15, 'minutes').format("YYYY-MM-DDTHH:mm:ss");
             $('#calendar').fullCalendar('renderEvent', newEvent);
+            $('#prev').attr('disabled', true);
         });
     </script>
 </body>
