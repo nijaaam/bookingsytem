@@ -10,4 +10,5 @@ urlpatterns = [ url(r'^$',views.index, name = 'index'),
                 url(r'^cancelBooking/$',views.cancelBooking, name = 'cancelBooking'),
                 url(r'^getBookings/$',views.getBookings, name = 'getBookings'),
                 url(r'^getRoomsBookings/$',views.getRoomsBookings, name = 'getRoomsBookings'),
+                url(r'^checkIfRecurring/$',views.checkIfRecurring, name = 'checkIfRecurring'),
               ]

@@ -106,31 +106,51 @@ $.ajaxSetup({
 });
 
 $('#cancelBooking').click(function() {
-    $('#cancelBookingModal').modal('show');
+    $.ajax({
+        type:'POST',
+        url: "/checkIfRecurring/",
+        dataType: 'html',
+        data: {
+            "id": booking_id,
+        },
+        success: function(data){
+            if (data == "1"){
+                $('#cancelBookingModal1').modal('show');
+            } else {
+                $('#cancelBookingModal').modal('show');
+            }
+        },
+    });
+    
 });
 
-$('#cancelBooking2').click(function() {
-    var booking_id = $('input[name=booking_id]').val();
-    var input = $input = $('<input type="text" name="booking_id" hidden/>').val(booking_id);
-    $('#viewBooking').append(input);
+$('#remAll,#remCurrent').click(function(){
+    var deleteAll = false;
+    if (this.id == "remAll"){
+        deleteAll = true;
+    }
     $.ajax({
         type: "POST",
         url: "/cancelBooking/",
         dataType: "html",
-        data: $('#viewBooking').serialize(),
-        success: function(data) {
-            $('#modalText').text(data);
-            $('#cancelBooking2').remove();
-            $('#exit').text('Close').button("refresh");
-            $("[id='exit']").click(function() {
-                window.location = "/";
-            });
-            $("[id='exit1']").click(function() {
-                window.location = "/";
-            });
+        data : {
+            'id' : booking_id,
+            'deleteAll':deleteAll,
+        },
+        success: function(data){
+            if($('#cancelBookingModal1').is(':visible')){
+                $('#modalText1').text(data);
+                $('#remAll,#remCurrent').remove();
+                $('#cancelBookingModal1').find("button#exit").text('Close');
+            } else {
+                $('#modalText').text(data);
+                $('#remCurrent').remove();
+                $('#cancelBookingModal').find("button#exit").text('Close');
+            }
         }
     });
-});
+})
+
 function getVAR(x) {
     var initial = $('#' + x).prop("defaultValue");
     var changed_val = $('#' + x).val();

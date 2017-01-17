@@ -176,8 +176,13 @@ def updateBooking(request):
     })
 
 def cancelBooking(request):
-    bookings.objects.delete(request.POST['booking_id'])
-    return HttpResponse("Booking Canceled")
+    if request.POST['deleteAll'] == "true":
+        bookings.objects.deleteAllRecurring(request.POST['id'])
+        return HttpResponse("Bookings Canceled")
+    else:
+        bookings.objects.delete(request.POST['id'])
+        return HttpResponse("Booking Canceled")
+   
 
 def getCalendarEventJson(booking):
     return dict(
@@ -245,3 +250,9 @@ def getTableHeight(rowCount):
         return rowCount*67 + 39
     else:
         return 250
+
+def checkIfRecurring(request):
+    if (bookings.objects.isRecurring(request.POST["id"])):
+        return HttpResponse(1)
+    return HttpResponse(0)
+    

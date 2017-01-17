@@ -20,6 +20,10 @@ class BookingsQueryset(models.query.QuerySet):
         booking = self.get_booking(id)
         return str(booking.date.strftime("%d-%m-%Y")) + " " + str(booking.start_time) + " - " + str(booking.end_time)
 
+    def deleteAllRecurring(self,id):
+        for booking in self.filter(recurrence_id=id):
+            booking.delete()
+
     def delete(self,id):
         self.get_booking(id).delete()
 
@@ -27,6 +31,13 @@ class BookingsQueryset(models.query.QuerySet):
         bookings_for_day = self.filter(date=date)
         ongoingevents = bookings_for_day.filter(end_time__gte = start,start_time__lte = end)
         return ongoingevents
+
+    def isRecurring(self,id):
+        booking = self.get_booking(id)
+        if booking.recurrence == None:
+            return 0
+        else:
+            return 1
 
 class BookingsManager(models.Manager):
     def newBooking(self,room_id,date,start,end,contact,description):
@@ -40,6 +51,10 @@ class BookingsManager(models.Manager):
             return 7
         elif value == "3":
             return 14
+
+    def deleteAllRecurring(self,id):
+        recurrence = self.get_queryset().get_booking(id).recurrence
+        self.get_queryset().deleteAllRecurring(recurrence.id)
 
     def newRecurringBooking(self,room_id,date,start,end,contact,description,type,recur_end):
         recur_end = datetime.strptime(recur_end,"%d-%m-%Y")
@@ -60,6 +75,9 @@ class BookingsManager(models.Manager):
         for date in dates:
             self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id)
         return booking
+
+    def isRecurring(self,id):
+        return self.get_queryset().isRecurring(id)
 
     def getOngoingEvents(self,date,start,end):
         return self.get_queryset().ongoingevents(date,start,end)
