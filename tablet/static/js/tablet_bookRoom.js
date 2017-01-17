@@ -39,6 +39,26 @@ $.ajaxSetup({
 });
 
 $(document).ready(function() {
+    $('#book').click(function(){
+        var events = $('#calendar').fullCalendar( 'clientEvents',"new_event");
+        var start = events[0].start;
+        var end = events[0].end;
+        var date = events[0].date;
+        $.ajax({
+            type: 'POST',
+            dataType: 'html',
+            data: {
+                'start' : start.format('HH:mm'),
+                'end':end.format('HH:mm'),
+                'date':start.format('YYYY-MM-DD'),
+            },
+            url: '/tablet/quickBook/',
+            success: function (data){
+                $('#showModal').html(data);
+                $('#modal').modal('show');
+            },
+        });
+    });
     $('#cTime').html(new moment().format("HH:mm"));
     setInterval(function() {
         $('#cTime').html(new moment().format("HH:mm"));

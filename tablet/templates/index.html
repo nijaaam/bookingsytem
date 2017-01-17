@@ -20,6 +20,7 @@
             <div class="panel panel-default">
                 <div class=" text-center panel-heading">Ongoing Event</div>
                 <div class="panel-body">
+                    <input hidden id = 'booking_id' value="{{ ongoing.booking_ref }}"> 
                     <span class="pull-left"><strong>{{ ongoing.description }}</strong></span>
                     <span class="pull-right">{{ ongoing.start_time | time:"H:i" }} -  {{ ongoing.end_time | time:"H:i"}}</span>
                     </br>

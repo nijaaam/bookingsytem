@@ -45,6 +45,11 @@
 <script type="text/javascript">
     $("#calendar").fullCalendar( 'removeEvent', 999 );
     $("[id^='exit_modal']").click(function() {
-        window.location = "/";
+        if (window.location.pathname.search('tablet') == 1){
+            window.location = "/tablet";
+        }
+        else {
+            window.location = "/";
+        }
     });
 </script>

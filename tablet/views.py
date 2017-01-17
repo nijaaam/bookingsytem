@@ -6,7 +6,7 @@ import time,json
 from datetime import datetime, timedelta
 from bksys.views import getDate, getTime, set_default_values
 
-room_id = 1
+room_id = 3
 
 #Check In Option if not checked in 15 min then
 def get_events(request):
@@ -59,6 +59,19 @@ def get_bookings(request):
 	end_time = request.POST['end']
 	date = request.POST['date']
 
+def quickBook(request):
+	date = request.POST['date']
+	start = request.POST['start']
+	end = request.POST['end']
+	print date, start, end
+	booking = bookings.objects.newBooking(room_id,date,start,end,'quickBook','quickBook')
+	return render(request,'modal.html',{
+        "booking_id": booking.booking_ref,
+        "room_name": rooms.objects.get_name(room_id),
+        "start_time": start,
+        "end": end,
+    })
+
 def bookRoom(request):
 	date = getDate(request)
 	time = getTime(request)
@@ -88,8 +101,9 @@ def get_upcoming_events():
 	return upcoming
 
 def end_event(request):
-	bk_id = request.POST[id]
-	bookings.objects.get(booking_ref=bk_id).remove()
+	bk_id = request.POST['bk_id']
+	bookings.objects.delete(bk_id)
+	return HttpResponse(1)
 
 def jsonCalendar(booking):
 	return dict(
