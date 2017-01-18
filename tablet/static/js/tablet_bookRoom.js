@@ -64,6 +64,7 @@ $(document).ready(function() {
         $('#cTime').html(new moment().format("HH:mm"));
     }, 1000);
     settings.defaultDate = datetime;
+    alert(datetime);
     settings.eventConstraint = {
         start: moment().subtract(5, 'minutes'),
         end: moment().add(1, 'year'),
@@ -77,26 +78,30 @@ $(document).ready(function() {
     settings.eventDrop = updateTimes;
     settings.eventResize = updateTimes;
     settings.dayClick = function(date, jsEvent, view) {
-        var start = date.format("YYYY-MM-DDTHH:mm:ss");
-        var end = date.add(15, 'minutes').format("YYYY-MM-DDTHH:mm:ss");
-        start = new moment(start,"YYYY-MM-DDTHH:mm:ss");
-        end = new moment(end,"YYYY-MM-DDTHH:mm:ss");
-        var view = view.name;
-        var event = $('#calendar').fullCalendar('clientEvents',"new_event");
-        if (event != ""){
-            $('#calendar').fullCalendar('removeEvents',"new_event");
-        } 
-        var newEvent = {
-            id: "new_event",
-            editable: true,
-            color: "#66cc00",
-        };
-        newEvent.start = start;
-        newEvent.end = end;
-        updateTimes(newEvent,'','');
-        $('#calendar').fullCalendar('renderEvent',newEvent);
+        if (date > moment()){
+            var start = date.format("YYYY-MM-DDTHH:mm:ss");
+            var end = date.add(15, 'minutes').format("YYYY-MM-DDTHH:mm:ss");
+            start = new moment(start,"YYYY-MM-DDTHH:mm:ss");
+            end = new moment(end,"YYYY-MM-DDTHH:mm:ss");
+            var view = view.name;
+            var event = $('#calendar').fullCalendar('clientEvents',"new_event");
+            if (event != ""){
+                $('#calendar').fullCalendar('removeEvents',"new_event");
+            } 
+            var newEvent = {
+                id: "new_event",
+                editable: true,
+                color: "#66cc00",
+            };
+            newEvent.start = start;
+            newEvent.end = end;
+            updateTimes(newEvent,'','');
+            $('#calendar').fullCalendar('renderEvent',newEvent);
+        }
     }
     $('#calendar').fullCalendar(settings);
+    updateTitle();
+    loadEvents();
     var newEvent = {
         id: "new_event",
         editable: true,
@@ -111,7 +116,6 @@ $(document).ready(function() {
         loadEvents();
         //$('#calendar').fullCalendar('renderEvent', newEvent);
     });
-    loadEvents();
 });
 
 function loadEvents(booking_id) {
@@ -125,18 +129,11 @@ function loadEvents(booking_id) {
     };
     getJSON(data,function(json){
         $.each(json, function(index, item) {
-            var title = item.description
-            var start = item.date + "T" + item.start_time;
-            var end = item.date + "T" + item.end_time;
-            var event = {
-                id: item.booking_ref,
-                title: item.description,
-                start: new Date(start),
-                end: new Date(end),
-                isUserCreated: true,
-                editable: false,
-            };
-            $('#calendar').fullCalendar('renderEvent', event);
+            if (item.id == booking_id){
+                item.editable = true;
+                item.color = "#A4E786";
+            }
+            $('#calendar').fullCalendar('renderEvent', item);
         });
     });
 }

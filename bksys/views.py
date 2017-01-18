@@ -60,6 +60,7 @@ def checkIfExpired(id):
         return 0
     
 def getDate(request):
+    print request.session['bk_date'], time.strftime("%d-%m-%Y")
     if 'bk_date' in request.session:
         return request.session['bk_date']
     else:

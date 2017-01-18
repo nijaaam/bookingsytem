@@ -4,15 +4,14 @@ from bksys.models import rooms,bookings
 from django.core.exceptions import ObjectDoesNotExist
 import time,json
 from datetime import datetime, timedelta
-from bksys.views import getDate, getTime, set_default_values
+from bksys.views import set_default_values
 
-room_id = 3
+room_id = 1
 
 #Check In Option if not checked in 15 min then
 def get_events(request):
 	if 'start' not in request.POST:
-		start = datetime.strptime(getDate(request),"%d-%m-%Y")
-		start = start.strftime("%Y-%m-%d")
+		start = time.strftime("%Y-%m-%d")
 		end = start
 	else:
 		start = request.POST['start']
@@ -73,16 +72,13 @@ def quickBook(request):
     })
 
 def bookRoom(request):
-	date = getDate(request)
-	time = getTime(request)
-	scroll_time = datetime.strptime(time,"%H:%M") - timedelta(minutes=60)
+	date = time.strftime("%d-%m-%Y")
+	bk_time = time.strftime("%H:%M")
+	scroll_time = datetime.strptime(bk_time,"%H:%M") - timedelta(minutes=60)
 	res = {
-		"datetime":date + "T"+ time,
-		"room":rooms.objects.get(room_id=room_id),
-		"date": date,
-		'time': time,
-		"settings": json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),
-		'room_name':rooms.objects.get(room_id=room_id).room_name,
+		"datetime" : date + "T"+ bk_time,
+		"settings" : json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),
+		'room_name': rooms.objects.get(room_id=room_id).room_name,
 	}
 	return render(request,"book_room.html",res)
 	
