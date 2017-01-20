@@ -228,6 +228,10 @@ $.ajaxSetup({
         var settings = $.parseJSON('{{ settings | safe }}');
         settings.defaultDate = datetime;
         settings.defaultView = view;
+        settings.eventConstraint = {
+            start: moment().subtract(5, 'minutes'),
+            end: moment().add(1, 'year'),
+        };
         var booking_id = "{{ booking.booking_ref }}";        
         $('#calendar').fullCalendar(settings);
         updateTitle();

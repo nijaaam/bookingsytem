@@ -9,3 +9,8 @@ input[readonly] {
 @media (max-width: 767px) {
     /* CSS goes here */
 }
+
+.fc-past {
+    background-color: #EEEEEE;
+}
+

@@ -64,7 +64,6 @@ $(document).ready(function() {
         $('#cTime').html(new moment().format("HH:mm"));
     }, 1000);
     settings.defaultDate = datetime;
-    alert(datetime);
     settings.eventConstraint = {
         start: moment().subtract(5, 'minutes'),
         end: moment().add(1, 'year'),
