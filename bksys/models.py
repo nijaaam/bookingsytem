@@ -50,13 +50,16 @@ class recurringEvents(models.Model):
 
 class bookings(models.Model):
     booking_ref = models.AutoField(primary_key=True)
+    user  = models.ForeignKey(User,  on_delete=models.CASCADE, null = False)
     room        = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
+    recurrence  = models.ForeignKey(recurringEvents,  on_delete=models.CASCADE, null = True)
     date        = models.DateField(null = False)
     start_time  = models.TimeField(null = False)
     end_time    = models.TimeField(null = False)
     contact     = models.CharField(max_length=60, null = False)
     description = models.CharField(max_length=60, null = False)
-    recurrence  = models.ForeignKey(recurringEvents,  on_delete=models.CASCADE, null = True)
+    
+
     objects = BookingsManager()
 
     class Meta:

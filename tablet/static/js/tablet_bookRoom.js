@@ -78,6 +78,7 @@ $('#confirm').click(function() {
                 'start': start.format('HH:mm'),
                 'end': end.format('HH:mm'),
                 'date': start.format('YYYY-MM-DD'),
+                'id': $('#search').val(),
             }, function(data) {
                 $('#showModal').html(data);
                 $('#modal').modal('show');

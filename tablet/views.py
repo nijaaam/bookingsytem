@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from bksys.models import rooms,bookings
+from bksys.models import *
 from django.core.exceptions import ObjectDoesNotExist
 import time,json
 from datetime import datetime, timedelta
@@ -59,11 +59,12 @@ def get_bookings(request):
 	date = request.POST['date']
 
 def quickBook(request):
+	user = User.objects.getUser(request.POST['id'])
+	contact = User.objects.getName(request.POST['id'])
 	date = request.POST['date']
 	start = request.POST['start']
 	end = request.POST['end']
-	print date, start, end
-	booking = bookings.objects.newBooking(room_id,date,start,end,'quickBook','quickBook')
+	booking = bookings.objects.newBooking(room_id,date,start,end,contact,'quickBook',user)
 	return render(request,'modal.html',{
         "booking_id": booking.booking_ref,
         "room_name": rooms.objects.get_name(room_id),

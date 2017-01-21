@@ -167,7 +167,7 @@ def book_room(request):
     date =  request.POST['date']
     room_id = request.session['bk_rm_id']    
     if recurring == "0":
-        entry = bookings.objects.newBooking(room_id,date,start,end,contact,description)
+        entry = bookings.objects.newBooking(room_id,date,start,end,contact,description,user)
     else:
         entry = bookings.objects.newRecurringBooking(room_id,date,start,end,contact,description,recurring,request.POST['recurr_end'])
     room_name = rooms.objects.get_name(room_id)

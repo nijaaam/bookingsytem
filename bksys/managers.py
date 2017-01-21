@@ -27,11 +27,22 @@ class UserManager(models.Manager):
 
     def getUser(self,id):
         try: 
-            return self.get(name=id)
+            return self.get(name=id).id
         except ObjectDoesNotExist:
             passcode = make_password(id)
             try:
-                return self.get(passcode=passcode)
+                return self.get(passcode=passcode).id
+            except ObjectDoesNotExist:
+                return None
+        return None
+
+    def getName(self,id):
+        try: 
+            return self.get(name=id).name
+        except ObjectDoesNotExist:
+            passcode = make_password(id)
+            try:
+                return self.get(passcode=passcode).name
             except ObjectDoesNotExist:
                 return None
         return None
@@ -75,8 +86,8 @@ class BookingsQueryset(models.query.QuerySet):
             return 1
 
 class BookingsManager(models.Manager):
-    def newBooking(self,room_id,date,start,end,contact,description):
-        booking = self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description)
+    def newBooking(self,room_id,date,start,end,contact,description,user):
+        booking = self.create(user_id=user,room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description)
         return booking
 
     def getInterval(self,value):
