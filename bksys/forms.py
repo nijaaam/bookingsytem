@@ -35,5 +35,6 @@ class SignUpForm(forms.Form):
     def save(self):
         name = self.cleaned_data['name']
         email = self.cleaned_data['email']
-        User.objects.create_user(name,email)
+        return User.objects.create_user(name,email)
+
         

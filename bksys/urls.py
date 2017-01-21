@@ -12,4 +12,6 @@ urlpatterns = [ url(r'^$',views.index, name = 'index'),
                 url(r'^getRoomsBookings/$',views.getRoomsBookings, name = 'getRoomsBookings'),
                 url(r'^checkIfRecurring/$',views.checkIfRecurring, name = 'checkIfRecurring'),
                 url(r'^signup/$',views.signup, name = 'signup'),
+                url(r'^autocomplete/$',views.autocomplete, name = 'autocomplete'),
+                url(r'^validateID/$',views.validateID, name = 'validateID'),
               ]

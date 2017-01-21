@@ -38,21 +38,42 @@ $("input[name=duration_radio]").click(function() {
         $("input[name=durValue]").prop('disabled', true);
     }
 });
+$("#search").on("input", function() {
+    var str = $(this).closest('.form-group').attr('class');
+    if (str.indexOf("has-error") >= 0){
+        var element = $('#search');
+        $(element).closest('.form-group').removeClass('has-error has-feedback');
+        $('#search_error').removeClass('glyphicon-remove');
+        $('#ident_error').remove();
+    }
+});
 
 $('#booking_details').submit(function() {
-    var event = $("#calendar").fullCalendar('clientEvents', "new_event")[0];
-    var data = {
-        'start': event.start.format("HH:mm:ss"),
-        'end': event.end.format("HH:mm:ss"),
-        'date': $("#calendar").fullCalendar('getDate').format("YYYY-MM-DD"),
-    };
-    data = $('#booking_details').serialize() + '&' + $.param(data);
-    var callback = function(data){
-        $('#showModal').html(data);
-        $('#modal').modal('show');
-    };  
+    var event = $("#calendar").fullCalendar('clientEvents', "new_event")[0]; 
     if ($('#booking_details').valid() == true) {
-        performAJAX("/book_room/","html",data,callback);    
+        performAJAX("/validateID/","html",{
+            'id': $('#search').val(),
+        },function(res){
+            if (res == "0"){
+                var element = $('#search');
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
+                $('#search_error').addClass('glyphicon-remove');
+                $('<span id="ident_error" class="help-block">Identification Failed.</span>').insertAfter(element);
+            }
+            else {
+                var data = {
+                    'start': event.start.format("HH:mm:ss"),
+                    'end': event.end.format("HH:mm:ss"),
+                    'date': $("#calendar").fullCalendar('getDate').format("YYYY-MM-DD"),
+                    'id': $('#search').val(),
+                };
+                data = $('#booking_details').serialize() + '&' + $.param(data);
+                performAJAX("/book_room/","html",data, function(data){
+                    $('#showModal').html(data);
+                    $('#modal').modal('show');
+                });
+            }
+        });    
     }
     return false;
 });

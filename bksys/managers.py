@@ -2,14 +2,40 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
+from django.core.exceptions import ObjectDoesNotExist
 
 class UserManager(models.Manager):
     def create_user(self, name, email):
         now = timezone.now()
         passcode = User.objects.make_random_password(length=6)
-        passcode = make_password(passcode)
-        user = self.create(name=name,email=email,passcode=passcode)
-        return user
+        encrypted_passcode = make_password(passcode)
+        user = self.create(name=name,email=email,passcode=encrypted_passcode)
+        return passcode
+
+    def authenticate(self,id):
+        try: 
+            self.get(name=id)
+            return True
+        except ObjectDoesNotExist:
+            passcode = make_password(id)
+            try:
+                self.get(passcode=passcode)
+                return True
+            except ObjectDoesNotExist:
+                return False
+        return False
+
+    def getUser(self,id):
+        try: 
+            return self.get(name=id)
+        except ObjectDoesNotExist:
+            passcode = make_password(id)
+            try:
+                return self.get(passcode=passcode)
+            except ObjectDoesNotExist:
+                return None
+        return None
+            
 
 class recurringEventsManager(models.Manager):
     def newBooking(self,rm_id,start,end,recur_type):

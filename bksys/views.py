@@ -32,13 +32,23 @@ def index(request):
     }
     return render(request,'home.html',response)
 
+def autocomplete(request):
+    query = request.POST['search']
+    rooms_list = User.objects.filter(name__contains=query)
+    results = [rm_instance.name for rm_instance in rooms_list]
+    print results
+    return HttpResponse(json.dumps(results), content_type="application/json")
+
 def signup(request):
     if request.method =='POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            passcode = form.save()
             #print check_password(a, endoedpasscode)
-            return redirect('/')
+            return render(request, 'signup.html', {
+                'form': form,
+                'code': passcode,
+            })
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {
@@ -70,7 +80,14 @@ def checkIfExpired(id):
         return 1
     else:
         return 0
-    
+
+def validateID(request):
+    id = request.POST['id']
+    if User.objects.authenticate(id):
+        return HttpResponse(1)
+    else:
+        return HttpResponse(0)
+
 def getDate(request):
     #print request.session['bk_date'], time.strftime("%d-%m-%Y")
     if 'bk_date' in request.session:
@@ -141,6 +158,7 @@ def view_room(request):
     return render(request,'room_details.html',res)
 
 def book_room(request):
+    user = User.objects.getUser(request.POST['id'])
     recurring = request.POST.getlist('recurring')[0]
     contact         = request.POST['contact']
     description     = request.POST['description']
