@@ -1,5 +1,8 @@
 from django import forms
+from bksys.models import User
 import datetime
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from .models import User
 
 class DateTimeForm(forms.Form):
     date = forms.DateField(input_formats=[
@@ -25,6 +28,12 @@ class DateTimeForm(forms.Form):
             return datetime.time(hour,minute,0)
         return time
             
+class SignUpForm(forms.Form):
+    name = forms.CharField()
+    email = forms.EmailField()
 
-  
-    
+    def save(self):
+        name = self.cleaned_data['name']
+        email = self.cleaned_data['email']
+        User.objects.create_user(name,email)
+        

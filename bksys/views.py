@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
-from datetime import datetime, timedelta, date
-from .models import rooms,bookings, reservations
+from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 import time, json
-from .forms import DateTimeForm
-
+from .forms import *
+from datetime import datetime, timedelta, date
 
 def index(request):
     form = processForm(request)
@@ -32,6 +31,19 @@ def index(request):
         'form': form,
     }
     return render(request,'home.html',response)
+
+def signup(request):
+    if request.method =='POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            #print check_password(a, endoedpasscode)
+            return redirect('/')
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {
+        'form': form,
+    })
 
 def getRoomsBookings(request):
     start = request.POST['start']

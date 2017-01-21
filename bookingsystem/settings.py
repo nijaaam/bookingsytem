@@ -31,6 +31,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 ALLOWED_HOSTS = ['*']
 
+
 BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 
 STATICFILES_FINDERS = (
