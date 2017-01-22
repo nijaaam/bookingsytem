@@ -48,6 +48,16 @@ class recurringEvents(models.Model):
     class Meta:
         db_table = "recurringEvents"
 
+class User(models.Model):
+    name = models.CharField(max_length=254, null=False)
+    email = models.EmailField(max_length=70,null=False,unique=True)
+    passcode = models.CharField(max_length=254,unique=True)
+    objects = UserManager()
+
+    class Meta:
+        db_table = "User"
+
+
 class bookings(models.Model):
     booking_ref = models.AutoField(primary_key=True)
     user  = models.ForeignKey(User,  on_delete=models.CASCADE, null = False)
@@ -76,13 +86,5 @@ class bookings(models.Model):
             description = self.description
         )
 
-class User(models.Model):
-    name = models.CharField(max_length=254, null=False)
-    email = models.EmailField(max_length=70,null=False,unique=True)
-    passcode = models.CharField(max_length=254,unique=True)
-    objects = UserManager()
-
-    class Meta:
-        db_table = "User"
 
 

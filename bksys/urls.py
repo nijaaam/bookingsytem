@@ -14,4 +14,5 @@ urlpatterns = [ url(r'^$',views.index, name = 'index'),
                 url(r'^signup/$',views.signup, name = 'signup'),
                 url(r'^autocomplete/$',views.autocomplete, name = 'autocomplete'),
                 url(r'^validateID/$',views.validateID, name = 'validateID'),
+                url(r'^getUserBookings/$',views.getUserBookings, name = 'getUserBookings'),
               ]

@@ -32,6 +32,22 @@ def index(request):
     }
     return render(request,'home.html',response)
 
+def getBKTableHeight(rowCount):
+    if rowCount == 0:
+        return 79
+    elif rowCount < 4:
+        return rowCount*51 + 39
+    else:
+        return 250
+    
+def getUserBookings(request):
+    id = request.POST['id']
+    res = bookings.objects.getUserBookings(User.objects.getUser(id))
+    return render(request, 'userBookings.html', {
+        'bookings':res,
+        'table_height': getBKTableHeight(len(res)),
+    })
+
 def autocomplete(request):
     query = request.POST['search']
     rooms_list = User.objects.filter(name__contains=query)
@@ -105,11 +121,6 @@ def findBooking(request):
     booking_id = request.POST['booking_id']
     try:
         booking = bookings.objects.get(booking_ref=booking_id)
-        if datetime.strptime(str(booking.date)+str(booking.end_time),"%Y-%m-%d%H:%M:%S") < datetime.now():
-            bookings.objects.delete(booking_id)
-            error_msg = "Booking not found for " + booking_id
-            html = "<span class = 'help-block' style ='color:#a94442'>" + error_msg + "</span>"
-            return HttpResponse(html)
         room = rooms.objects.get(room_id=booking.room_id)
         start = booking.start_time.strftime("%H:%M")
         end = booking.end_time.strftime("%H:%M")

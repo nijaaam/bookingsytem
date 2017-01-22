@@ -64,6 +64,9 @@ class BookingsQueryset(models.query.QuerySet):
     def get_booking(self,id):
         return self.get(booking_ref=id)
     
+    def get_user_bookings(self,user_id):
+        return self.filter(user_id=user_id)
+
     def get_description(self,id):
         return self.get_booking(id).description
 
@@ -95,6 +98,7 @@ class BookingsQueryset(models.query.QuerySet):
 
 class BookingsManager(models.Manager):
     def newBooking(self,room_id,date,start,end,contact,description,user):
+        print user
         booking = self.create(user_id=user,room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description)
         return booking
 
@@ -105,6 +109,9 @@ class BookingsManager(models.Manager):
             return 7
         elif value == "3":
             return 14
+
+    def getUserBookings(self,user_id):
+        return self.get_queryset().get_user_bookings(user_id)
 
     def deleteAllRecurring(self,id):
         recurrence = self.get_queryset().get_booking(id).recurrence

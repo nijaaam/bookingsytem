@@ -53,47 +53,6 @@
             <hr class="visible-xs visible-sm">
         </div>
     </div>
-    <div id="cancelBookingModal" class="modal fade">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button id="exit1" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                    <h4 class="modal-title text-center">Cancel Booking</h4>
-                </div>
-                <div class="modal-body">
-                    <p id="modalText" align="center">Are you sure you want to cancel this booking</p>
-                </div>
-                <div id = "modelFooter" class="modal-footer">
-                    <button id="remCurrent" type="button" class="btn btn-danger">Yes</button>
-                    <button id="exit" type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div id="cancelBookingModal1" class="modal fade">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button id="exit1" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                    <h4 class="modal-title text-center">Cancel Booking</h4>
-                </div>
-                <div class="modal-body">
-                    <p id="modalText1" align="center">This is a repeating event</p>
-                </div>
-                <div id = "modelFooter" class="modal-footer">
-                    <button id="remCurrent" type="button" class="btn btn-danger">Delete this event only</button>
-                    <button id="remAll" type="button" class="btn btn-danger">Delete all events</button>
-                    <button id="exit" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>
 <div id="showUpdateBKModal"></div>
 <div id="CancelBookingModal"></div>
@@ -177,23 +136,32 @@ $.ajaxSetup({
         }
     }
 });
+
+function updateBookings(){
+    $('#viewBooking').empty();
+    getUserBookings($('#search').val());
+    
+}
     var booking_id = '{{ booking.booking_ref }}';
     $('#cancelBookingModal').on('hidden.bs.modal', function () {
         if ($('#modalText').html() == "Booking Canceled"){
-            window.location.href = '/';
+            updateBookings();
         }
     });
     $('#cancelBookingModal1').on('hidden.bs.modal', function () {
         if ($('#modalText1').html() == "Booking Canceled"){
-            window.location.href = '/';
+            updateBookings();
         }
         if ($('#modalText1').html() == "Bookings Canceled"){
-            window.location.href = '/';
+            updateBookings();
         }
     });
     $('#openCal').click(function() {
         $('#toolbar').css("visibility",'visible');
         loadCalendar();
+        $('html,body').animate({
+           scrollTop: $("#calendar").offset().top
+        });
     });
     $(document).ready(function() {
         $(window).on("orientationchange",function(event){

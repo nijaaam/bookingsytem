@@ -19,6 +19,17 @@ function validateTime(time) {
     return true;
 }
 
+function getUserBookings(id){
+    performAJAX('/getUserBookings/','html',{
+        'id': id,
+    }, function (response){
+        $('#userBookings').html(response);
+    });
+}
+$('#search').on('typeahead:selected', function(e, datum) {
+    getUserBookings(datum);
+});
+
 function performAJAX(url, dataType, data, callback) {
     $.ajax({
         type: 'POST',
@@ -87,11 +98,7 @@ $('#authUser').submit(function() {
             $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
             $('<span id="ident_error" class="help-block">Identification Failed.</span>').insertAfter(element.parent().parent());
         } else {
-            performAJAX("/userBookings/", "html", {
-                'id': user,
-            }, function(data) {
-                
-            });
+            getUserBookings(user);
         }
     });
     return false;
@@ -161,7 +168,6 @@ $('#cancelBooking').click(function() {
             }
         },
     });
-
 });
 
 $('#remAll,#remCurrent').click(function() {

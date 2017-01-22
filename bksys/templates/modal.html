@@ -52,4 +52,12 @@
             window.location = "/";
         }
     });
+    $('#modal').on('hidden.bs.modal', function () {
+        if (window.location.pathname.search('tablet') == 1){
+            window.location = "/tablet";
+        }
+        else {
+            window.location = "/";
+        }
+    });
 </script>
