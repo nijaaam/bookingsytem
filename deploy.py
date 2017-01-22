@@ -11,7 +11,7 @@ project_name = "bookingsystem/"
 virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
 repo = 'https://github.com/nijaaam/bookingsystem.git'
-keyLocation = '/home/jamun-g/Desktop/keys/bookingsystem'
+keyLocation = '/home/nijam/Desktop/keys/bookingsystem'
 
 class VirtualEnv(Node):
     location = required_property()
@@ -82,6 +82,12 @@ class Git(Node):
             self.hosts.run("git checkout '%s'" % esc1(commit))
 
     def tag(self):
+        with self.hosts.cd(project_dir, expand=True):
+            self.hosts.run("git tag LIVE")
+            self.hosts.run('export TAG="date +DEPLOYED-%F/%H%M"')
+            self.hosts.run("git tag $TAG")
+            self.hosts.run("git push origin LIVE $TAG")
+
 class DjangoDeployment(Node):
     class virtual_env(VirtualEnv):
         location = home + virtualenv
@@ -93,6 +99,7 @@ class DjangoDeployment(Node):
         repository = repo
 
     def setup(self):
+        self.git.checkout('release')
         self.git.pull()
         self.hosts.run('export DJANGO_SETTINGS_MODULE=bookingsystem.production')
         self.virtual_env.setup_env()
