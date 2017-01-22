@@ -12,7 +12,7 @@ virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
 repo = 'https://github.com/nijaaam/bookingsystem.git'
 keyLocation = '/home/jamun-g/Desktop/keys/bookingsystem'
-
+'sudo apt-get install build-essential libssl-dev libffi-dev python-dev'
 class VirtualEnv(Node):
     location = required_property()
     requirements_files = []

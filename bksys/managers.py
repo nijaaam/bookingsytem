@@ -3,12 +3,17 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.exceptions import ObjectDoesNotExist
+import bcrypt
+salt = "$2b$12$CaEVuEJ6b/WTplB83zfZ/."
+salt = salt.encode('utf-8')
 
 class UserManager(models.Manager):
     def create_user(self, name, email):
         now = timezone.now()
         passcode = User.objects.make_random_password(length=6)
-        encrypted_passcode = make_password(passcode)
+        passcode = passcode.encode('utf-8')
+        hashed = bcrypt.hashpw(passcode, salt)
+        encrypted_passcode = hashed
         user = self.create(name=name,email=email,passcode=encrypted_passcode)
         return passcode
 
@@ -17,7 +22,8 @@ class UserManager(models.Manager):
             self.get(name=id)
             return True
         except ObjectDoesNotExist:
-            passcode = make_password(id)
+            id = id.encode('utf-8')
+            passcode = bcrypt.hashpw(id, salt)
             try:
                 self.get(passcode=passcode)
                 return True
@@ -29,7 +35,8 @@ class UserManager(models.Manager):
         try: 
             return self.get(name=id).id
         except ObjectDoesNotExist:
-            passcode = make_password(id)
+            id = id.encode('utf-8')
+            passcode = bcrypt.hashpw(id, salt)
             try:
                 return self.get(passcode=passcode).id
             except ObjectDoesNotExist:
@@ -40,7 +47,8 @@ class UserManager(models.Manager):
         try: 
             return self.get(name=id).name
         except ObjectDoesNotExist:
-            passcode = make_password(id)
+            id = id.encode('utf-8')
+            passcode = bcrypt.hashpw(id, salt)
             try:
                 return self.get(passcode=passcode).name
             except ObjectDoesNotExist:
