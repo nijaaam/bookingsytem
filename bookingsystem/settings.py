@@ -92,30 +92,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bookingsystem.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'bksysdev',
-        'USER': 'bdc872f41f048b',
-        'PASSWORD': '1c11843c',
-        'HOST': 'us-cdbr-azure-southcentral-f.cloudapp.net',
-    }
-}
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'bookingsystem_dev',
         'USER': 'root',
-        'PASSWORD': '123',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PASSWORD': 'Bksysuser_2017',
+        'HOST': 'mysql2704.cloudapp.net',
     }
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
