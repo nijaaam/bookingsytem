@@ -15,12 +15,12 @@ def index(request):
     bk_end_time = datetime.strptime(bk_start_time,"%H:%M") + timedelta(minutes=15)
     scroll_time = datetime.strptime(bk_start_time,"%H:%M") - timedelta(minutes=60)
     avaliable_rooms = avaliableRooms(bk_date,bk_start_time,bk_end_time)
-    rooms_json = [rm_instance.getJSON() for rm_instance in avaliable_rooms]
+    rooms_json = [getJSONRooms(rm_instance) for rm_instance in avaliable_rooms]
     room_bookings = []
     for room in avaliable_rooms:
         booking_list = bookings.objects.filter(room_id=room.room_id,date=bk_date)
         for booking in booking_list:
-            room_bookings.append(booking.getJSON())
+            room_bookings.append(getJSONBookings(booking))
     response = {
         'scroll_time': scroll_time.strftime("%H:%M"),
         'rooms': json.dumps(rooms_json), 
@@ -31,6 +31,26 @@ def index(request):
         'form': form,
     }
     return render(request,'home.html',response)
+
+def getJSONBookings(self):
+    return dict(
+        booking_ref = self.booking_ref,
+        room_id = self.room_id,
+        date = str(self.date),
+        start_time = str(self.start_time),
+        end_time = str(self.end_time),
+        contact = self.contact,
+        description = self.description
+    )
+
+def getJSONRooms(self):
+    return dict(
+        room_id = self.room_id,
+        room_name = self.room_name,
+        room_size = self.room_size,
+        room_location = self.room_location,
+        room_features = self.room_features,
+    )
 
 def getBKTableHeight(rowCount):
     if rowCount == 0:
@@ -75,12 +95,12 @@ def getRoomsBookings(request):
     start = request.POST['start']
     end = request.POST['end']
     avaliable_rooms = avaliableRooms(start,getTime(request),getTime(request))
-    rooms_json = [rm_instance.getJSON() for rm_instance in avaliable_rooms]
+    rooms_json = [getJSONRooms(rm_instance) for rm_instance in avaliable_rooms]
     bookings_list = []
     for room in avaliable_rooms:
         booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end])
         for booking in booking_list:
-            bookings_list.append(booking.getJSON())
+            bookings_list.append(getJSONBookings(booking))
     return HttpResponse(json.dumps(bookings_list), content_type="application/json")
 
 def avaliableRooms(date,start,end):

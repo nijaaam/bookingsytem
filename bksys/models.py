@@ -16,15 +16,6 @@ class rooms(models.Model):
     class Meta:
         db_table = "rooms"
 
-    def getJSON(self):
-        return dict(
-            room_id = self.room_id,
-            room_name = self.room_name,
-            room_size = self.room_size,
-            room_location = self.room_location,
-            room_features = self.room_features,
-        )
-
 class reservations(models.Model):
     id = models.AutoField(primary_key = True, null = False)
     room               = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
@@ -75,16 +66,3 @@ class bookings(models.Model):
     class Meta:
         db_table = "bookings"
     
-    def getJSON(self):
-        return dict(
-            booking_ref = self.booking_ref,
-            room_id = self.room_id,
-            date = str(self.date),
-            start_time = str(self.start_time),
-            end_time = str(self.end_time),
-            contact = self.contact,
-            description = self.description
-        )
-
-
-
