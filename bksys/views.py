@@ -44,7 +44,6 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             passcode = form.save()
-            #print check_password(a, endoedpasscode)
             return render(request, 'signup.html', {
                 'form': form,
                 'code': passcode,
