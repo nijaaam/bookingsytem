@@ -1,14 +1,12 @@
 from bookingsystem.settings import *
 
-DEBUG = False
+DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'bksysdev',
-        'USER': 'be47f6ef0ac9f4',
-        'PASSWORD': 'cf66d796',
-        'HOST': 'us-cdbr-azure-southcentral-f.cloudapp.net',
+        'USER': 'root',
+        'PASSWORD': 'Bksysuser_2017',
+        'HOST': 'mysql2704.cloudapp.net',
     }
 }
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
