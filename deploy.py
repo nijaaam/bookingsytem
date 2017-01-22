@@ -122,7 +122,7 @@ class DjangoDeployment(Node):
         self.setup_emperor()
 
     def load_django_settings(self):
-        self.hosts.run()
+        self.hosts.run('export DJANGO_SETTINGS_MODULE=bookingsystem.production')
 
     def remove_defaultconf(self):
         self.hosts.sudo('rm /etc/nginx/sites-enabled/default')
