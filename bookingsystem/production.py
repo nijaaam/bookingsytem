@@ -5,8 +5,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'bksysdev',
-        'USER': 'baa0d1902a2abe',
-        'PASSWORD': '9be677e6',
+        'USER': 'be47f6ef0ac9f4',
+        'PASSWORD': 'cf66d796',
         'HOST': 'us-cdbr-azure-southcentral-f.cloudapp.net',
     }
 }
