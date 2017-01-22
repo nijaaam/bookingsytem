@@ -77,6 +77,26 @@ $('#booking_details').submit(function() {
     return false;
 });
 
+$('#authUser').submit(function() {
+    var user = $('#search').val();
+    performAJAX("/validateID/", "html", {
+        'id': user,
+    }, function(res) {
+        if (res == "0"){
+            var element = $('#search');
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
+            $('<span id="ident_error" class="help-block">Identification Failed.</span>').insertAfter(element.parent().parent());
+        } else {
+            performAJAX("/userBookings/", "html", {
+                'id': user,
+            }, function(data) {
+                
+            });
+        }
+    });
+    return false;
+});
+
 $('#findBookingForm').submit(function() {
     var callback = function(data) {
         $('#result').html(data);
