@@ -6,13 +6,13 @@ from deployer.host import SSHHost
 from deployer.exceptions import ActionException
 
 home = '/home/main/'
-ip = '51.140.51.84'
+ip = 'bksystesting1818.cloudapp.net'
 project_name = "bookingsystem/"
 virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
 repo = 'https://github.com/nijaaam/bookingsystem.git'
 keyLocation = '/home/jamun-g/Desktop/keys/bookingsystem'
-'sudo apt-get install build-essential libssl-dev libffi-dev python-dev'
+
 class VirtualEnv(Node):
     location = required_property()
     requirements_files = []
@@ -105,7 +105,7 @@ class DjangoDeployment(Node):
         self.hosts.run(cmd)
 
     def fullSetup(self):
-        self.hosts.sudo('apt-get update && apt-get install virtualenv uwsgi nginx libmysqlclient-dev python-pip')
+        self.hosts.sudo('apt-get update && apt-get install build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
         self.hosts.run('virtualenv' + virtualenv)
         self.git.clone()
         self.virtual_env.setup_env()
