@@ -186,11 +186,11 @@ $('#remAll,#remCurrent').click(function() {
         success: function(data) {
             if ($('#cancelBookingModal1').is(':visible')) {
                 $('#modalText1').text(data);
-                $('#remAll,#remCurrent').remove();
+                $('#remAll,#remCurrent').hide();
                 $('#cancelBookingModal1').find("button#exit").text('Close');
             } else {
                 $('#modalText').text(data);
-                $('#remCurrent').remove();
+                $('#remCurrent').hide();
                 $('#cancelBookingModal').find("button#exit").text('Close');
             }
         }

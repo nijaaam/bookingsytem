@@ -180,7 +180,7 @@ def book_room(request):
     if recurring == "0":
         entry = bookings.objects.newBooking(room_id,date,start,end,contact,description,user)
     else:
-        entry = bookings.objects.newRecurringBooking(room_id,date,start,end,contact,description,recurring,request.POST['recurr_end'])
+        entry = bookings.objects.newRecurringBooking(room_id,date,start,end,contact,description,recurring,request.POST['recurr_end'],user)
     room_name = rooms.objects.get_name(room_id)
     return render(request,'modal.html',{
         "booking_id":entry.booking_ref,

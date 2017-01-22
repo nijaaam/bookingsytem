@@ -1,9 +1,12 @@
 from django.db import models
 from django.utils import timezone
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.exceptions import ObjectDoesNotExist
 import bcrypt
+
+
 salt = "$2b$12$CaEVuEJ6b/WTplB83zfZ/."
 salt = salt.encode('utf-8')
 
@@ -55,7 +58,6 @@ class UserManager(models.Manager):
                 return None
         return None
             
-
 class recurringEventsManager(models.Manager):
     def newBooking(self,rm_id,start,end,recur_type):
         return self.create(room_id=rm_id,start_date=start,end_date=end,recurrence=recur_type)
@@ -98,7 +100,6 @@ class BookingsQueryset(models.query.QuerySet):
 
 class BookingsManager(models.Manager):
     def newBooking(self,room_id,date,start,end,contact,description,user):
-        print user
         booking = self.create(user_id=user,room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description)
         return booking
 
@@ -117,7 +118,8 @@ class BookingsManager(models.Manager):
         recurrence = self.get_queryset().get_booking(id).recurrence
         self.get_queryset().deleteAllRecurring(recurrence.id)
 
-    def newRecurringBooking(self,room_id,date,start,end,contact,description,type,recur_end):
+    def newRecurringBooking(self,room_id,date,start,end,contact,description,type,recur_end,user):
+        from bksys.models import recurringEvents
         recur_end = datetime.strptime(recur_end,"%d-%m-%Y")
         start_date = datetime.strptime(date,"%Y-%m-%d")
         dates = []
@@ -132,9 +134,9 @@ class BookingsManager(models.Manager):
                 dates.append(start_date)
         recur_end = recur_end.strftime("%Y-%m-%d")
         r_booking = recurringEvents.objects.newBooking(room_id,date,recur_end,type)
-        booking = self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id)
+        booking = self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id,user_id=user)
         for date in dates:
-            self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id)
+            self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id,user_id=user)
         return booking
 
     def isRecurring(self,id):

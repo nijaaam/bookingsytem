@@ -140,7 +140,11 @@ $.ajaxSetup({
 function updateBookings(){
     $('#viewBooking').empty();
     getUserBookings($('#search').val());
-    
+    $('#modalText').html("Are you sure you want to cancel this booking");
+    $('#cancelBookingModal').find("button#exit").text('No');
+    $('#remAll,#remCurrent').show();
+    $('#cancelBookingModal1').find("button#exit").text('Cancel');
+    $('#modalText1').text("This is a repeating event");
 }
     var booking_id = '{{ booking.booking_ref }}';
     $('#cancelBookingModal').on('hidden.bs.modal', function () {
