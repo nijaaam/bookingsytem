@@ -179,7 +179,6 @@
                     updateTitle();
                 }
             });
-            var msg = "This field is required";
             $.validator.addMethod("validate_date", function(value, element) {
                 if ($('#recurring').val() != 0) {
                     var input = $('#end').val();
@@ -191,7 +190,7 @@
                 } else {
                     return true;
                 }
-            }, msg);
+            },"This field is required");
             $("#booking_details").validate({
                 rules: {
                     'contact': {
