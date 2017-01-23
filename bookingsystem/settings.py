@@ -6,11 +6,6 @@ AZURE_ACCOUNT_NAME = "dbbackupbksys"
 AZURE_ACCOUNT_KEY  = 'CkD5/KNWSF/BV4sM0XcnyrfBgPmZXjQW4i/FR4l2wX2Mn/PMZtZ/5u9D2wP6JUpXHDyJUwDtaiAECnuOYBPmfw=='
 AZURE_CONTAINER = 'fullbkup'
 
-AZURE_STORAGE = {
-    'CONATINER':'fullbkup',
-}
-#DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-
 DEFAULT_FILE_STORAGE = 'storage.AzureStorage'
 DBBACKUP_STORAGE = DEFAULT_FILE_STORAGE
 
@@ -19,14 +14,7 @@ DBBACKUP_STORAGE_OPTIONS = {
     'account_name': AZURE_ACCOUNT_NAME,
     'account_key': AZURE_ACCOUNT_KEY,
 }
-'''
-DBBACKUP_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-DBBACKUP_STORAGE_OPTIONS = {
-    'oauth2_access_token': 'YDWKOLCJiQAAAAAAAAAADSD1V-Z-Ue8zcC-EQmgGaFh7iRCq2pTR8lwqZDvMVhh8',
-}
-DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
-DBBACKUP_STORAGE_OPTIONS = {'location': '~/Desktop/backups'}
-'''
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -35,14 +23,9 @@ SECRET_KEY = 'x3h)318k2awulf%&e@z08!tswh21&tbt!wdya4osy5o797l_7('
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
 ALLOWED_HOSTS = ['*']
-
-
 BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 
 STATICFILES_FINDERS = (
