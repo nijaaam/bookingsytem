@@ -5,5 +5,5 @@ from bksys.models import *
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-    	
+    	bookings.objects.removeStaleBookings()
         

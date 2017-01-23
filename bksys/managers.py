@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.exceptions import ObjectDoesNotExist
-import bcrypt
+import bcrypt, time
 
 
 salt = "$2b$12$CaEVuEJ6b/WTplB83zfZ/."
@@ -98,10 +98,17 @@ class BookingsQueryset(models.query.QuerySet):
         else:
             return 1
 
+    def removeStaleBookings(self):
+        for x in self.filter(date__lt=time.strftime("%Y-%m-%d")):
+            self.delete(x.booking_ref)
+
 class BookingsManager(models.Manager):
     def newBooking(self,room_id,date,start,end,contact,description,user):
         booking = self.create(user_id=user,room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description)
         return booking
+
+    def removeStaleBookings(self):
+        self.get_queryset().removeStaleBookings()
 
     def getInterval(self,value):
         if value == "1":
