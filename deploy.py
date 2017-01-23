@@ -99,7 +99,8 @@ class DjangoDeployment(Node):
         repository = repo
 
     def setup(self):
-        self.git.checkout('release')
+        #self.git.checkout('release')
+        self.virtual_env.clean()
         self.git.pull()
         self.hosts.run('export DJANGO_SETTINGS_MODULE=bookingsystem.production')
         self.virtual_env.setup_env()
