@@ -6,12 +6,14 @@
     <meta charset="utf-8" /> {% load staticfiles %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/css-loader.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css' %}" />
     <link rel="stylesheet" href="{% static 'fullcalendar/dist/fullcalendar.min.css' %}" />
     <link rel="stylesheet" href="{% static 'fullcalendar-scheduler/dist/scheduler.min.css' %}" />
 </head>
 
 <body class="body" >
+<div class="loader loader-default" data-text="Loading"></div>
     {% block navbar %} {% include "navbar.html" %} {% endblock %}
     <div class="container">
     {% load widget_tweaks %}

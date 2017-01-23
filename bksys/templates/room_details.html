@@ -9,9 +9,11 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/typeahead.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/css-loader.css' %}" type="text/css" />
 </head>
 
 <body class="body">
+<div id = "loader" class="loader loader-default" data-text="Loading"></div>
     {% block navbar %} {% include "navbar.html" %} {% endblock %}
     <div class="container">
         <div id="row">
@@ -155,6 +157,11 @@
     <script type="text/javascript" src = "{% static 'js/autocomplete.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            $(document).ajaxStart(function () {
+                $('#loader').addClass('is-active');
+              }).ajaxStop(function () {
+                $('#loader').removeClass('is-active');
+              });
             loadSearch();
             $("#recurring").change(function() {
                 var selected = $(this).val();
