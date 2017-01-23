@@ -50,7 +50,10 @@ class VirtualEnv(Node):
         self.run_management_command('collectstatic --clear --noinput')
 
     def update_database(self):
-        self.run_management_command('migrate --noinput')
+        try:
+            self.run_management_command('migrate --noinput')
+        except ActionException:
+            print "HERE"
 
     def clean(self):
         with self.hosts.cd(project_dir):
@@ -70,8 +73,11 @@ class Git(Node):
     def pull(self):
         with self.hosts.cd(self.project_directory, expand=True):
             with self.hosts.cd(project_dir):
-                self.hosts.run("git pull")
-    
+                try:
+                    self.hosts.run("git pull")
+                except ActionException:
+                    self.stash()
+                    self.pull()
     def stash(self):
         with self.hosts.cd(self.project_directory, expand=True):
             with self.hosts.cd(project_dir):
