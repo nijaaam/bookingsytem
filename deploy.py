@@ -113,7 +113,7 @@ class DjangoDeployment(Node):
         self.hosts.run(cmd)
 
     def fullSetup(self):
-        self.hosts.sudo('apt-get update && apt-get install build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
+        self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
         self.hosts.run('virtualenv' + virtualenv)
         self.git.clone()
         self.virtual_env.setup_env()

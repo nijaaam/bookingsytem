@@ -4,7 +4,7 @@ from bksys.models import *
 from django.core.exceptions import ObjectDoesNotExist
 import time,json
 from datetime import datetime, timedelta
-from bksys.views import set_default_values
+from bksys.views import set_default_values, getJSONBookings, getJSONRooms
 
 room_id = 1
 
@@ -22,7 +22,7 @@ def get_events(request):
 
 def index(request):
 	bk_for_day = bookings.objects.filter(room_id=room_id,date=time.strftime("%Y-%m-%d"))
-	bk_list = [bk_instance.getJSON() for bk_instance in bk_for_day]
+	bk_list = [getJSONBookings(bk_instance) for bk_instance in bk_for_day]
 	upcoming_events = get_upcoming_events()
 	start = time.strftime("%H:%M")
 	end = time.strftime("%H:%M")
