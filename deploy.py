@@ -119,29 +119,33 @@ class DjangoDeployment(Node):
         self.hosts.run('crontab -l')
 
     def addCJ(self):
-        backup = '0 0 * * * main ' + project_dir + ' manage.py backup > ' + cronLog
+        backup = '0 0 * * * main ' + project_dir + ' manage.py dbbackup > ' + cronLog
         checkIfRunning = '@hourly ' + project_dir + ' manage.py checkIfRunning > ' + cronLog
         removeStaleBookings = '0 0 * * * ' + project_dir + ' manage.py deleteStaleBk > ' + cronLog
+        runOnBoot = '@reboot ' + project_dir + 'runOnBoot.sh'
         backup = '{ crontab -l -u main; echo "'+ backup +'"; } | crontab -u main -'
         checkIfRunning = '{ crontab -l -u main; echo "'+ checkIfRunning +'"; } | crontab -u main -'
         removeStaleBookings = '{ crontab -l -u main; echo "'+ removeStaleBookings +'"; } | crontab -u main -'
+        runOnBoot = '{ crontab -l -u main; echo "'+ runOnBoot +'"; } | crontab -u main -'
         self.hosts.run(removeStaleBookings)
         self.hosts.run(backup)
         self.hosts.run(checkIfRunning)
+        self.hosts.run(runOnBoot)
     
     def fullSetup(self):
-        self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
-        self.hosts.run('virtualenv' + virtualenv)
-        self.git.clone()
-        self.virtual_env.setup_env()
-        self.remove_defaultconf()
-        self.copy_nginx_conf()
-        self.restart_nginx()
-        self.setup_emperor()
+        #self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
+        #self.hosts.sudo('virtualenv ' + virtualenv)
+        #self.git.clone()
+        #self.virtual_env.setup_env()
+        #self.remove_defaultconf()
+        #self.copy_nginx_conf()
+        #self.restart_nginx()
         try:
             self.checkIfCJexists()
         except ActionException:
             self.addCJ()
+        #self.setup_emperor()
+        
 
     def load_django_settings(self):
         self.hosts.run('export DJANGO_SETTINGS_MODULE=bookingsystem.production')
