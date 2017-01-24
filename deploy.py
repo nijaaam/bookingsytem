@@ -131,29 +131,28 @@ class DjangoDeployment(Node):
     def fullSetup(self):
         self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
         self.hosts.sudo('virtualenv ' + virtualenv)
-        self.git.clone()
+        try:
+            self.git.clone()
+        except ActionException:
+            pass
         self.virtual_env.setup_env()
-        self.remove_defaultconf()
+        self.runSpecialCmd('rm /etc/nginx/sites-enabled/default')
         self.hosts.sudo('ln -f -s ' + project_dir + 'config/bksys.conf /etc/nginx/sites-enabled/')
         self.hosts.sudo('/etc/init.d/nginx restart')
         try:
             self.checkIfCJexists()
         except ActionException:
             self.addCJ()
-        self.setup_emperor()
-        
-    def remove_defaultconf(self):
-        self.hosts.sudo('rm /etc/nginx/sites-enabled/default')
-
-    def setup_emperor(self):
-        self.create_dir('/etc/uwsgi')
-        self.create_dir('/etc/uwsgi/vassals')
+        self.runSpecialCmd('mkdir /etc/uwsgi')
+        self.runSpecialCmd('mkdir /etc/uwsgi/vassals')
         self.hosts.sudo('ln -f -s ' + project_dir + 'start_app.ini /etc/uwsgi/vassals/')
         self.hosts.run('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
 
-    def create_dir(self,cmd):
-        self.hosts.sudo('mkdir ' + cmd)
-
+    def runSpecialCmd(self,cmd):
+        try:
+            self.hosts.sudo(cmd)
+        except:
+            pass
 
 class remote_host(SSHHost):
     address = ip 
