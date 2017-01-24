@@ -12,6 +12,7 @@ virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
 repo = 'https://github.com/nijaaam/bookingsystem.git'
 keyLocation = '/home/nijam/Desktop/keys/bookingsystem'
+cronLog = '/var/log/cronjobs/'
 
 class VirtualEnv(Node):
     location = required_property()
@@ -50,10 +51,7 @@ class VirtualEnv(Node):
         self.run_management_command('collectstatic --clear --noinput')
 
     def update_database(self):
-        try:
-            self.run_management_command('migrate --noinput')
-        except ActionException:
-            print "HERE"
+        self.run_management_command('migrate --noinput')
 
     def clean(self):
         with self.hosts.cd(project_dir):
@@ -114,10 +112,23 @@ class DjangoDeployment(Node):
         self.virtual_env.collectstatic()
         self.virtual_env.run_uwsgi()
 
-
     def run_cmd(self,cmd):
         self.hosts.run(cmd)
 
+    def checkIfCJexists(self):
+        self.hosts.run('crontab -l')
+
+    def addCJ(self):
+        backup = '0 0 * * * main ' + project_dir + ' manage.py backup > ' + cronLog
+        checkIfRunning = '@hourly ' + project_dir + ' manage.py checkIfRunning > ' + cronLog
+        removeStaleBookings = '0 0 * * * ' + project_dir + ' manage.py deleteStaleBk > ' + cronLog
+        backup = '{ crontab -l -u main; echo "'+ backup +'"; } | crontab -u main -'
+        checkIfRunning = '{ crontab -l -u main; echo "'+ checkIfRunning +'"; } | crontab -u main -'
+        removeStaleBookings = '{ crontab -l -u main; echo "'+ removeStaleBookings +'"; } | crontab -u main -'
+        self.hosts.run(removeStaleBookings)
+        self.hosts.run(backup)
+        self.hosts.run(checkIfRunning)
+    
     def fullSetup(self):
         self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
         self.hosts.run('virtualenv' + virtualenv)
@@ -127,6 +138,10 @@ class DjangoDeployment(Node):
         self.copy_nginx_conf()
         self.restart_nginx()
         self.setup_emperor()
+        try:
+            self.checkIfCJexists()
+        except ActionException:
+            self.addCJ()
 
     def load_django_settings(self):
         self.hosts.run('export DJANGO_SETTINGS_MODULE=bookingsystem.production')
