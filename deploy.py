@@ -48,10 +48,10 @@ class VirtualEnv(Node):
                 self.hosts.run('uwsgi start_app.ini')
 
     def collectstatic(self):
-        self.run_management_command('collectstatic --clear --noinput')
+        self.run_management_command('collectstatic --clear --noinput --settings=bookingsystem.production')
 
     def update_database(self):
-        self.run_management_command('migrate --noinput')
+        self.run_management_command('migrate --noinput --settings=bookingsystem.production')
 
     def clean(self):
         with self.hosts.cd(project_dir):
