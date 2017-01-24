@@ -106,14 +106,10 @@ class DjangoDeployment(Node):
         #self.git.checkout('release')
         self.virtual_env.clean()
         self.git.pull()
-        self.hosts.run('export DJANGO_SETTINGS_MODULE=bookingsystem.production')
         self.virtual_env.setup_env()
         self.virtual_env.update_database()
         self.virtual_env.collectstatic()
         self.virtual_env.run_uwsgi()
-
-    def run_cmd(self,cmd):
-        self.hosts.run(cmd)
 
     def checkIfCJexists(self):
         self.hosts.run('crontab -l')
@@ -133,49 +129,31 @@ class DjangoDeployment(Node):
         self.hosts.run(runOnBoot)
     
     def fullSetup(self):
-        #self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
-        #self.hosts.sudo('virtualenv ' + virtualenv)
-        #self.git.clone()
-        #self.virtual_env.setup_env()
-        #self.remove_defaultconf()
-        #self.copy_nginx_conf()
-        #self.restart_nginx()
+        self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
+        self.hosts.sudo('virtualenv ' + virtualenv)
+        self.git.clone()
+        self.virtual_env.setup_env()
+        self.remove_defaultconf()
+        self.hosts.sudo('ln -f -s ' + project_dir + 'config/bksys.conf /etc/nginx/sites-enabled/')
+        self.hosts.sudo('/etc/init.d/nginx restart')
         try:
             self.checkIfCJexists()
         except ActionException:
             self.addCJ()
-        #self.setup_emperor()
+        self.setup_emperor()
         
-
-    def load_django_settings(self):
-        self.hosts.run('export DJANGO_SETTINGS_MODULE=bookingsystem.production')
-
     def remove_defaultconf(self):
         self.hosts.sudo('rm /etc/nginx/sites-enabled/default')
-
-    def copy_nginx_conf(self):
-        self.hosts.sudo('ln -f -s ' + project_dir + 'config/bksys.conf /etc/nginx/sites-enabled/')
-
-    def restart_nginx(self):
-        self.hosts.sudo('/etc/init.d/nginx restart')
 
     def setup_emperor(self):
         self.create_dir('/etc/uwsgi')
         self.create_dir('/etc/uwsgi/vassals')
-        self.copyConfig()
-        self.start()
-
-    def set_autowakeup(self):
-        self.hosts.sudo('ln -f -s ' + project_dir + 'config/rc.local  /etc/rc.local')
+        self.hosts.sudo('ln -f -s ' + project_dir + 'start_app.ini /etc/uwsgi/vassals/')
+        self.hosts.run('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
 
     def create_dir(self,cmd):
         self.hosts.sudo('mkdir ' + cmd)
 
-    def start(self):
-        self.hosts.run('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
-
-    def copyConfig(self):
-        self.hosts.sudo('ln -f -s ' + project_dir + 'start_app.ini /etc/uwsgi/vassals/')
 
 class remote_host(SSHHost):
     address = ip 
