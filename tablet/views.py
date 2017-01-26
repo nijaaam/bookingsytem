@@ -20,7 +20,8 @@ def get_events(request):
 	bk_list = [jsonCalendar(bk_instance) for bk_instance in events]
 	return bk_list
 
-def index(request):
+def index(request,id):
+	room_id = id
 	bk_for_day = bookings.objects.filter(room_id=room_id,date=time.strftime("%Y-%m-%d"))
 	bk_list = [getJSONBookings(bk_instance) for bk_instance in bk_for_day]
 	upcoming_events = get_upcoming_events()
@@ -72,14 +73,14 @@ def quickBook(request):
         "end": end,
     })
 
-def bookRoom(request):
+def bookRoom(request,id):
 	date = time.strftime("%d-%m-%Y")
 	bk_time = time.strftime("%H:%M")
 	scroll_time = datetime.strptime(bk_time,"%H:%M") - timedelta(minutes=60)
 	res = {
 		"datetime" : date + "T"+ bk_time,
 		"settings" : json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),
-		'room_name': rooms.objects.get(room_id=room_id).room_name,
+		'room_name': rooms.objects.get(room_id=id).room_name,
 	}
 	return render(request,"book_room.html",res)
 	
