@@ -212,7 +212,6 @@ def book_room(request):
 def viewBooking(request):
     return render(request,'viewBooking.html',{})
 
-
 def updateBooking(request):
     booking_id = request.POST['booking_id']
     for key in request.POST:
@@ -244,7 +243,6 @@ def cancelBooking(request):
         bookings.objects.delete(request.POST['id'])
         return HttpResponse("Booking Canceled")
    
-
 def getCalendarEventJson(booking):
     return dict(
         id = booking.booking_ref,
