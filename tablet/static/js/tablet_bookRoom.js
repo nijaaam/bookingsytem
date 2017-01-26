@@ -74,7 +74,7 @@ $('#confirm').click(function() {
             var start = events[0].start;
             var end = events[0].end;
             var date = events[0].date;
-            performAJAX('/tablet/quickBook/', 'html', {
+            performAJAX('quickBook/', 'html', {
                 'start': start.format('HH:mm'),
                 'end': end.format('HH:mm'),
                 'date': start.format('YYYY-MM-DD'),

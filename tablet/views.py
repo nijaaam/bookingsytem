@@ -59,7 +59,7 @@ def get_bookings(request):
 	end_time = request.POST['end']
 	date = request.POST['date']
 
-def quickBook(request):
+def quickBook(request,id):
 	user = User.objects.getUser(request.POST['id'])
 	contact = User.objects.getName(request.POST['id'])
 	date = request.POST['date']
