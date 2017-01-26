@@ -21,6 +21,7 @@ class UserManager(models.Manager):
         return passcode
 
     def authenticate(self,id):
+        id = str(id)
         try: 
             self.get(name=id)
             return True
@@ -35,6 +36,7 @@ class UserManager(models.Manager):
         return False
 
     def getUser(self,id):
+        id = str(id)
         try: 
             return self.get(name=id).id
         except ObjectDoesNotExist:
@@ -47,16 +49,7 @@ class UserManager(models.Manager):
         return None
 
     def getName(self,id):
-        try: 
-            return self.get(name=id).name
-        except ObjectDoesNotExist:
-            id = id.encode('utf-8')
-            passcode = bcrypt.hashpw(id, salt)
-            try:
-                return self.get(passcode=passcode).name
-            except ObjectDoesNotExist:
-                return None
-        return None
+        return self.get(id=id).name
             
 class recurringEventsManager(models.Manager):
     def newBooking(self,rm_id,start,end,recur_type):
@@ -131,6 +124,7 @@ class BookingsManager(models.Manager):
         start_date = datetime.strptime(date,"%Y-%m-%d")
         dates = []
         weekend = set([5, 6])
+        type = str(type)
         while True:
             start_date = start_date + timedelta(days=self.getInterval(type))
             if start_date > recur_end:

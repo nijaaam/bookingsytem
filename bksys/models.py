@@ -37,18 +37,18 @@ class recurringEvents(models.Model):
     class Meta:
         db_table = "recurringEvents"
 
-class User(models.Model):
+class users(models.Model):
     name = models.CharField(max_length=254, null=False)
     email = models.EmailField(max_length=70,null=False,unique=True)
     passcode = models.CharField(max_length=254,unique=True)
     objects = UserManager()
 
     class Meta:
-        db_table = "User"
+        db_table = "user"
 
 class bookings(models.Model):
     booking_ref = models.AutoField(primary_key=True)
-    user  = models.ForeignKey(User,  on_delete=models.CASCADE, null = False)
+    user  = models.ForeignKey(users,  on_delete=models.CASCADE, null = False)
     room        = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
     recurrence  = models.ForeignKey(recurringEvents,  on_delete=models.CASCADE, null = True)
     date        = models.DateField(null = False)

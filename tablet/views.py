@@ -61,7 +61,7 @@ def get_bookings(request):
 
 def quickBook(request,id):
 	user = User.objects.getUser(request.POST['id'])
-	contact = User.objects.getName(request.POST['id'])
+	contact = User.objects.getName(user)
 	date = request.POST['date']
 	start = request.POST['start']
 	end = request.POST['end']

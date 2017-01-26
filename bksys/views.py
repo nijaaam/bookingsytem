@@ -62,7 +62,7 @@ def getBKTableHeight(rowCount):
     
 def getUserBookings(request):
     id = request.POST['id']
-    res = bookings.objects.getUserBookings(User.objects.getUser(id))
+    res = bookings.objects.getUserBookings(users.objects.getUser(id))
     return render(request, 'userBookings.html', {
         'bookings':res,
         'table_height': getBKTableHeight(len(res)),
@@ -70,7 +70,7 @@ def getUserBookings(request):
 
 def autocomplete(request):
     query = request.POST['search']
-    rooms_list = User.objects.filter(name__contains=query)
+    rooms_list = users.objects.filter(name__contains=query)
     results = [rm_instance.name for rm_instance in rooms_list]
     print results
     return HttpResponse(json.dumps(results), content_type="application/json")
@@ -80,7 +80,6 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             passcode = form.save()
-            #print check_password(a, endoedpasscode)
             return render(request, 'signup.html', {
                 'form': form,
                 'code': passcode,
@@ -119,7 +118,7 @@ def checkIfExpired(id):
 
 def validateID(request):
     id = request.POST['id']
-    if User.objects.authenticate(id):
+    if users.objects.authenticate(id):
         return HttpResponse(1)
     else:
         return HttpResponse(0)
@@ -189,7 +188,7 @@ def view_room(request):
     return render(request,'room_details.html',res)
 
 def book_room(request):
-    user = User.objects.getUser(request.POST['id'])
+    user = users.objects.getUser(request.POST['id'])
     recurring = request.POST.getlist('recurring')[0]
     contact         = request.POST['contact']
     description     = request.POST['description']
