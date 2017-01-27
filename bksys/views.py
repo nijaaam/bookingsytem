@@ -70,9 +70,8 @@ def getUserBookings(request):
 
 def autocomplete(request):
     query = request.POST['search']
-    rooms_list = users.objects.filter(name__contains=query)
-    results = [rm_instance.name for rm_instance in rooms_list]
-    print results
+    users_list = users.objects.filter(name__contains=query)
+    results = [user_instance.name for user_instance in users_list]
     return HttpResponse(json.dumps(results), content_type="application/json")
 
 def signup(request):

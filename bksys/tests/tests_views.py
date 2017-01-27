@@ -3,7 +3,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from tablet.views import *
 from bksys.models import * 
 from bksys.views import * 
-
+'''
 class viewTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -14,7 +14,7 @@ class viewTest(TestCase):
         middleware.process_request(request)
         request.session.save()
         return request
-    '''
+    
     def testIndex(self):
         room = rooms.objects.create(room_name="test1",room_size=10,room_features="feat",room_location="loc")
         rooms.objects.create(room_name="test2",room_size=10,room_features="feat",room_location="loc")
@@ -152,69 +152,59 @@ class viewTest(TestCase):
         self.assertEqual(bookings_json[0]['room_id'],room.room_id)
         self.assertEqual(bookings_json[1]['room_id'],room.room_id)
 
-    '''
     def testCheckIfRecurring(self):
-        request = self.factory.post('/checkIfRecurring')
+        room = rooms.objects.create(room_name="test1",room_size=10,room_features="feat",room_location="loc")
+        users.objects.create_user('name','email@a.com')
+        user_id = users.objects.getUser('name')
+        bk = bookings.objects.newBooking(room.room_id,"2017-01-11","10:00","11:00","des","con",user_id)
+        request = self.factory.post('/checkIfRecurring/',{'id':bk.booking_ref})
         response = checkIfRecurring(request)
-        print response
+        self.assertEqual(response.content,"0")
+        booking = bookings.objects.newRecurringBooking(room.room_id,"2017-01-10","10:00","11:00","con","des",2,"29-01-2017",user_id)
+        request = self.factory.post('/checkIfRecurring/',{'id':booking.booking_ref})
+        response = checkIfRecurring(request)
+        self.assertEqual(response.content,"1")
 
-    '''
     def testSignup(self):
-        request = self.factory.post('/signup')
-        response = signup(request)
-        print response
+        response = self.client.post('/signup/',{'name':'user','email':"a@a.com"})
+        user = users.objects.get(name='user')
+        self.assertEqual(user.email,"a@a.com")
+        passcode = response.context['code']
+        self.assertEqual(users.objects.getUser(passcode),user.id)
 
-    def testAutocomplete(self):
-        request = self.factory.post('/autocomplete')
+    def testAutocompelte(self):
+        users.objects.create_user('user1','name@n.com')
+        users.objects.create_user('user2','name@n1.com')
+        request = self.factory.post('/autocomplete/')
+        request.POST['search'] = 'use'
         response = autocomplete(request)
-        print response
+        response = json.loads(response.content)
+        self.assertEqual(len(response), 2)
+        self.assertEqual(response[0],'user1')
+        self.assertEqual(response[1],'user2')
 
     def testValidateID(self):
-        request = self.factory.post('/validateID')
+        passcode = users.objects.create_user('user1','name@n.com')
+        request = self.factory.post('/validateID/',{'id':passcode})
         response = validateID(request)
-        print response
-
-    def testGetUserBookings(self):
-        request = self.factory.post('/getUserBookings')
-        response = getUserBookings(request)
-        print response
-        
-            
-       
-        '''
-        
-'''
-
-    def testGetRoomBookings(self):
-        response = client.post('/getRoomsBookings/',{
-            'start':"2017-01-01",
-            'end':"2017-01-31",
-        })
-        self.assertEqual(response.status_code,200)
-        bookings_json = response.json()
-        self.assertEqual(len(bookings_json),1)
-        self.assertEqual(bookings_json[0]['description'],"description")
-        self.assertEqual(bookings_json[0]['contact'],"contact")
-        #New Booking to test if response has the new booking
-        booking = bookings(
-            room_id    = 3,
-            date       = time.strftime("%Y-%m-%d"),
-            start_time = time.strftime("%H:%M"),
-            end_time=time.strftime("%H:%M"),
-            contact="contact 2",
-            description="description 2"
-        )
-        booking.save()
-        response = client.post('/getRoomsBookings/',{
-            'start':"2017-01-01",
-            'end':"2017-01-31",
-        })
-        self.assertEqual(response.status_code,200)
-        bookings_json = response.json()
-        self.assertEqual(len(bookings_json),2)
-        self.assertEqual(bookings_json[0]['description'],"description")
-        self.assertEqual(bookings_json[0]['contact'],"contact")
-        self.assertEqual(bookings_json[1]['description'],"description 2")
-        self.assertEqual(bookings_json[1]['contact'],"contact 2")      
+        self.assertEqual(response.content,'1')
+        request = self.factory.post('/validateID/',{'id':'user1'})
+        response = validateID(request)
+        self.assertEqual(response.content,'1')
+        request = self.factory.post('/validateID/',{'id':'user1sfafsa'})
+        response = validateID(request)
+        self.assertEqual(response.content,'0')
     
+    def testGetUserBookings(self):
+        room = rooms.objects.create(room_name="test1",room_size=10,room_features="feat",room_location="loc")
+        room_name = room.room_name
+        users.objects.create_user('name','email@a.com')
+        user_id = users.objects.getUser('name')
+        b1 = bookings.objects.newBooking(room.room_id,"2017-01-10","10:00","11:00","des","con",user_id)
+        b2 = bookings.objects.newBooking(room.room_id,"2017-01-10","10:00","11:00","des","con",user_id)
+        response = self.client.post('/getUserBookings/',{'id':'name'})
+        queryset = response.context['bookings']
+        self.assertEqual(b1,queryset[0])
+        self.assertEqual(b2,queryset[1])
+
 '''
