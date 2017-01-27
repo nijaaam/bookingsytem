@@ -14,7 +14,7 @@ def index(request):
     bk_start_time = getTime(request)
     bk_end_time = datetime.strptime(bk_start_time,"%H:%M") + timedelta(minutes=15)
     scroll_time = datetime.strptime(bk_start_time,"%H:%M") - timedelta(minutes=60)
-    avaliable_rooms = avaliableRooms(bk_date,bk_start_time,bk_end_time)
+    avaliable_rooms = avaliableRooms(request,bk_date,bk_start_time,bk_end_time)
     rooms_json = [getJSONRooms(rm_instance) for rm_instance in avaliable_rooms]
     room_bookings = []
     for room in avaliable_rooms:
@@ -92,7 +92,7 @@ def signup(request):
 def getRoomsBookings(request):
     start = request.POST['start']
     end = request.POST['end']
-    avaliable_rooms = avaliableRooms(start,getTime(request),getTime(request))
+    avaliable_rooms = avaliableRooms(request,start,getTime(request),getTime(request))
     rooms_json = [getJSONRooms(rm_instance) for rm_instance in avaliable_rooms]
     bookings_list = []
     for room in avaliable_rooms:
@@ -101,7 +101,7 @@ def getRoomsBookings(request):
             bookings_list.append(getJSONBookings(booking))
     return HttpResponse(json.dumps(bookings_list), content_type="application/json")
 
-def avaliableRooms(date,start,end):
+def avaliableRooms(request,date,start,end):
     ongoingevents = bookings.objects.getOngoingEvents(date,start,end).values_list('room_id',flat=True)
     avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents)
     reserved_rooms = []
@@ -109,7 +109,15 @@ def avaliableRooms(date,start,end):
         try:
             if checkIfExpired(room.room_id):
                 reservations.objects.get(room_id=room.room_id).delete()
-                reserved_rooms.append(room)             
+                reserved_rooms.append(room)
+            else:
+                print request.session.session_key
+                try:
+                    print request.session.session_key
+                    reservations.objects.get(session_id=request.session.session_key).delete()
+                    reserved_rooms.append(room)
+                except:
+                    pass            
         except ObjectDoesNotExist:
             reserved_rooms.append(room)
     avaliable_rooms = reserved_rooms
@@ -179,7 +187,7 @@ def if_values_are_set(f):
 @if_values_are_set
 def view_room(request):
     id = request.POST['room_id']
-    reservations(room_id=id).save()
+    reservations(room_id=id,session_id=request.session.session_key).save()
     request.session['bk_rm_id'] = id
     query = rooms.objects.get(room_id=id)
     date = getDate(request)

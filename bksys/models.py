@@ -18,6 +18,7 @@ class rooms(models.Model):
 class reservations(models.Model):
     room               = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
     start_time         = models.DateTimeField(auto_now_add=True)
+    session_id         = models.CharField(max_length=240,null=False)
     
     class Meta:
         db_table = "reservations"
