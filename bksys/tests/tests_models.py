@@ -27,7 +27,7 @@ class roomsTest(TestCase):
 
     def test_delete(self):
         rooms.objects.filter(room_id=self.id).delete()
-        self.assertRaises(ObjectDoesNotExist,rooms.objects.get,room_id=1)
+        self.assertRaises(ObjectDoesNotExist,rooms.objects.get,room_id=self.id)
 
 class usersTest(TestCase):
     def setUp(self):

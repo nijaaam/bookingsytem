@@ -105,12 +105,21 @@ def getRoomsBookings(request):
 def avaliableRooms(date,start,end):
     ongoingevents = bookings.objects.getOngoingEvents(date,start,end).values_list('room_id',flat=True)
     avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents)
+    reserved_rooms = []
+    for room in avaliable_rooms:
+        try:
+            if checkIfExpired(room.room_id):
+                reservations.objects.get(room_id=room.room_id).delete()
+                reserved_rooms.append(room)             
+        except ObjectDoesNotExist:
+            reserved_rooms.append(room)
+    avaliable_rooms = reserved_rooms
     return avaliable_rooms
 
 def checkIfExpired(id):
     reserve = reservations.objects.get(room_id=id)
-    expires =  reserve.expiry.replace(tzinfo=None)
-    elapsed_time = datetime.now() - expires
+    start_time =  reserve.start_time.replace(tzinfo=None)
+    elapsed_time = datetime.now() - start_time
     if (elapsed_time - timedelta(minutes = 2)).total_seconds() > 0:
         return 1
     else:
@@ -170,8 +179,8 @@ def if_values_are_set(f):
 
 @if_values_are_set
 def view_room(request):
-    #reservations(room_id=id).save()
     id = request.POST['room_id']
+    reservations(room_id=id).save()
     request.session['bk_rm_id'] = id
     query = rooms.objects.get(room_id=id)
     date = getDate(request)
