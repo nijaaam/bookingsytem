@@ -8,6 +8,10 @@ from .forms import *
 from datetime import datetime, timedelta, date
 
 def index(request):
+    if not request.session.session_key:
+        request.session.save()
+    session_id = request.session.session_key
+    print request.session.session_key
     form = processForm(request)
     bk_date = getDate(request)
     bk_date = datetime.strptime(bk_date,"%d-%m-%Y").strftime("%Y-%m-%d")
