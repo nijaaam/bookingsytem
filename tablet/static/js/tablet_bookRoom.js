@@ -1,19 +1,3 @@
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
         function getCookie(name) {
@@ -22,7 +6,6 @@ $.ajaxSetup({
                 var cookies = document.cookie.split(';');
                 for (var i = 0; i < cookies.length; i++) {
                     var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -32,7 +15,6 @@ $.ajaxSetup({
             return cookieValue;
         }
         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-            // Only send the token to relative URLs i.e. locally.
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         }
     }
@@ -48,6 +30,13 @@ function performAJAX(url, dataType, data, callback) {
     });
     return false;
 }
+
+$('#backTablet').click(function() {
+    var string = window.location.pathname;
+    string = string.replace("/bookRoom/", "")
+    window.location.href = string;
+    return false;
+});
 
 $("#search").on("input", function() {
     var str = $(this).closest('.form-group').attr('class');
@@ -90,7 +79,7 @@ $('#confirm').click(function() {
 $(document).ready(function() {
     $('#book').click(function() {
         var events = $('#calendar').fullCalendar('clientEvents', "new_event")[0];
-        if (events != undefined){
+        if (events != undefined) {
             $('#authModel').modal('show');
         }
     });
@@ -111,6 +100,15 @@ $(document).ready(function() {
     };
     settings.eventDrop = updateTimes;
     settings.eventResize = updateTimes;
+
+    function checkOverlap(one, two) {
+        var start_1 = one.start;
+        var end_1 = one.end;
+        var start_2 = two.start;
+        var end_2 = two.end;
+        return (start_1 > start_2 && start_1 < end_2 || start_2 > start_1 && start_2 < end_1);
+    }
+
     settings.dayClick = function(date, jsEvent, view) {
         if (date > moment()) {
             var start = date.format("YYYY-MM-DDTHH:mm:ss");
@@ -118,10 +116,6 @@ $(document).ready(function() {
             start = new moment(start, "YYYY-MM-DDTHH:mm:ss");
             end = new moment(end, "YYYY-MM-DDTHH:mm:ss");
             var view = view.name;
-            var event = $('#calendar').fullCalendar('clientEvents', "new_event");
-            if (event != "") {
-                $('#calendar').fullCalendar('removeEvents', "new_event");
-            }
             var newEvent = {
                 id: "new_event",
                 editable: true,
@@ -129,8 +123,29 @@ $(document).ready(function() {
             };
             newEvent.start = start;
             newEvent.end = end;
-            updateTimes(newEvent, '', '');
-            $('#calendar').fullCalendar('renderEvent', newEvent);
+            var json = $('#calendar').fullCalendar('clientEvents', function(event) {
+                if(event.start <= date && event.end >= date) {
+                    return true;
+                }
+                return false;
+            });
+            var overlap = false;
+            $.each(json,function(index,data){
+                if (checkOverlap(data,newEvent)){
+                    overlap = true;
+                    return false;
+                } else {
+                    alert("NO");
+                }
+            });
+            if (!overlap){
+                var event = $('#calendar').fullCalendar('clientEvents', "new_event");
+                if (event != "") {
+                    $('#calendar').fullCalendar('removeEvents', "new_event");
+                }
+                updateTimes(newEvent, '', '');
+                $('#calendar').fullCalendar('renderEvent', newEvent);
+            } 
         }
     }
     $('#calendar').fullCalendar(settings);

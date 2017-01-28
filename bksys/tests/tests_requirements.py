@@ -1,46 +1,50 @@
-''''from selenium import webdriver
+from django.test import TestCase, Client, RequestFactory, LiveServerTestCase
 from selenium.webdriver.common.keys import Keys
-from django.test import LiveServerTestCase
-from .models import rooms, bookings
-from tests import globalTestMethods
-import time
+import json, time
+from bksys.models import *
+from django.contrib.sessions.middleware import SessionMiddleware
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, WebDriverException
+from django.conf import settings
+from django.contrib.auth.models import User
+from selenium.webdriver.support.ui import Select
 
-class RequirementsTest(LiveServerTestCase):
+class requirementsTest(LiveServerTestCase):
+    def setUp(self):
+        self.browser = webdriver.Chrome()
+        self.browser.implicitly_wait(3)
+        rooms.objects.create(room_name="testing",room_size=10,room_location="loc",room_features="feat")
+        self.browser.get(self.live_server_url)
 
-	def setUp(self):
-		self.browser = webdriver.Firefox()
-		rooms(room_name="Room Test",room_size=5,room_location="TEST",room_features="TEST FEatu").save()
-		self.browser.get("http://localhost:8081")
-		self.obj = globalTestMethods(self.browser)
+    def insertInput(self,id,value):
+        self.browser.find_element_by_id(id).clear()
+        self.browser.find_element_by_id(id).send_keys(value)
+    
+    def insertInputbyName(self,name,value):
+        self.browser.find_element_by_name(name).clear()
+        self.browser.find_element_by_name(name).send_keys(value)
+    
+    def tearDown(self):  
+        self.browser.quit()
 
-	def tearDown(self):  
-		self.browser.quit()
-
-	def testBookRoom(self):
-		obj = self.obj
-		browser = self.browser
-		obj.book_room()
-		booking_id = bookings.objects.last().booking_ref
-		booking =  bookings.objects.get(booking_ref=booking_id)
-		self.assertEqual(booking.contact,"contact")
-		self.assertEqual(booking.description,"description")
-
-
-		obj.viewBooking(str(booking_id))
-		obj.updateInput('contact',"updated contact")
-		obj.updateInput('description',"updated description")
-		browser.find_element_by_id('update').click()
-		time.sleep(2)
-		booking_id = bookings.objects.last().booking_ref
-		booking =  bookings.objects.get(booking_ref=booking_id)
-		self.assertEqual(booking.contact,"updated contact")
-		self.assertEqual(booking.description,"updated description")
-		browser.implicitly_wait(3)
-
-		obj.viewBooking(str(booking_id))
-		browser.find_element_by_id('cancelBooking').click()
-		time.sleep(3)
-		browser.find_element_by_id('cancelBooking2').click()
-		time.sleep(3)
-		self.assertEqual(None,bookings.objects.last())
-'''
+    def testBookRoom(self):
+    	#user need to signup first
+    	self.browser.find_element_by_xpath("//a[contains(text(), 'Sign Up')]").click()
+    	self.browser.implicitly_wait(3)
+    	self.insertInput('id_name','user')
+    	self.insertInput('id_email','user@user.com')
+    	self.browser.find_element_by_xpath("//button[contains(text(), 'Sign Up')]").click()
+    	self.browser.implicitly_wait(3)
+    	self.browser.find_element_by_xpath("//a[contains(text(), 'Back')]").click()
+    	self.browser.find_element_by_xpath("//button[contains(text(), 'Book')]").click()
+    	self.insertInput('contact','contact')
+    	self.insertInput('description','description')
+    	select = Select(self.browser.find_element_by_id('recurring'))
+    	select.select_by_visible_text('Never')
+    	self.insertInput('search','user')
+    	self.browser.find_element_by_xpath("//button[contains(text(), 'Book')]").click()
+    	self.browser.implicitly_wait(3)
+    	self.browser.find_element_by_id('modal_roomname').get_attribute('value')
+    	

@@ -6,9 +6,9 @@ import time,json
 from datetime import datetime, timedelta
 from bksys.views import set_default_values, getJSONBookings, getJSONRooms
 
+#Check In Option if not checked in 15 min then
 room_id = 1
 
-#Check In Option if not checked in 15 min then
 def get_events(request):
 	if 'start' not in request.POST:
 		start = time.strftime("%Y-%m-%d")
@@ -39,7 +39,6 @@ def index(request,id):
 	else:
 		bk_id = current_event.booking_ref
 	next_event=""
-	print upcoming_events
 	if not current_event:
 		if not upcoming_events:
 			next_event = "for the day"
@@ -60,15 +59,15 @@ def get_bookings(request):
 	date = request.POST['date']
 
 def quickBook(request,id):
-	user = User.objects.getUser(request.POST['id'])
-	contact = User.objects.getName(user)
+	user = users.objects.getUser(request.POST['id'])
+	contact = users.objects.getName(user)
 	date = request.POST['date']
 	start = request.POST['start']
 	end = request.POST['end']
-	booking = bookings.objects.newBooking(room_id,date,start,end,contact,'quickBook',user)
+	booking = bookings.objects.newBooking(id,date,start,end,contact,'quickBook',user)
 	return render(request,'modal.html',{
         "booking_id": booking.booking_ref,
-        "room_name": rooms.objects.get_name(room_id),
+        "room_name": rooms.objects.get_name(id),
         "start_time": start,
         "end": end,
     })

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
 from .models import *
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 import time, json
 from .forms import *
 from datetime import datetime, timedelta, date
@@ -10,8 +10,6 @@ from datetime import datetime, timedelta, date
 def index(request):
     if not request.session.session_key:
         request.session.save()
-    session_id = request.session.session_key
-    print request.session.session_key
     form = processForm(request)
     bk_date = getDate(request)
     bk_date = datetime.strptime(bk_date,"%d-%m-%Y").strftime("%Y-%m-%d")
@@ -111,14 +109,12 @@ def avaliableRooms(request,date,start,end):
     reserved_rooms = []
     for room in avaliable_rooms:
         try:
-            if checkIfExpired(room.room_id):
+            if checkIfExpired(room.room_id,request.session.session_key):
                 reservations.objects.get(room_id=room.room_id).delete()
                 reserved_rooms.append(room)
             else:
-                print request.session.session_key
                 try:
-                    print request.session.session_key
-                    reservations.objects.get(session_id=request.session.session_key).delete()
+                    reservations.objects.filter(session_id=request.session.session_key).delete()
                     reserved_rooms.append(room)
                 except:
                     pass            
@@ -127,8 +123,13 @@ def avaliableRooms(request,date,start,end):
     avaliable_rooms = reserved_rooms
     return avaliable_rooms
 
-def checkIfExpired(id):
-    reserve = reservations.objects.get(room_id=id)
+def checkIfExpired(id,session):
+    try:
+        reserve = reservations.objects.get(room_id=id,session_id=session)
+    except MultipleObjectsReturned:
+        reserve = reservations.objects.filter(room_id=id,session_id=session).order_by('start_time')[:1]
+        reserve = reserve[0]
+        x = reservations.objects.filter(session_id=reserve.session_id,room_id=reserve.room_id).exclude(start_time=reserve.start_time).delete()
     start_time =  reserve.start_time.replace(tzinfo=None)
     elapsed_time = datetime.now() - start_time
     if (elapsed_time - timedelta(minutes = 2)).total_seconds() > 0:
@@ -144,7 +145,6 @@ def validateID(request):
         return HttpResponse(0)
 
 def getDate(request):
-    #print request.session['bk_date'], time.strftime("%d-%m-%Y")
     if 'bk_date' in request.session:
         return request.session['bk_date']
     else:
@@ -190,6 +190,8 @@ def if_values_are_set(f):
 
 @if_values_are_set
 def view_room(request):
+    if not request.session.session_key:
+        request.session.save()
     id = request.POST['room_id']
     reservations(room_id=id,session_id=request.session.session_key).save()
     request.session['bk_rm_id'] = id
@@ -307,6 +309,7 @@ def set_default_values(scrollTime):
         slotDuration = '00:05:00',
         nowIndicator = True,
         scrollTime   = scrollTime,
+        slotEventOverlap = False,
     )
 
 def processForm(request):
