@@ -64,6 +64,40 @@ class requirementsTest(LiveServerTestCase):
         self.assertEqual(str(booking.end_time),str(end_time))
     '''
 
+    def testUpdateBooking(self):
+        room = rooms.objects.create(room_name="test1",room_size=10,room_features="feat",room_location="loc")
+        users.objects.create_user('name','email@a.com')
+        user_id = users.objects.getUser('name')
+        start = datetime.now() + timedelta(minutes=5)
+        end = datetime.now() + timedelta(minutes=20)
+        bk = bookings.objects.newBooking(
+            room.room_id,
+            time.strftime("%Y-%m-%d"),
+            start.strftime('%H:%M'),
+            end.strftime('%H:%M'),
+            "contact",
+            "description",
+            user_id,
+        )
+        view_booking_path = '//*[@id="bs-example-navbar-collapse-1"]/ul/li[2]/a'
+        self.browser.find_element_by_xpath(view_booking_path).click()
+        self.insertInput('search','name')
+        time.sleep(1)
+        self.browser.find_element_by_xpath('//*[@id="authUser"]/div/div/span[2]/button').click()
+        
+        #Click the first booking
+        self.browser.find_element_by_xpath('//*[@id="userBookings"]/div/div[2]/table/tbody/tr[1]/td[5]/div/button').click()
+        time.sleep(1)
+        #update contact and description
+        self.insertInput('contact','update_c')
+        self.insertInput('description','update_d')
+        #open calendar
+        self.browser.find_element_by_xpath('//*[@id="openCal"]').click()
+        time.sleep(1)
+        #move event
+        self.browser.execute_script('testMoveEvent()')
+        time.sleep(9)
+
 
 '''
 

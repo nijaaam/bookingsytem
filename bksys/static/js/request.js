@@ -9,6 +9,21 @@ $('#search').on('typeahead:selected', function(e, datum) {
     getUserBookings(datum);
 });
 
+function testMoveEvent(id){
+    var event = $('#calendar').fullCalendar('clientEvents',id);
+    var new_event = event;
+    var start = moment(event[0].start);
+    var end = moment(event[0].end);
+    start = start.add(15,'minutes');
+    end = end.add(30,'minutes');
+    new_event.start = start;
+    new_event.end = end;
+    new_event.id=id;
+    //alert(start.format("DD-MM-YYYYTHH:mm") + " " + end.format("DD-MM-YYYYTHH:mm") );
+    $('#calendar').fullCalendar('removeEvents');
+    $('#calendar').fullCalendar('renderEvent',new_event);
+}
+
 function performAJAX(url, dataType, data, callback) {
     $.ajax({
         type: 'POST',
@@ -83,22 +98,6 @@ $('#findBookingForm').submit(function() {
     return false;
 });
 
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
         function getCookie(name) {
@@ -107,13 +106,13 @@ $.ajaxSetup({
                 var cookies = document.cookie.split(';');
                 for (var i = 0; i < cookies.length; i++) {
                     var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
                     }
                 }
             }
+            alert(cookieValue);
             return cookieValue;
         }
         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
@@ -179,7 +178,6 @@ function getVAR(x) {
 }
 
 $('#update').click(function() {
-    var booking_id = $('input[name=booking_id]').val();
     var booking = $("#calendar").fullCalendar('clientEvents', booking_id);
     var start = " ";
     var end = " ";
@@ -205,10 +203,11 @@ $('#update').click(function() {
             "booking_id": booking_id,
         },
         success: function(data) {
-            if ($('#viewBooking').valid() == true) {
+            if ($('#viewBookingForm').valid()){
                 $('#showUpdateBKModal').html(data);
-                $('#updatedBKModal').modal('show');
+            $('#updatedBKModal').modal('show');
             }
+            
         },
     });
     return false;

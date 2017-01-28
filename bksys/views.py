@@ -306,7 +306,7 @@ def set_default_values(scrollTime):
         margin         = '0 auto',
         defaultDate  = 'datetime',
         defaultView  = 'agendaWeek',
-        maxTime      = "19:00:00",
+        maxTime      = "21:00:00",
         allDaySlot   = False,
         editable     = True,
         eventLimit   = True,

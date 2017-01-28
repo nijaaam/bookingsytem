@@ -56,7 +56,7 @@ class requirementsTest(LiveServerTestCase):
         self.assertEqual(booking.room.room_name,"testing")
         self.assertEqual(str(booking.start_time),start_time.strip())
         self.assertEqual(str(booking.end_time),str(end_time))
-    '''
+    
 
     def testEndEvent(self):
         #Ongoing Booking
@@ -81,4 +81,4 @@ class requirementsTest(LiveServerTestCase):
         self.assertEqual(len(bookings.objects.all()),0)
         
 
-    
+    '''
