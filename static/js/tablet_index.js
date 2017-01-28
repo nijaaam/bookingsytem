@@ -1,4 +1,46 @@
 var footer_date = "";
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            // Only send the token to relative URLs i.e. locally.
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+});
+
+
 $(document).ready(function() {
     $('#cTime').html(new moment().format("HH:mm"));
     footer_date = new moment();
@@ -6,6 +48,9 @@ $(document).ready(function() {
     setInterval(function() {
         $('#cTime').html(new moment().format("HH:mm"));
     }, 1000);
+    $('#end').click(function(){
+        end_event($('#booking_id').val());
+    });
     $('#next').click(function() {
         footer_date = footer_date.add(1, "days");
         $('#date_text').text(displayTime(footer_date));
@@ -55,7 +100,7 @@ $(document).ready(function() {
 });
 
 
-function end_event() {
+function end_event(id) {
     $.ajax({
         type: 'POST',
         dataType: 'html',
@@ -63,6 +108,9 @@ function end_event() {
         data: {
             'bk_id': id,
         },
+        success: function(){
+            window.location.href = "/tablet";
+        }
     });
 }
 

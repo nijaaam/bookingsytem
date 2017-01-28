@@ -48,41 +48,17 @@ $("#search").on("input", function() {
     }
 });
 
-$('#confirm').click(function() {
-    performAJAX("/validateID/", "html", {
-        'id': $('#search').val(),
-    }, function(res) {
-        $('#authModel').modal('hide');
-        if (res == "0") {
-            var element = $('#search');
-            $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
-            $('#search_error').addClass('glyphicon-remove');
-            $('<span id="ident_error" class="help-block">Identification Failed.</span>').insertAfter(element);
-        } else {
-            var events = $('#calendar').fullCalendar('clientEvents', "new_event");
-            var start = events[0].start;
-            var end = events[0].end;
-            var date = events[0].date;
-            performAJAX('quickBook/', 'html', {
-                'start': start.format('HH:mm'),
-                'end': end.format('HH:mm'),
-                'date': start.format('YYYY-MM-DD'),
-                'id': $('#search').val(),
-            }, function(data) {
-                $('#showModal').html(data);
-                $('#modal').modal('show');
-            });
-        }
-    });
-});
+function book_event(){
+    alert("JER");
+    
+}
+
+var confirm_event =  function() {
+    
+};
+
 
 $(document).ready(function() {
-    $('#book').click(function() {
-        var events = $('#calendar').fullCalendar('clientEvents', "new_event")[0];
-        if (events != undefined) {
-            $('#authModel').modal('show');
-        }
-    });
     $('#cTime').html(new moment().format("HH:mm"));
     setInterval(function() {
         $('#cTime').html(new moment().format("HH:mm"));
@@ -124,28 +100,28 @@ $(document).ready(function() {
             newEvent.start = start;
             newEvent.end = end;
             var json = $('#calendar').fullCalendar('clientEvents', function(event) {
-                if(event.start <= date && event.end >= date) {
+                if (event.start <= date && event.end >= date) {
                     return true;
                 }
                 return false;
             });
             var overlap = false;
-            $.each(json,function(index,data){
-                if (checkOverlap(data,newEvent)){
+            $.each(json, function(index, data) {
+                if (checkOverlap(data, newEvent)) {
                     overlap = true;
                     return false;
                 } else {
                     alert("NO");
                 }
             });
-            if (!overlap){
+            if (!overlap) {
                 var event = $('#calendar').fullCalendar('clientEvents', "new_event");
                 if (event != "") {
                     $('#calendar').fullCalendar('removeEvents', "new_event");
                 }
                 updateTimes(newEvent, '', '');
                 $('#calendar').fullCalendar('renderEvent', newEvent);
-            } 
+            }
         }
     }
     $('#calendar').fullCalendar(settings);
@@ -199,3 +175,36 @@ var getJSON = function(data, callback) {
     });
     return false;
 }
+$('#book').click(function() {
+                var events = $('#calendar').fullCalendar('clientEvents', "new_event")[0];
+                if (events != undefined) {
+                    $('#authModel').modal('show');
+                }
+            });
+            $('#confirm').click(function() {
+                performAJAX("/validateID/", "html", {
+                    'id': $('#search').val(),
+                }, function(res) {
+                    if (res == "0") {
+                        var element = $('#search');
+                        $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
+                        $('#search_error').addClass('glyphicon-remove');
+                        $('<span id="ident_error" class="help-block">Identification Failed.</span>').insertAfter(element);
+                    } else {
+                                            $('#authModel').modal('hide');
+                        var events = $('#calendar').fullCalendar('clientEvents', "new_event");
+                        var start = events[0].start;
+                        var end = events[0].end;
+                        var date = events[0].date;
+                        performAJAX('quickBook/', 'html', {
+                            'start': start.format('HH:mm'),
+                            'end': end.format('HH:mm'),
+                            'date': start.format('YYYY-MM-DD'),
+                            'id': $('#search').val(),
+                        }, function(data) {
+                            $('#showModal').html(data);
+                            $('#modal').modal('show');
+                        });
+                    }
+                });
+            });

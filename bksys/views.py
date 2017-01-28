@@ -139,6 +139,7 @@ def checkIfExpired(id,session):
         return 0
 
 def validateID(request):
+    print "HRR"
     id = request.POST['id']
     if users.objects.authenticate(id):
         return HttpResponse(1)

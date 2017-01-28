@@ -25,23 +25,26 @@ class viewTest(TestCase):
 
     def testQuickBook(self):
     	room = rooms.objects.create(room_name="name",room_size="10",room_location="location",room_features="features")
-        url = '/tablet/' + str(room.room_id) + '/quickBook/'
-        request = self.factory.post(url)
-        User.objects.create_user('user','user@email.com')
-        request.POST['id'] = 'user'
-        request.POST['date'] = "2017-01-01"
-        request.POST['start'] = "09:00"
-        request.POST['end'] = "10:00"
-        response = quickBook(request)
-        print response
-
-    '''
-    def testEndEvent(self):
-
+        users.objects.create_user('user','user@email.com')
+        url = '/tablet/' + str(room.room_id) + '/bookRoom/quickBook/'
+        response = self.client.post(url,{'id':'user','date':'2017-01-01','start':'09:00','end':'10:00'})
+        self.assertEqual(len(bookings.objects.all()),1)
+        self.assertEqual(response.context['room_name'],"name")
+        self.assertEqual(response.context['start_time'],"09:00")
+        self.assertEqual(response.context['end'],"10:00")
     
-
-    def testQuickBook(self):
-    url(r'^$',views.index, name = 'index'),
-                url(r'^end_event/$',views.end_event, name = 'end_event'),
-                url(r'^bookRoom/$',views.bookRoom, name = 'bookRoom'),
-                url(r'^quickBook/$',views.quickBook, name = 'quickBook'),'''
+    def testEndEvent(self):
+        room = rooms.objects.create(room_name="name",room_size="10",room_location="location",room_features="features")
+        users.objects.create_user('user','user@email.com')
+        user_id = users.objects.getUser('user')
+        bk = bookings.objects.newBooking(
+            room.room_id,
+            time.strftime("%Y-%m-%d"),
+            time.strftime("%H:%M"),
+            time.strftime("%H:%M"),
+            "contact",
+            "description",
+            user_id,
+        )
+        response = self.client.post('end_event',{'bk_id':bk.booking_ref})
+        self.assertEqual(len(bookings.objects.all()),1)

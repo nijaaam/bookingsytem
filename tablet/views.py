@@ -53,24 +53,22 @@ def index(request,id):
 		'next_event':next_event,
 	})	
 
-def get_bookings(request):
-	start_time = request.POST['start']
-	end_time = request.POST['end']
-	date = request.POST['date']
-
 def quickBook(request,id):
-	user = users.objects.getUser(request.POST['id'])
-	contact = users.objects.getName(user)
-	date = request.POST['date']
-	start = request.POST['start']
-	end = request.POST['end']
-	booking = bookings.objects.newBooking(id,date,start,end,contact,'quickBook',user)
-	return render(request,'modal.html',{
-        "booking_id": booking.booking_ref,
-        "room_name": rooms.objects.get_name(id),
-        "start_time": start,
-        "end": end,
-    })
+	try:
+		user = users.objects.getUser(request.POST['id'])
+		contact = users.objects.getName(user)
+		date = request.POST['date']
+		start = request.POST['start']
+		end = request.POST['end']
+		booking = bookings.objects.newBooking(id,date,start,end,contact,'quickBook',user)
+		return render(request,'modal.html',{
+	        "booking_id": booking.booking_ref,
+	        "room_name": rooms.objects.get_name(id),
+	        "start_time": start,
+	        "end": end,
+	    })
+	except Exception as e:
+		print e
 
 def bookRoom(request,id):
 	date = time.strftime("%d-%m-%Y")
@@ -97,7 +95,7 @@ def get_upcoming_events():
 	upcoming = upcoming.order_by('start_time')[:3]
 	return upcoming
 
-def end_event(request):
+def end_event(request,id):
 	bk_id = request.POST['bk_id']
 	bookings.objects.delete(bk_id)
 	return HttpResponse(1)
