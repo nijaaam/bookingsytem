@@ -74,7 +74,11 @@ class requirementsTest(LiveServerTestCase):
         )
         self.browser.get(self.live_server_url + "/tablet/" + str(self.room_id))
         self.browser.find_element_by_id('end').click()
-        time.sleep(5)
+        time.sleep(1)
+        self.insertInput('search','user')
+        self.browser.find_element_by_id('confirm').click()
+        time.sleep(1)
+        self.assertEqual(len(bookings.objects.all()),0)
         
 
     

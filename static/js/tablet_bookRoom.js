@@ -185,13 +185,13 @@ $('#book').click(function() {
                 performAJAX("/validateID/", "html", {
                     'id': $('#search').val(),
                 }, function(res) {
-                    $('#authModel').modal('hide');
                     if (res == "0") {
                         var element = $('#search');
                         $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
                         $('#search_error').addClass('glyphicon-remove');
                         $('<span id="ident_error" class="help-block">Identification Failed.</span>').insertAfter(element);
                     } else {
+                                            $('#authModel').modal('hide');
                         var events = $('#calendar').fullCalendar('clientEvents', "new_event");
                         var start = events[0].start;
                         var end = events[0].end;
