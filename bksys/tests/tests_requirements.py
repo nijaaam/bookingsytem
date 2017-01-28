@@ -29,7 +29,7 @@ class requirementsTest(LiveServerTestCase):
     def tearDown(self):  
         self.browser.quit()
 
-    def testBookRoom(self):
+    def testBookings(self):
     	#user need to signup first
     	self.browser.find_element_by_xpath("//a[contains(text(), 'Sign Up')]").click()
     	self.browser.implicitly_wait(3)
@@ -44,7 +44,17 @@ class requirementsTest(LiveServerTestCase):
     	select = Select(self.browser.find_element_by_id('recurring'))
     	select.select_by_visible_text('Never')
     	self.insertInput('search','user')
-    	self.browser.find_element_by_xpath("//button[contains(text(), 'Book')]").click()
+    	self.browser.execute_script("$('#search').typeahead('close');")
+        self.browser.find_element_by_xpath("//button[contains(text(), 'Book')]").click()
     	self.browser.implicitly_wait(3)
-    	self.browser.find_element_by_id('modal_roomname').get_attribute('value')
-    	
+    	time.sleep(2)
+        self.assertEqual(self.browser.find_element_by_id('modal_roomname').get_attribute('value'),"testing")
+        start_time = self.browser.find_element_by_id('modal_stime').get_attribute('value')
+        end_time = self.browser.find_element_by_id('modal_etime').get_attribute('value')
+        print start_time,end_time
+        self.browser.find_element_by_id('exit_modal1').click()
+        self.browser.find_element_by_xpath("//a[contains(text(), 'View Booking')]").click()
+        self.insertInput('search','user')
+        self.browser.execute_script("$('#search').typeahead('close');")
+        tbody = self.browser.find_element_by_tag('tbody')
+        print tbody
