@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/core/mail/__init__.py: 33%</title>
+    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/core/mail/__init__.py: 45%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -24,15 +24,15 @@
 <div id="header">
     <div class="content">
         <h1>Coverage for <b>/usr/local/lib/python2.7/dist-packages/django/core/mail/__init__.py</b> :
-            <span class="pc_cov">33%</span>
+            <span class="pc_cov">45%</span>
         </h1>
 
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
 
         <h2 class="stats">
             33 statements &nbsp;
-            <span class="run hide_run shortkey_r button_toggle_run">11 run</span>
-            <span class="mis shortkey_m button_toggle_mis">22 missing</span>
+            <span class="run hide_run shortkey_r button_toggle_run">15 run</span>
+            <span class="mis shortkey_m button_toggle_mis">18 missing</span>
             <span class="exc shortkey_x button_toggle_exc">0 excluded</span>
 
             
@@ -102,8 +102,8 @@
 <p id="n33" class="pln"><a href="#n33">33</a></p>
 <p id="n34" class="pln"><a href="#n34">34</a></p>
 <p id="n35" class="pln"><a href="#n35">35</a></p>
-<p id="n36" class="stm mis"><a href="#n36">36</a></p>
-<p id="n37" class="stm mis"><a href="#n37">37</a></p>
+<p id="n36" class="stm run hide_run"><a href="#n36">36</a></p>
+<p id="n37" class="stm run hide_run"><a href="#n37">37</a></p>
 <p id="n38" class="pln"><a href="#n38">38</a></p>
 <p id="n39" class="pln"><a href="#n39">39</a></p>
 <p id="n40" class="stm run hide_run"><a href="#n40">40</a></p>
@@ -160,8 +160,8 @@
 <p id="n91" class="stm run hide_run"><a href="#n91">91</a></p>
 <p id="n92" class="pln"><a href="#n92">92</a></p>
 <p id="n93" class="pln"><a href="#n93">93</a></p>
-<p id="n94" class="stm mis"><a href="#n94">94</a></p>
-<p id="n95" class="stm mis"><a href="#n95">95</a></p>
+<p id="n94" class="stm run hide_run"><a href="#n94">94</a></p>
+<p id="n95" class="stm run hide_run"><a href="#n95">95</a></p>
 <p id="n96" class="stm mis"><a href="#n96">96</a></p>
 <p id="n97" class="pln"><a href="#n97">97</a></p>
 <p id="n98" class="pln"><a href="#n98">98</a></p>
@@ -223,8 +223,8 @@
 <p id="t33" class="pln"><span class="str">    Both fail_silently and other keyword arguments are used in the</span><span class="strut">&nbsp;</span></p>
 <p id="t34" class="pln"><span class="str">    constructor of the backend.</span><span class="strut">&nbsp;</span></p>
 <p id="t35" class="pln"><span class="str">    """</span><span class="strut">&nbsp;</span></p>
-<p id="t36" class="stm mis">    <span class="nam">klass</span> <span class="op">=</span> <span class="nam">import_string</span><span class="op">(</span><span class="nam">backend</span> <span class="key">or</span> <span class="nam">settings</span><span class="op">.</span><span class="nam">EMAIL_BACKEND</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t37" class="stm mis">    <span class="key">return</span> <span class="nam">klass</span><span class="op">(</span><span class="nam">fail_silently</span><span class="op">=</span><span class="nam">fail_silently</span><span class="op">,</span> <span class="op">**</span><span class="nam">kwds</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t36" class="stm run hide_run">    <span class="nam">klass</span> <span class="op">=</span> <span class="nam">import_string</span><span class="op">(</span><span class="nam">backend</span> <span class="key">or</span> <span class="nam">settings</span><span class="op">.</span><span class="nam">EMAIL_BACKEND</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t37" class="stm run hide_run">    <span class="key">return</span> <span class="nam">klass</span><span class="op">(</span><span class="nam">fail_silently</span><span class="op">=</span><span class="nam">fail_silently</span><span class="op">,</span> <span class="op">**</span><span class="nam">kwds</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t38" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t39" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t40" class="stm run hide_run"><span class="key">def</span> <span class="nam">send_mail</span><span class="op">(</span><span class="nam">subject</span><span class="op">,</span> <span class="nam">message</span><span class="op">,</span> <span class="nam">from_email</span><span class="op">,</span> <span class="nam">recipient_list</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
@@ -281,8 +281,8 @@
 <p id="t91" class="stm run hide_run"><span class="key">def</span> <span class="nam">mail_admins</span><span class="op">(</span><span class="nam">subject</span><span class="op">,</span> <span class="nam">message</span><span class="op">,</span> <span class="nam">fail_silently</span><span class="op">=</span><span class="nam">False</span><span class="op">,</span> <span class="nam">connection</span><span class="op">=</span><span class="nam">None</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t92" class="pln">                <span class="nam">html_message</span><span class="op">=</span><span class="nam">None</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t93" class="pln">    <span class="str">"""Sends a message to the admins, as defined by the ADMINS setting."""</span><span class="strut">&nbsp;</span></p>
-<p id="t94" class="stm mis">    <span class="key">if</span> <span class="key">not</span> <span class="nam">settings</span><span class="op">.</span><span class="nam">ADMINS</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t95" class="stm mis">        <span class="key">return</span><span class="strut">&nbsp;</span></p>
+<p id="t94" class="stm run hide_run">    <span class="key">if</span> <span class="key">not</span> <span class="nam">settings</span><span class="op">.</span><span class="nam">ADMINS</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t95" class="stm run hide_run">        <span class="key">return</span><span class="strut">&nbsp;</span></p>
 <p id="t96" class="stm mis">    <span class="nam">mail</span> <span class="op">=</span> <span class="nam">EmailMultiAlternatives</span><span class="op">(</span><span class="strut">&nbsp;</span></p>
 <p id="t97" class="pln">        <span class="str">'%s%s'</span> <span class="op">%</span> <span class="op">(</span><span class="nam">settings</span><span class="op">.</span><span class="nam">EMAIL_SUBJECT_PREFIX</span><span class="op">,</span> <span class="nam">subject</span><span class="op">)</span><span class="op">,</span> <span class="nam">message</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t98" class="pln">        <span class="nam">settings</span><span class="op">.</span><span class="nam">SERVER_EMAIL</span><span class="op">,</span> <span class="op">[</span><span class="nam">a</span><span class="op">[</span><span class="num">1</span><span class="op">]</span> <span class="key">for</span> <span class="nam">a</span> <span class="key">in</span> <span class="nam">settings</span><span class="op">.</span><span class="nam">ADMINS</span><span class="op">]</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
@@ -316,7 +316,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.3.4</a>,
-            created at 2017-01-29 09:56
+            created at 2017-01-29 17:43
         </p>
     </div>
 </div>

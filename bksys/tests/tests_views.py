@@ -4,7 +4,7 @@ from tablet.views import *
 from bksys.models import * 
 from bksys.views import * 
 
-class viewTest(TestCase):
+class viewsTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.factory = RequestFactory()
@@ -60,6 +60,10 @@ class viewTest(TestCase):
         scroll_time = datetime.strptime(time.strftime("%H:%M"),"%H:%M") - timedelta(minutes=60)
         settings = json.dumps(set_default_values(scroll_time.strftime("%H:%M")))
         self.assertEqual(response.context['settings'],settings)
+        #fail
+        response = self.client.post('/view_room/')
+        self.assertEqual(response.status_code,302)
+        self.assertEqual(response['Location'],'/')
     
     def checkContext(self,response,name,value):
         self.assertEqual(response.context[name],value)

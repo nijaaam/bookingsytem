@@ -40,6 +40,8 @@ class usersTest(TestCase):
         user_id = users.objects.getUser('name')
         user = users.objects.get(id=user_id)
         self.assertEqual(user.email,'email')
+        #Fail
+        self.assertEqual(None,users.objects.getUser('name1'))
 
     def test_auth(self):
         self.assertEqual(True,users.objects.authenticate('name'))
@@ -50,6 +52,14 @@ class usersTest(TestCase):
     def test_get_name(self):
         user_id = users.objects.getUser('name')
         self.assertEqual('name',users.objects.getName(user_id))
+
+    def test_exists_name(self):
+        self.assertEqual(users.objects.exists_name('name'),1)
+        self.assertEqual(users.objects.exists_name('name1'),0)
+
+    def test_exists_email(self):
+        self.assertEqual(users.objects.exists_email('email'),1)
+        self.assertEqual(users.objects.exists_email('email1'),0)
 
 class recurringEventsTest(TestCase):
     def setUp(self):

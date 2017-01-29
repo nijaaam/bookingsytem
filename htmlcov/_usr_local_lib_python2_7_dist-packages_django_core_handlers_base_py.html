@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py: 60%</title>
+    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py: 63%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -24,15 +24,15 @@
 <div id="header">
     <div class="content">
         <h1>Coverage for <b>/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py</b> :
-            <span class="pc_cov">60%</span>
+            <span class="pc_cov">63%</span>
         </h1>
 
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
 
         <h2 class="stats">
             150 statements &nbsp;
-            <span class="run hide_run shortkey_r button_toggle_run">90 run</span>
-            <span class="mis shortkey_m button_toggle_mis">60 missing</span>
+            <span class="run hide_run shortkey_r button_toggle_run">95 run</span>
+            <span class="mis shortkey_m button_toggle_mis">55 missing</span>
             <span class="exc shortkey_x button_toggle_exc">0 excluded</span>
 
             
@@ -252,8 +252,8 @@
 <p id="n183" class="stm run hide_run"><a href="#n183">183</a></p>
 <p id="n184" class="stm run hide_run"><a href="#n184">184</a></p>
 <p id="n185" class="stm run hide_run"><a href="#n185">185</a></p>
-<p id="n186" class="stm mis"><a href="#n186">186</a></p>
-<p id="n187" class="stm mis"><a href="#n187">187</a></p>
+<p id="n186" class="stm run hide_run"><a href="#n186">186</a></p>
+<p id="n187" class="stm run hide_run"><a href="#n187">187</a></p>
 <p id="n188" class="pln"><a href="#n188">188</a></p>
 <p id="n189" class="pln"><a href="#n189">189</a></p>
 <p id="n190" class="stm run hide_run"><a href="#n190">190</a></p>
@@ -292,11 +292,11 @@
 <p id="n223" class="pln"><a href="#n223">223</a></p>
 <p id="n224" class="pln"><a href="#n224">224</a></p>
 <p id="n225" class="pln"><a href="#n225">225</a></p>
-<p id="n226" class="stm mis"><a href="#n226">226</a></p>
+<p id="n226" class="stm run hide_run"><a href="#n226">226</a></p>
 <p id="n227" class="stm mis"><a href="#n227">227</a></p>
 <p id="n228" class="stm mis"><a href="#n228">228</a></p>
 <p id="n229" class="stm mis"><a href="#n229">229</a></p>
-<p id="n230" class="stm mis"><a href="#n230">230</a></p>
+<p id="n230" class="stm run hide_run"><a href="#n230">230</a></p>
 <p id="n231" class="pln"><a href="#n231">231</a></p>
 <p id="n232" class="stm run hide_run"><a href="#n232">232</a></p>
 <p id="n233" class="pln"><a href="#n233">233</a></p>
@@ -312,7 +312,7 @@
 <p id="n243" class="stm run hide_run"><a href="#n243">243</a></p>
 <p id="n244" class="stm run hide_run"><a href="#n244">244</a></p>
 <p id="n245" class="stm run hide_run"><a href="#n245">245</a></p>
-<p id="n246" class="stm mis"><a href="#n246">246</a></p>
+<p id="n246" class="stm run hide_run"><a href="#n246">246</a></p>
 <p id="n247" class="pln"><a href="#n247">247</a></p>
 <p id="n248" class="stm run hide_run"><a href="#n248">248</a></p>
 <p id="n249" class="stm run hide_run"><a href="#n249">249</a></p>
@@ -505,8 +505,8 @@
 <p id="t183" class="stm run hide_run">            <span class="nam">wrapped_callback</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">make_view_atomic</span><span class="op">(</span><span class="nam">callback</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t184" class="stm run hide_run">            <span class="key">try</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t185" class="stm run hide_run">                <span class="nam">response</span> <span class="op">=</span> <span class="nam">wrapped_callback</span><span class="op">(</span><span class="nam">request</span><span class="op">,</span> <span class="op">*</span><span class="nam">callback_args</span><span class="op">,</span> <span class="op">**</span><span class="nam">callback_kwargs</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t186" class="stm mis">            <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t187" class="stm mis">                <span class="nam">response</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">process_exception_by_middleware</span><span class="op">(</span><span class="nam">e</span><span class="op">,</span> <span class="nam">request</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t186" class="stm run hide_run">            <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t187" class="stm run hide_run">                <span class="nam">response</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">process_exception_by_middleware</span><span class="op">(</span><span class="nam">e</span><span class="op">,</span> <span class="nam">request</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t188" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t189" class="pln">        <span class="com"># Complain if the view returned None (a common error).</span><span class="strut">&nbsp;</span></p>
 <p id="t190" class="stm run hide_run">        <span class="key">if</span> <span class="nam">response</span> <span class="key">is</span> <span class="nam">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -545,11 +545,11 @@
 <p id="t223" class="pln"><span class="str">        Pass the exception to the exception middleware. If no middleware</span><span class="strut">&nbsp;</span></p>
 <p id="t224" class="pln"><span class="str">        return a response for this exception, raise it.</span><span class="strut">&nbsp;</span></p>
 <p id="t225" class="pln"><span class="str">        """</span><span class="strut">&nbsp;</span></p>
-<p id="t226" class="stm mis">        <span class="key">for</span> <span class="nam">middleware_method</span> <span class="key">in</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_exception_middleware</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t226" class="stm run hide_run">        <span class="key">for</span> <span class="nam">middleware_method</span> <span class="key">in</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_exception_middleware</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t227" class="stm mis">            <span class="nam">response</span> <span class="op">=</span> <span class="nam">middleware_method</span><span class="op">(</span><span class="nam">request</span><span class="op">,</span> <span class="nam">exception</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t228" class="stm mis">            <span class="key">if</span> <span class="nam">response</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t229" class="stm mis">                <span class="key">return</span> <span class="nam">response</span><span class="strut">&nbsp;</span></p>
-<p id="t230" class="stm mis">        <span class="key">raise</span><span class="strut">&nbsp;</span></p>
+<p id="t230" class="stm run hide_run">        <span class="key">raise</span><span class="strut">&nbsp;</span></p>
 <p id="t231" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t232" class="stm run hide_run">    <span class="key">def</span> <span class="nam">handle_uncaught_exception</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">request</span><span class="op">,</span> <span class="nam">resolver</span><span class="op">,</span> <span class="nam">exc_info</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t233" class="pln">        <span class="str">"""Allow subclasses to override uncaught exception handling."""</span><span class="strut">&nbsp;</span></p>
@@ -565,7 +565,7 @@
 <p id="t243" class="stm run hide_run">        <span class="key">for</span> <span class="nam">middleware_method</span> <span class="key">in</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_request_middleware</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t244" class="stm run hide_run">            <span class="nam">response</span> <span class="op">=</span> <span class="nam">middleware_method</span><span class="op">(</span><span class="nam">request</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t245" class="stm run hide_run">            <span class="key">if</span> <span class="nam">response</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t246" class="stm mis">                <span class="key">break</span><span class="strut">&nbsp;</span></p>
+<p id="t246" class="stm run hide_run">                <span class="key">break</span><span class="strut">&nbsp;</span></p>
 <p id="t247" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t248" class="stm run hide_run">        <span class="key">if</span> <span class="nam">response</span> <span class="key">is</span> <span class="nam">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t249" class="stm run hide_run">            <span class="nam">response</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_get_response</span><span class="op">(</span><span class="nam">request</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -580,7 +580,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.3.4</a>,
-            created at 2017-01-29 09:56
+            created at 2017-01-29 17:43
         </p>
     </div>
 </div>

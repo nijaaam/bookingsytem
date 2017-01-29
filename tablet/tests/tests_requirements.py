@@ -28,7 +28,7 @@ class requirementsTest(LiveServerTestCase):
     def insertInputbyName(self,name,value):
         self.browser.find_element_by_name(name).clear()
         self.browser.find_element_by_name(name).send_keys(value)
-    
+        
     def tearDown(self):  
         self.browser.quit()
     

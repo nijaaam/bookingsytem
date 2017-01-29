@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/contrib/auth/__init__.py: 24%</title>
+    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/contrib/auth/__init__.py: 32%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -24,15 +24,15 @@
 <div id="header">
     <div class="content">
         <h1>Coverage for <b>/usr/local/lib/python2.7/dist-packages/django/contrib/auth/__init__.py</b> :
-            <span class="pc_cov">24%</span>
+            <span class="pc_cov">32%</span>
         </h1>
 
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
 
         <h2 class="stats">
             117 statements &nbsp;
-            <span class="run hide_run shortkey_r button_toggle_run">28 run</span>
-            <span class="mis shortkey_m button_toggle_mis">89 missing</span>
+            <span class="run hide_run shortkey_r button_toggle_run">38 run</span>
+            <span class="mis shortkey_m button_toggle_mis">79 missing</span>
             <span class="exc shortkey_x button_toggle_exc">0 excluded</span>
 
             
@@ -125,7 +125,7 @@
 <p id="n56" class="stm run hide_run"><a href="#n56">56</a></p>
 <p id="n57" class="pln"><a href="#n57">57</a></p>
 <p id="n58" class="pln"><a href="#n58">58</a></p>
-<p id="n59" class="stm mis"><a href="#n59">59</a></p>
+<p id="n59" class="stm run hide_run"><a href="#n59">59</a></p>
 <p id="n60" class="pln"><a href="#n60">60</a></p>
 <p id="n61" class="pln"><a href="#n61">61</a></p>
 <p id="n62" class="stm run hide_run"><a href="#n62">62</a></p>
@@ -228,8 +228,8 @@
 <p id="n159" class="pln"><a href="#n159">159</a></p>
 <p id="n160" class="pln"><a href="#n160">160</a></p>
 <p id="n161" class="pln"><a href="#n161">161</a></p>
-<p id="n162" class="stm mis"><a href="#n162">162</a></p>
-<p id="n163" class="stm mis"><a href="#n163">163</a></p>
+<p id="n162" class="stm run hide_run"><a href="#n162">162</a></p>
+<p id="n163" class="stm run hide_run"><a href="#n163">163</a></p>
 <p id="n164" class="stm mis"><a href="#n164">164</a></p>
 <p id="n165" class="stm mis"><a href="#n165">165</a></p>
 <p id="n166" class="stm mis"><a href="#n166">166</a></p>
@@ -243,13 +243,13 @@
 <p id="n174" class="pln"><a href="#n174">174</a></p>
 <p id="n175" class="pln"><a href="#n175">175</a></p>
 <p id="n176" class="pln"><a href="#n176">176</a></p>
-<p id="n177" class="stm mis"><a href="#n177">177</a></p>
-<p id="n178" class="stm mis"><a href="#n178">178</a></p>
-<p id="n179" class="stm mis"><a href="#n179">179</a></p>
-<p id="n180" class="stm mis"><a href="#n180">180</a></p>
+<p id="n177" class="stm run hide_run"><a href="#n177">177</a></p>
+<p id="n178" class="stm run hide_run"><a href="#n178">178</a></p>
+<p id="n179" class="stm run hide_run"><a href="#n179">179</a></p>
+<p id="n180" class="stm run hide_run"><a href="#n180">180</a></p>
 <p id="n181" class="stm mis"><a href="#n181">181</a></p>
-<p id="n182" class="stm mis"><a href="#n182">182</a></p>
-<p id="n183" class="stm mis"><a href="#n183">183</a></p>
+<p id="n182" class="stm run hide_run"><a href="#n182">182</a></p>
+<p id="n183" class="stm run hide_run"><a href="#n183">183</a></p>
 <p id="n184" class="pln"><a href="#n184">184</a></p>
 <p id="n185" class="stm mis"><a href="#n185">185</a></p>
 <p id="n186" class="stm mis"><a href="#n186">186</a></p>
@@ -265,7 +265,7 @@
 <p id="n196" class="stm mis"><a href="#n196">196</a></p>
 <p id="n197" class="stm mis"><a href="#n197">197</a></p>
 <p id="n198" class="pln"><a href="#n198">198</a></p>
-<p id="n199" class="stm mis"><a href="#n199">199</a></p>
+<p id="n199" class="stm run hide_run"><a href="#n199">199</a></p>
 <p id="n200" class="pln"><a href="#n200">200</a></p>
 <p id="n201" class="pln"><a href="#n201">201</a></p>
 <p id="n202" class="stm run hide_run"><a href="#n202">202</a></p>
@@ -349,7 +349,7 @@
 <p id="t56" class="stm run hide_run"><span class="key">def</span> <span class="nam">_get_user_session_key</span><span class="op">(</span><span class="nam">request</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t57" class="pln">    <span class="com"># This value in the session is always serialized to a string, so we need</span><span class="strut">&nbsp;</span></p>
 <p id="t58" class="pln">    <span class="com"># to convert it back to Python whenever we access it.</span><span class="strut">&nbsp;</span></p>
-<p id="t59" class="stm mis">    <span class="key">return</span> <span class="nam">get_user_model</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">_meta</span><span class="op">.</span><span class="nam">pk</span><span class="op">.</span><span class="nam">to_python</span><span class="op">(</span><span class="nam">request</span><span class="op">.</span><span class="nam">session</span><span class="op">[</span><span class="nam">SESSION_KEY</span><span class="op">]</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t59" class="stm run hide_run">    <span class="key">return</span> <span class="nam">get_user_model</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">_meta</span><span class="op">.</span><span class="nam">pk</span><span class="op">.</span><span class="nam">to_python</span><span class="op">(</span><span class="nam">request</span><span class="op">.</span><span class="nam">session</span><span class="op">[</span><span class="nam">SESSION_KEY</span><span class="op">]</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t60" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t61" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t62" class="stm run hide_run"><span class="key">def</span> <span class="nam">authenticate</span><span class="op">(</span><span class="op">**</span><span class="nam">credentials</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -452,8 +452,8 @@
 <p id="t159" class="pln">    <span class="str">"""</span><span class="strut">&nbsp;</span></p>
 <p id="t160" class="pln"><span class="str">    Returns the User model that is active in this project.</span><span class="strut">&nbsp;</span></p>
 <p id="t161" class="pln"><span class="str">    """</span><span class="strut">&nbsp;</span></p>
-<p id="t162" class="stm mis">    <span class="key">try</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t163" class="stm mis">        <span class="key">return</span> <span class="nam">django_apps</span><span class="op">.</span><span class="nam">get_model</span><span class="op">(</span><span class="nam">settings</span><span class="op">.</span><span class="nam">AUTH_USER_MODEL</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t162" class="stm run hide_run">    <span class="key">try</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t163" class="stm run hide_run">        <span class="key">return</span> <span class="nam">django_apps</span><span class="op">.</span><span class="nam">get_model</span><span class="op">(</span><span class="nam">settings</span><span class="op">.</span><span class="nam">AUTH_USER_MODEL</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t164" class="stm mis">    <span class="key">except</span> <span class="nam">ValueError</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t165" class="stm mis">        <span class="key">raise</span> <span class="nam">ImproperlyConfigured</span><span class="op">(</span><span class="str">"AUTH_USER_MODEL must be of the form 'app_label.model_name'"</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t166" class="stm mis">    <span class="key">except</span> <span class="nam">LookupError</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -467,13 +467,13 @@
 <p id="t174" class="pln"><span class="str">    Returns the user model instance associated with the given request session.</span><span class="strut">&nbsp;</span></p>
 <p id="t175" class="pln"><span class="str">    If no user is retrieved an instance of `AnonymousUser` is returned.</span><span class="strut">&nbsp;</span></p>
 <p id="t176" class="pln"><span class="str">    """</span><span class="strut">&nbsp;</span></p>
-<p id="t177" class="stm mis">    <span class="key">from</span> <span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">AnonymousUser</span><span class="strut">&nbsp;</span></p>
-<p id="t178" class="stm mis">    <span class="nam">user</span> <span class="op">=</span> <span class="nam">None</span><span class="strut">&nbsp;</span></p>
-<p id="t179" class="stm mis">    <span class="key">try</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t180" class="stm mis">        <span class="nam">user_id</span> <span class="op">=</span> <span class="nam">_get_user_session_key</span><span class="op">(</span><span class="nam">request</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t177" class="stm run hide_run">    <span class="key">from</span> <span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">AnonymousUser</span><span class="strut">&nbsp;</span></p>
+<p id="t178" class="stm run hide_run">    <span class="nam">user</span> <span class="op">=</span> <span class="nam">None</span><span class="strut">&nbsp;</span></p>
+<p id="t179" class="stm run hide_run">    <span class="key">try</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t180" class="stm run hide_run">        <span class="nam">user_id</span> <span class="op">=</span> <span class="nam">_get_user_session_key</span><span class="op">(</span><span class="nam">request</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t181" class="stm mis">        <span class="nam">backend_path</span> <span class="op">=</span> <span class="nam">request</span><span class="op">.</span><span class="nam">session</span><span class="op">[</span><span class="nam">BACKEND_SESSION_KEY</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
-<p id="t182" class="stm mis">    <span class="key">except</span> <span class="nam">KeyError</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t183" class="stm mis">        <span class="key">pass</span><span class="strut">&nbsp;</span></p>
+<p id="t182" class="stm run hide_run">    <span class="key">except</span> <span class="nam">KeyError</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t183" class="stm run hide_run">        <span class="key">pass</span><span class="strut">&nbsp;</span></p>
 <p id="t184" class="pln">    <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t185" class="stm mis">        <span class="key">if</span> <span class="nam">backend_path</span> <span class="key">in</span> <span class="nam">settings</span><span class="op">.</span><span class="nam">AUTHENTICATION_BACKENDS</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t186" class="stm mis">            <span class="nam">backend</span> <span class="op">=</span> <span class="nam">load_backend</span><span class="op">(</span><span class="nam">backend_path</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -489,7 +489,7 @@
 <p id="t196" class="stm mis">                    <span class="nam">request</span><span class="op">.</span><span class="nam">session</span><span class="op">.</span><span class="nam">flush</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t197" class="stm mis">                    <span class="nam">user</span> <span class="op">=</span> <span class="nam">None</span><span class="strut">&nbsp;</span></p>
 <p id="t198" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t199" class="stm mis">    <span class="key">return</span> <span class="nam">user</span> <span class="key">or</span> <span class="nam">AnonymousUser</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t199" class="stm run hide_run">    <span class="key">return</span> <span class="nam">user</span> <span class="key">or</span> <span class="nam">AnonymousUser</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t200" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t201" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t202" class="stm run hide_run"><span class="key">def</span> <span class="nam">get_permission_codename</span><span class="op">(</span><span class="nam">action</span><span class="op">,</span> <span class="nam">opts</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -522,7 +522,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.3.4</a>,
-            created at 2017-01-29 09:56
+            created at 2017-01-29 17:43
         </p>
     </div>
 </div>

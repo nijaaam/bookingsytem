@@ -16,7 +16,7 @@ class DateTimeForm(forms.Form):
         date = self.cleaned_data['date']
         if date < datetime.date.today():
             self.cleaned_data['date'] = datetime.date.today()
-            return datetime.date.today()
+            date = datetime.date.today()
         return date
 
     def clean_time(self):
@@ -24,7 +24,7 @@ class DateTimeForm(forms.Form):
         hour = datetime.datetime.now().hour
         minute = datetime.datetime.now().minute
         if time < datetime.time(hour,minute,0):
-            return datetime.time(hour,minute,0)
+            time =  datetime.time(hour,minute,0)
         return time
             
 class SignUpForm(forms.Form):

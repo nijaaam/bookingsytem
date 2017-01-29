@@ -16,18 +16,12 @@ class requirementsTest(LiveServerTestCase):
         self.browser = webdriver.Chrome()
         self.browser.implicitly_wait(3)
         rooms.objects.create(room_name="testing",room_size=10,room_location="loc",room_features="feat")
-        for bk in bookings.objects.all():
-            bookings.objects.delete(bk.booking_ref)
         self.browser.get(self.live_server_url)
 
     def insertInput(self,id,value):
         self.browser.find_element_by_id(id).clear()
         self.browser.find_element_by_id(id).send_keys(value)
-    
-    def insertInputbyName(self,name,value):
-        self.browser.find_element_by_name(name).clear()
-        self.browser.find_element_by_name(name).send_keys(value)
-    
+
     def tearDown(self):
         for bk in bookings.objects.all():
             bookings.objects.delete(bk.booking_ref)  
@@ -206,4 +200,44 @@ class requirementsTest(LiveServerTestCase):
         time.sleep(1)
         self.assertEqual(len(bookings.objects.all()),0)
     
+class validationTest(LiveServerTestCase):
+    def setUp(self):
+        self.browser = webdriver.Chrome()
+        self.room = rooms.objects.create(room_name="testing",room_size=10,room_location="loc",room_features="feat")
+        self.browser.get(self.live_server_url)
+
+    def insertInput(self,id,value):
+        self.browser.find_element_by_id(id).clear()
+        self.browser.find_element_by_id(id).send_keys(value)
+    
+    def tearDown(self): 
+        self.browser.quit()
+  
+    def testPastDates(self):
+        date = datetime.now() - timedelta(days=1)
+        date = date.strftime("%d-%m-%Y")
+        post_time = datetime.now() - timedelta(minutes=10)
+        post_time = post_time.strftime('%H:%M')
+        self.insertInput('id_date',date)
+        self.insertInput('id_time',post_time)
+        self.browser.find_element_by_id('find_room_btn').click()
+        date = self.browser.find_element_by_id('id_date').get_attribute('value')
+        bk_time = self.browser.find_element_by_id('id_time').get_attribute('value')
+        self.assertEqual(date,time.strftime("%d-%m-%Y"))
+        self.assertEqual(bk_time,time.strftime("%H:%M"))
+
+    def testDuplicateSignup(self):
+        users.objects.create_user('name','name@email.com')
+        self.browser.find_element_by_xpath("//a[contains(text(), 'Sign Up')]").click()
+        self.browser.implicitly_wait(3)
+        self.insertInput('id_name','name')
+        self.insertInput('id_email','name@email.com')
+        self.browser.find_element_by_xpath("//button[contains(text(), 'Sign Up')]").click()
+        name_error = self.browser.find_element_by_xpath('//*[@id="username_group"]/span').text
+        email_error = self.browser.find_element_by_xpath('//*[@id="email_group"]/span').text
+        self.assertEqual(name_error,"Username is taken")
+        self.assertEqual(email_error,"Email address is taken")
+    
+
         
+

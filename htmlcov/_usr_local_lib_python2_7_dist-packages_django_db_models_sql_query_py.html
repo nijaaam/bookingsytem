@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/db/models/sql/query.py: 52%</title>
+    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/db/models/sql/query.py: 53%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -24,15 +24,15 @@
 <div id="header">
     <div class="content">
         <h1>Coverage for <b>/usr/local/lib/python2.7/dist-packages/django/db/models/sql/query.py</b> :
-            <span class="pc_cov">52%</span>
+            <span class="pc_cov">53%</span>
         </h1>
 
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
 
         <h2 class="stats">
             1037 statements &nbsp;
-            <span class="run hide_run shortkey_r button_toggle_run">544 run</span>
-            <span class="mis shortkey_m button_toggle_mis">493 missing</span>
+            <span class="run hide_run shortkey_r button_toggle_run">547 run</span>
+            <span class="mis shortkey_m button_toggle_mis">490 missing</span>
             <span class="exc shortkey_x button_toggle_exc">0 excluded</span>
 
             
@@ -1623,12 +1623,12 @@
 <p id="n1554" class="pln"><a href="#n1554">1554</a></p>
 <p id="n1555" class="stm run hide_run"><a href="#n1555">1555</a></p>
 <p id="n1556" class="stm run hide_run"><a href="#n1556">1556</a></p>
-<p id="n1557" class="stm mis"><a href="#n1557">1557</a></p>
+<p id="n1557" class="stm run hide_run"><a href="#n1557">1557</a></p>
 <p id="n1558" class="pln"><a href="#n1558">1558</a></p>
 <p id="n1559" class="stm run hide_run"><a href="#n1559">1559</a></p>
 <p id="n1560" class="stm run hide_run"><a href="#n1560">1560</a></p>
-<p id="n1561" class="stm mis"><a href="#n1561">1561</a></p>
-<p id="n1562" class="stm mis"><a href="#n1562">1562</a></p>
+<p id="n1561" class="stm run hide_run"><a href="#n1561">1561</a></p>
+<p id="n1562" class="stm run hide_run"><a href="#n1562">1562</a></p>
 <p id="n1563" class="pln"><a href="#n1563">1563</a></p>
 <p id="n1564" class="stm mis"><a href="#n1564">1564</a></p>
 <p id="n1565" class="pln"><a href="#n1565">1565</a></p>
@@ -3710,12 +3710,12 @@
 <p id="t1554" class="pln"><span class="str">        """</span><span class="strut">&nbsp;</span></p>
 <p id="t1555" class="stm run hide_run">        <span class="key">if</span> <span class="nam">high</span> <span class="key">is</span> <span class="key">not</span> <span class="nam">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t1556" class="stm run hide_run">            <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span> <span class="key">is</span> <span class="key">not</span> <span class="nam">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t1557" class="stm mis">                <span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span> <span class="op">=</span> <span class="nam">min</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">low_mark</span> <span class="op">+</span> <span class="nam">high</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t1557" class="stm run hide_run">                <span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span> <span class="op">=</span> <span class="nam">min</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">low_mark</span> <span class="op">+</span> <span class="nam">high</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t1558" class="pln">            <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t1559" class="stm run hide_run">                <span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">low_mark</span> <span class="op">+</span> <span class="nam">high</span><span class="strut">&nbsp;</span></p>
 <p id="t1560" class="stm run hide_run">        <span class="key">if</span> <span class="nam">low</span> <span class="key">is</span> <span class="key">not</span> <span class="nam">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t1561" class="stm mis">            <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span> <span class="key">is</span> <span class="key">not</span> <span class="nam">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t1562" class="stm mis">                <span class="nam">self</span><span class="op">.</span><span class="nam">low_mark</span> <span class="op">=</span> <span class="nam">min</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">low_mark</span> <span class="op">+</span> <span class="nam">low</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t1561" class="stm run hide_run">            <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span> <span class="key">is</span> <span class="key">not</span> <span class="nam">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t1562" class="stm run hide_run">                <span class="nam">self</span><span class="op">.</span><span class="nam">low_mark</span> <span class="op">=</span> <span class="nam">min</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">high_mark</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">low_mark</span> <span class="op">+</span> <span class="nam">low</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t1563" class="pln">            <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t1564" class="stm mis">                <span class="nam">self</span><span class="op">.</span><span class="nam">low_mark</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">low_mark</span> <span class="op">+</span> <span class="nam">low</span><span class="strut">&nbsp;</span></p>
 <p id="t1565" class="pln"><span class="strut">&nbsp;</span></p>
@@ -4248,7 +4248,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.3.4</a>,
-            created at 2017-01-29 09:56
+            created at 2017-01-29 17:43
         </p>
     </div>
 </div>

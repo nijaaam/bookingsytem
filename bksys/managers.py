@@ -45,7 +45,7 @@ class UserManager(models.Manager):
                 return True
             except ObjectDoesNotExist:
                 return False
-        return False
+    
 
     def getUser(self,id):
         id = str(id)
@@ -58,7 +58,7 @@ class UserManager(models.Manager):
                 return self.get(passcode=passcode).id
             except ObjectDoesNotExist:
                 return None
-        return None
+        
 
     def getName(self,id):
         return self.get(id=id).name

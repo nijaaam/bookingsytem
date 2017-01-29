@@ -9,17 +9,6 @@ from bksys.views import set_default_values, getJSONBookings, getJSONRooms
 #Check In Option if not checked in 15 min then
 room_id = 1
 
-def get_events(request):
-	if 'start' not in request.POST:
-		start = time.strftime("%Y-%m-%d")
-		end = start
-	else:
-		start = request.POST['start']
-		end = request.POST['end']
-	events = bookings.objects.events(room_id,start,end)
-	bk_list = [jsonCalendar(bk_instance) for bk_instance in events]
-	return bk_list
-
 def index(request,id):
 	room_id = id
 	bk_for_day = bookings.objects.filter(room_id=room_id,date=time.strftime("%Y-%m-%d"))
@@ -54,21 +43,18 @@ def index(request,id):
 	})	
 
 def quickBook(request,id):
-	try:
-		user = users.objects.getUser(request.POST['id'])
-		contact = users.objects.getName(user)
-		date = request.POST['date']
-		start = request.POST['start']
-		end = request.POST['end']
-		booking = bookings.objects.newBooking(id,date,start,end,contact,'quickBook',user)
-		return render(request,'modal.html',{
-	        "booking_id": booking.booking_ref,
-	        "room_name": rooms.objects.get_name(id),
-	        "start_time": start,
-	        "end": end,
-	    })
-	except Exception as e:
-		print e
+	user = users.objects.getUser(request.POST['id'])
+	contact = users.objects.getName(user)
+	date = request.POST['date']
+	start = request.POST['start']
+	end = request.POST['end']
+	booking = bookings.objects.newBooking(id,date,start,end,contact,'quickBook',user)
+	return render(request,'modal.html',{
+	    "booking_id": booking.booking_ref,
+	    "room_name": rooms.objects.get_name(id),
+        "start_time": start,
+	    "end": end,
+	})
 
 def bookRoom(request,id):
 	date = time.strftime("%d-%m-%Y")
@@ -80,14 +66,6 @@ def bookRoom(request,id):
 		'room_name': rooms.objects.get(room_id=id).room_name,
 	}
 	return render(request,"book_room.html",res)
-	
-def get_on_going_event():
-	cTime = time.strftime("%H:%M")
-	try:
-		ongoing = bookings.objects.get(date=time.strftime("%Y-%m-%d"),room_id=room_id,start_time__lte=cTime,end_time__gte=cTime)
-	except ObjectDoesNotExist:
-		ongoing = bookings.objects.none()
-	return ongoing
 
 def get_upcoming_events():
 	cTime = time.strftime("%H:%M")
@@ -99,13 +77,3 @@ def end_event(request,id):
 	bk_id = request.POST['bk_id']
 	bookings.objects.delete(bk_id)
 	return HttpResponse(1)
-
-def jsonCalendar(booking):
-	return dict(
-		id = booking.booking_ref,
-		title = booking.description,
-		isUserCreated = True,
-		editable = False,
-		start = str(booking.date) + "T" + str(booking.start_time),
-		end = str(booking.date) + "T" + str(booking.end_time),
-	)

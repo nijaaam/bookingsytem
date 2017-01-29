@@ -220,30 +220,26 @@ def view_room(request):
     return render(request,'room_details.html',res)
 
 def book_room(request):
-    try:
-        user = users.objects.getUser(request.POST['id'])
-        recurring = request.POST.getlist('recurring')[0]
-        contact         = request.POST['contact']
-        description     = request.POST['description']
-        start = request.POST['start']
-        end =  request.POST['end']
-        date =  request.POST['date']
-        room_id = request.session['bk_rm_id']    
-        if recurring == "0":
-            entry = bookings.objects.newBooking(room_id,date,start,end,contact,description,user)
-        else:
-            entry = bookings.objects.newRecurringBooking(room_id,date,start,end,contact,description,recurring,request.POST['recurr_end'],user)
-        room_name = rooms.objects.get_name(room_id)
-        return render(request,'modal.html',{
-            "booking_id":entry.booking_ref,
-            "event_id": str(room_id) + "," + str(entry.booking_ref),
-            "room_name": room_name,
-            "start_time":start,
-            "end":end,
-        })
-    except Exception as e:
-        print '%s (%s)' % (e.message, type(e))
-
+    user = users.objects.getUser(request.POST['id'])
+    recurring = request.POST.getlist('recurring')[0]
+    contact         = request.POST['contact']
+    description     = request.POST['description']
+    start = request.POST['start']
+    end =  request.POST['end']
+    date =  request.POST['date']
+    room_id = request.session['bk_rm_id']    
+    if recurring == "0":
+        entry = bookings.objects.newBooking(room_id,date,start,end,contact,description,user)
+    else:
+        entry = bookings.objects.newRecurringBooking(room_id,date,start,end,contact,description,recurring,request.POST['recurr_end'],user)
+    room_name = rooms.objects.get_name(room_id)
+    return render(request,'modal.html',{
+        "booking_id":entry.booking_ref,
+        "event_id": str(room_id) + "," + str(entry.booking_ref),
+        "room_name": room_name,
+        "start_time":start,
+        "end":end,
+    })
 def viewBooking(request):
     return render(request,'viewBooking.html',{})
 
