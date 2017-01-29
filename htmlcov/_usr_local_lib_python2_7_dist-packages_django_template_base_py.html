@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/template/base.py: 60%</title>
+    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/template/base.py: 59%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -24,15 +24,15 @@
 <div id="header">
     <div class="content">
         <h1>Coverage for <b>/usr/local/lib/python2.7/dist-packages/django/template/base.py</b> :
-            <span class="pc_cov">60%</span>
+            <span class="pc_cov">59%</span>
         </h1>
 
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
 
         <h2 class="stats">
             571 statements &nbsp;
-            <span class="run hide_run shortkey_r button_toggle_run">343 run</span>
-            <span class="mis shortkey_m button_toggle_mis">228 missing</span>
+            <span class="run hide_run shortkey_r button_toggle_run">339 run</span>
+            <span class="mis shortkey_m button_toggle_mis">232 missing</span>
             <span class="exc shortkey_x button_toggle_exc">0 excluded</span>
 
             
@@ -975,13 +975,13 @@
 <p id="n906" class="pln"><a href="#n906">906</a></p>
 <p id="n907" class="pln"><a href="#n907">907</a></p>
 <p id="n908" class="stm run hide_run"><a href="#n908">908</a></p>
-<p id="n909" class="stm run hide_run"><a href="#n909">909</a></p>
+<p id="n909" class="stm mis"><a href="#n909">909</a></p>
 <p id="n910" class="stm mis"><a href="#n910">910</a></p>
-<p id="n911" class="stm run hide_run"><a href="#n911">911</a></p>
+<p id="n911" class="stm mis"><a href="#n911">911</a></p>
 <p id="n912" class="stm mis"><a href="#n912">912</a></p>
 <p id="n913" class="pln"><a href="#n913">913</a></p>
-<p id="n914" class="stm run hide_run"><a href="#n914">914</a></p>
-<p id="n915" class="stm run hide_run"><a href="#n915">915</a></p>
+<p id="n914" class="stm mis"><a href="#n914">914</a></p>
+<p id="n915" class="stm mis"><a href="#n915">915</a></p>
 <p id="n916" class="stm mis"><a href="#n916">916</a></p>
 <p id="n917" class="stm mis"><a href="#n917">917</a></p>
 <p id="n918" class="stm mis"><a href="#n918">918</a></p>
@@ -2081,13 +2081,13 @@
 <p id="t906" class="pln">                                                       <span class="str">"[%s] in %r"</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t907" class="pln">                                                       <span class="op">(</span><span class="nam">bit</span><span class="op">,</span> <span class="nam">current</span><span class="op">)</span><span class="op">)</span>  <span class="com"># missing attribute</span><span class="strut">&nbsp;</span></p>
 <p id="t908" class="stm run hide_run">                <span class="key">if</span> <span class="nam">callable</span><span class="op">(</span><span class="nam">current</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t909" class="stm run hide_run">                    <span class="key">if</span> <span class="nam">getattr</span><span class="op">(</span><span class="nam">current</span><span class="op">,</span> <span class="str">'do_not_call_in_templates'</span><span class="op">,</span> <span class="nam">False</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t909" class="stm mis">                    <span class="key">if</span> <span class="nam">getattr</span><span class="op">(</span><span class="nam">current</span><span class="op">,</span> <span class="str">'do_not_call_in_templates'</span><span class="op">,</span> <span class="nam">False</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t910" class="stm mis">                        <span class="key">pass</span><span class="strut">&nbsp;</span></p>
-<p id="t911" class="stm run hide_run">                    <span class="key">elif</span> <span class="nam">getattr</span><span class="op">(</span><span class="nam">current</span><span class="op">,</span> <span class="str">'alters_data'</span><span class="op">,</span> <span class="nam">False</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t911" class="stm mis">                    <span class="key">elif</span> <span class="nam">getattr</span><span class="op">(</span><span class="nam">current</span><span class="op">,</span> <span class="str">'alters_data'</span><span class="op">,</span> <span class="nam">False</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t912" class="stm mis">                        <span class="nam">current</span> <span class="op">=</span> <span class="nam">context</span><span class="op">.</span><span class="nam">template</span><span class="op">.</span><span class="nam">engine</span><span class="op">.</span><span class="nam">string_if_invalid</span><span class="strut">&nbsp;</span></p>
 <p id="t913" class="pln">                    <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t914" class="stm run hide_run">                        <span class="key">try</span><span class="op">:</span>  <span class="com"># method call (assuming no args required)</span><span class="strut">&nbsp;</span></p>
-<p id="t915" class="stm run hide_run">                            <span class="nam">current</span> <span class="op">=</span> <span class="nam">current</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t914" class="stm mis">                        <span class="key">try</span><span class="op">:</span>  <span class="com"># method call (assuming no args required)</span><span class="strut">&nbsp;</span></p>
+<p id="t915" class="stm mis">                            <span class="nam">current</span> <span class="op">=</span> <span class="nam">current</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t916" class="stm mis">                        <span class="key">except</span> <span class="nam">TypeError</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t917" class="stm mis">                            <span class="key">try</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t918" class="stm mis">                                <span class="nam">inspect</span><span class="op">.</span><span class="nam">getcallargs</span><span class="op">(</span><span class="nam">current</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -2286,7 +2286,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.3.4</a>,
-            created at 2017-01-29 09:43
+            created at 2017-01-29 09:56
         </p>
     </div>
 </div>

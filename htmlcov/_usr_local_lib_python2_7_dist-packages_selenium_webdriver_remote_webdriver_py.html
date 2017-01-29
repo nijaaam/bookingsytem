@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for /usr/local/lib/python2.7/dist-packages/selenium/webdriver/remote/webdriver.py: 52%</title>
+    <title>Coverage for /usr/local/lib/python2.7/dist-packages/selenium/webdriver/remote/webdriver.py: 53%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -24,15 +24,15 @@
 <div id="header">
     <div class="content">
         <h1>Coverage for <b>/usr/local/lib/python2.7/dist-packages/selenium/webdriver/remote/webdriver.py</b> :
-            <span class="pc_cov">52%</span>
+            <span class="pc_cov">53%</span>
         </h1>
 
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
 
         <h2 class="stats">
             302 statements &nbsp;
-            <span class="run hide_run shortkey_r button_toggle_run">157 run</span>
-            <span class="mis shortkey_m button_toggle_mis">145 missing</span>
+            <span class="run hide_run shortkey_r button_toggle_run">160 run</span>
+            <span class="mis shortkey_m button_toggle_mis">142 missing</span>
             <span class="exc shortkey_x button_toggle_exc">0 excluded</span>
 
             
@@ -278,7 +278,7 @@
 <p id="n209" class="stm mis"><a href="#n209">209</a></p>
 <p id="n210" class="pln"><a href="#n210">210</a></p>
 <p id="n211" class="stm run hide_run"><a href="#n211">211</a></p>
-<p id="n212" class="stm mis"><a href="#n212">212</a></p>
+<p id="n212" class="stm run hide_run"><a href="#n212">212</a></p>
 <p id="n213" class="pln"><a href="#n213">213</a></p>
 <p id="n214" class="stm run hide_run"><a href="#n214">214</a></p>
 <p id="n215" class="pln"><a href="#n215">215</a></p>
@@ -528,8 +528,8 @@
 <p id="n459" class="pln"><a href="#n459">459</a></p>
 <p id="n460" class="pln"><a href="#n460">460</a></p>
 <p id="n461" class="pln"><a href="#n461">461</a></p>
-<p id="n462" class="stm mis"><a href="#n462">462</a></p>
-<p id="n463" class="stm mis"><a href="#n463">463</a></p>
+<p id="n462" class="stm run hide_run"><a href="#n462">462</a></p>
+<p id="n463" class="stm run hide_run"><a href="#n463">463</a></p>
 <p id="n464" class="pln"><a href="#n464">464</a></p>
 <p id="n465" class="pln"><a href="#n465">465</a></p>
 <p id="n466" class="pln"><a href="#n466">466</a></p>
@@ -1261,7 +1261,7 @@
 <p id="t209" class="stm mis">                <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">create_web_element</span><span class="op">(</span><span class="nam">value</span><span class="op">[</span><span class="str">'element-6066-11e4-a52e-4f735466cecf'</span><span class="op">]</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t210" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t211" class="stm run hide_run">        <span class="key">elif</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">value</span><span class="op">,</span> <span class="nam">list</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t212" class="stm mis">            <span class="key">return</span> <span class="nam">list</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_unwrap_value</span><span class="op">(</span><span class="nam">item</span><span class="op">)</span> <span class="key">for</span> <span class="nam">item</span> <span class="key">in</span> <span class="nam">value</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t212" class="stm run hide_run">            <span class="key">return</span> <span class="nam">list</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_unwrap_value</span><span class="op">(</span><span class="nam">item</span><span class="op">)</span> <span class="key">for</span> <span class="nam">item</span> <span class="key">in</span> <span class="nam">value</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t213" class="pln">        <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t214" class="stm run hide_run">            <span class="key">return</span> <span class="nam">value</span><span class="strut">&nbsp;</span></p>
 <p id="t215" class="pln"><span class="strut">&nbsp;</span></p>
@@ -1511,8 +1511,8 @@
 <p id="t459" class="pln"><span class="str">        :Usage:</span><span class="strut">&nbsp;</span></p>
 <p id="t460" class="pln"><span class="str">            driver.execute_script('document.title')</span><span class="strut">&nbsp;</span></p>
 <p id="t461" class="pln"><span class="str">        """</span><span class="strut">&nbsp;</span></p>
-<p id="t462" class="stm mis">        <span class="nam">converted_args</span> <span class="op">=</span> <span class="nam">list</span><span class="op">(</span><span class="nam">args</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t463" class="stm mis">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">execute</span><span class="op">(</span><span class="nam">Command</span><span class="op">.</span><span class="nam">EXECUTE_SCRIPT</span><span class="op">,</span> <span class="op">{</span><span class="strut">&nbsp;</span></p>
+<p id="t462" class="stm run hide_run">        <span class="nam">converted_args</span> <span class="op">=</span> <span class="nam">list</span><span class="op">(</span><span class="nam">args</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t463" class="stm run hide_run">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">execute</span><span class="op">(</span><span class="nam">Command</span><span class="op">.</span><span class="nam">EXECUTE_SCRIPT</span><span class="op">,</span> <span class="op">{</span><span class="strut">&nbsp;</span></p>
 <p id="t464" class="pln">            <span class="str">'script'</span><span class="op">:</span> <span class="nam">script</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t465" class="pln">            <span class="str">'args'</span><span class="op">:</span> <span class="nam">converted_args</span><span class="op">}</span><span class="op">)</span><span class="op">[</span><span class="str">'value'</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
 <p id="t466" class="pln"><span class="strut">&nbsp;</span></p>
@@ -2040,7 +2040,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.3.4</a>,
-            created at 2017-01-29 09:43
+            created at 2017-01-29 09:56
         </p>
     </div>
 </div>

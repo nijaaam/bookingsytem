@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/http/request.py: 58%</title>
+    <title>Coverage for /usr/local/lib/python2.7/dist-packages/django/http/request.py: 60%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -24,15 +24,15 @@
 <div id="header">
     <div class="content">
         <h1>Coverage for <b>/usr/local/lib/python2.7/dist-packages/django/http/request.py</b> :
-            <span class="pc_cov">58%</span>
+            <span class="pc_cov">60%</span>
         </h1>
 
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
 
         <h2 class="stats">
             307 statements &nbsp;
-            <span class="run hide_run shortkey_r button_toggle_run">178 run</span>
-            <span class="mis shortkey_m button_toggle_mis">129 missing</span>
+            <span class="run hide_run shortkey_r button_toggle_run">183 run</span>
+            <span class="mis shortkey_m button_toggle_mis">124 missing</span>
             <span class="exc shortkey_x button_toggle_exc">0 excluded</span>
 
             
@@ -487,10 +487,10 @@
 <p id="n418" class="stm mis"><a href="#n418">418</a></p>
 <p id="n419" class="pln"><a href="#n419">419</a></p>
 <p id="n420" class="stm run hide_run"><a href="#n420">420</a></p>
-<p id="n421" class="stm mis"><a href="#n421">421</a></p>
-<p id="n422" class="stm mis"><a href="#n422">422</a></p>
-<p id="n423" class="stm mis"><a href="#n423">423</a></p>
-<p id="n424" class="stm mis"><a href="#n424">424</a></p>
+<p id="n421" class="stm run hide_run"><a href="#n421">421</a></p>
+<p id="n422" class="stm run hide_run"><a href="#n422">422</a></p>
+<p id="n423" class="stm run hide_run"><a href="#n423">423</a></p>
+<p id="n424" class="stm run hide_run"><a href="#n424">424</a></p>
 <p id="n425" class="pln"><a href="#n425">425</a></p>
 <p id="n426" class="stm run hide_run"><a href="#n426">426</a></p>
 <p id="n427" class="stm mis"><a href="#n427">427</a></p>
@@ -589,7 +589,7 @@
 <p id="n520" class="pln"><a href="#n520">520</a></p>
 <p id="n521" class="pln"><a href="#n521">521</a></p>
 <p id="n522" class="stm run hide_run"><a href="#n522">522</a></p>
-<p id="n523" class="stm mis"><a href="#n523">523</a></p>
+<p id="n523" class="stm run hide_run"><a href="#n523">523</a></p>
 <p id="n524" class="pln"><a href="#n524">524</a></p>
 <p id="n525" class="stm run hide_run"><a href="#n525">525</a></p>
 <p id="n526" class="pln"><a href="#n526">526</a></p>
@@ -1060,10 +1060,10 @@
 <p id="t418" class="stm mis">            <span class="key">raise</span> <span class="nam">AttributeError</span><span class="op">(</span><span class="str">"This QueryDict instance is immutable"</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t419" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t420" class="stm run hide_run">    <span class="key">def</span> <span class="nam">__setitem__</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">key</span><span class="op">,</span> <span class="nam">value</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t421" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">_assert_mutable</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t422" class="stm mis">        <span class="nam">key</span> <span class="op">=</span> <span class="nam">bytes_to_text</span><span class="op">(</span><span class="nam">key</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">encoding</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t423" class="stm mis">        <span class="nam">value</span> <span class="op">=</span> <span class="nam">bytes_to_text</span><span class="op">(</span><span class="nam">value</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">encoding</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t424" class="stm mis">        <span class="nam">super</span><span class="op">(</span><span class="nam">QueryDict</span><span class="op">,</span> <span class="nam">self</span><span class="op">)</span><span class="op">.</span><span class="nam">__setitem__</span><span class="op">(</span><span class="nam">key</span><span class="op">,</span> <span class="nam">value</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t421" class="stm run hide_run">        <span class="nam">self</span><span class="op">.</span><span class="nam">_assert_mutable</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t422" class="stm run hide_run">        <span class="nam">key</span> <span class="op">=</span> <span class="nam">bytes_to_text</span><span class="op">(</span><span class="nam">key</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">encoding</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t423" class="stm run hide_run">        <span class="nam">value</span> <span class="op">=</span> <span class="nam">bytes_to_text</span><span class="op">(</span><span class="nam">value</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">encoding</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t424" class="stm run hide_run">        <span class="nam">super</span><span class="op">(</span><span class="nam">QueryDict</span><span class="op">,</span> <span class="nam">self</span><span class="op">)</span><span class="op">.</span><span class="nam">__setitem__</span><span class="op">(</span><span class="nam">key</span><span class="op">,</span> <span class="nam">value</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t425" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t426" class="stm run hide_run">    <span class="key">def</span> <span class="nam">__delitem__</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">key</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t427" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">_assert_mutable</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -1162,7 +1162,7 @@
 <p id="t520" class="pln"><span class="str">    Returns any non-basestring objects without change.</span><span class="strut">&nbsp;</span></p>
 <p id="t521" class="pln"><span class="str">    """</span><span class="strut">&nbsp;</span></p>
 <p id="t522" class="stm run hide_run">    <span class="key">if</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">s</span><span class="op">,</span> <span class="nam">bytes</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t523" class="stm mis">        <span class="key">return</span> <span class="nam">six</span><span class="op">.</span><span class="nam">text_type</span><span class="op">(</span><span class="nam">s</span><span class="op">,</span> <span class="nam">encoding</span><span class="op">,</span> <span class="str">'replace'</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t523" class="stm run hide_run">        <span class="key">return</span> <span class="nam">six</span><span class="op">.</span><span class="nam">text_type</span><span class="op">(</span><span class="nam">s</span><span class="op">,</span> <span class="nam">encoding</span><span class="op">,</span> <span class="str">'replace'</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t524" class="pln">    <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t525" class="stm run hide_run">        <span class="key">return</span> <span class="nam">s</span><span class="strut">&nbsp;</span></p>
 <p id="t526" class="pln"><span class="strut">&nbsp;</span></p>
@@ -1220,7 +1220,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.3.4</a>,
-            created at 2017-01-29 09:43
+            created at 2017-01-29 09:56
         </p>
     </div>
 </div>
