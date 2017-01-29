@@ -15,21 +15,27 @@
             {% load widget_tweaks %}
             <form method="POST" action="" id="singupForm">
                 {% csrf_token %}
-                <div class="form-group has-feedback">
+                <div id = "username_group" class="form-group has-feedback">
                     <div class="input-group">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-user"></span>
                         </div>
                         {{ form.name | add_class:"form-control" | attr:"placeholder:Name" }}
                     </div>
+                    {% if form.name.errors %}
+                        <span class="help-block">{{ form.name.errors | striptags }}</span>
+                    {% endif %}
                 </div>
-                <div class="form-group has-feedback">
+                <div id = "email_group"class="form-group has-feedback">
                     <div class="input-group">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-envelope"></span>
                         </div>
                         {{ form.email |add_class:"form-control" | attr:"placeholder:Email" }}
                     </div>
+                    {% if form.name.errors %}
+                    <span class="help-block">{{ form.email.errors | striptags}}</span>
+                    {% endif %}
                 </div>
                 {% if code %}
                 Passcode:  {{ code }}
@@ -77,6 +83,14 @@
                 },
             },
         });
+        var name_error = '{{ form.name.errors }}';
+        if (name_error.indexOf('errorlist') != -1){
+            $('#username_group').addClass('has-error');
+        }
+        var email_error = '{{ form.email.errors }}';
+        if (email_error.indexOf('errorlist') != -1){
+            $('#email_group').addClass('has-error');  
+        }
     </script>
 </body>
 

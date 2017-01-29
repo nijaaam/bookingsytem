@@ -1,5 +1,6 @@
 from django import forms
 from bksys.models import *
+from django.core.exceptions import ValidationError
 import datetime
 
 class DateTimeForm(forms.Form):
@@ -30,6 +31,18 @@ class SignUpForm(forms.Form):
     name = forms.CharField()
     email = forms.EmailField()
 
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if (users.objects.exists_name(name)):
+            raise forms.ValidationError("Username is taken")
+        return name
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if (users.objects.exists_email(email)):
+            raise forms.ValidationError("Email address is taken")
+        return email
+        
     def save(self):
         name = self.cleaned_data['name']
         email = self.cleaned_data['email']

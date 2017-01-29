@@ -20,6 +20,18 @@ class UserManager(models.Manager):
         user = self.create(name=name,email=email,passcode=encrypted_passcode)
         return passcode
 
+    def exists_email(self,email):
+        query = self.filter(email=email)
+        if len(query) != 1:
+            return 0
+        return 1
+
+    def exists_name(self,name):
+        query = self.filter(name=name)
+        if len(query) != 1:
+            return 0
+        return 1
+
     def authenticate(self,id):
         id = str(id)
         try: 
