@@ -128,9 +128,10 @@ class BookingsManager(models.Manager):
         while True:
             start_date = start_date + timedelta(days=self.getInterval(type))
             if start_date > recur_end:
-                break;
+                break
+                '''
             elif start_date.weekday() in weekend:
-                print start_date
+                print start_date '''
             else:
                 dates.append(start_date)
         recur_end = recur_end.strftime("%Y-%m-%d")

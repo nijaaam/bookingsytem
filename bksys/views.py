@@ -109,37 +109,41 @@ def avaliableRooms(request,date,start,end):
     avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents)
     reserved_rooms = []
     for room in avaliable_rooms:
-        try:
-            if checkIfExpired(room.room_id,request.session.session_key):
-                reservations.objects.get(room_id=room.room_id).delete()
-                reserved_rooms.append(room)
-            else:
-                try:
-                    reservations.objects.filter(session_id=request.session.session_key).delete()
-                    reserved_rooms.append(room)
-                except:
-                    pass            
-        except ObjectDoesNotExist:
+        reservation_list = reservations.objects.filter(
+            room_id = room.room_id,
+            session_id = request.session.session_key,
+        )
+        if (len(reservation_list) > 0 and checkIfExpired(room.room_id,request.session.session_key)):
+            reserved_rooms.append(room)
+        else:
             reserved_rooms.append(room)
     avaliable_rooms = reserved_rooms
     return avaliable_rooms
 
 def checkIfExpired(id,session):
-    try:
-        reserve = reservations.objects.get(room_id=id,session_id=session)
-    except MultipleObjectsReturned:
-        reserve = reservations.objects.filter(room_id=id,session_id=session).order_by('start_time')[:1]
-        reserve = reserve[0]
-        x = reservations.objects.filter(session_id=reserve.session_id,room_id=reserve.room_id).exclude(start_time=reserve.start_time).delete()
-    start_time =  reserve.start_time.replace(tzinfo=None)
+    query = reservations.objects.filter(room_id=id,session_id=session)
+    if len(query) == 0:
+        return 0
+    elif len(query) > 1:
+        query = query.order_by('start_time')[:1]
+        reservation = query[0]
+        to_delete = reservations.objects.filter(
+            session_id = reservation.session_id,
+            room_id = reservation.room_id,
+        ).exclude(
+            start_time = reservation.start_time
+        ).delete()
+    else:
+        reservation = query[0]
+    start_time = reservation.start_time.replace(tzinfo=None)
     elapsed_time = datetime.now() - start_time
     if (elapsed_time - timedelta(minutes = 2)).total_seconds() > 0:
+        reservation.delete()
         return 1
     else:
         return 0
 
 def validateID(request):
-    print "HRR"
     id = request.POST['id']
     if users.objects.authenticate(id):
         return HttpResponse(1)
@@ -213,7 +217,7 @@ def view_room(request):
 
 def book_room(request):
     try:
-        user = users.objects.getUser(request.POST['search'])
+        user = users.objects.getUser(request.POST['id'])
         recurring = request.POST.getlist('recurring')[0]
         contact         = request.POST['contact']
         description     = request.POST['description']

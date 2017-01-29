@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from bksys.models import *
 import time
-'''
+
 class roomsTest(TestCase):
     def setUp(self):
         room = rooms.objects.create(room_name="test1",room_size=10,room_features="feat",room_location="loc")
@@ -130,4 +130,3 @@ class bookingsTest(TestCase):
         self.assertEqual(len(bookings.objects.all()),2)
         bookings.objects.removeStaleBookings()
         self.assertEqual(len(bookings.objects.all()),1)
-'''

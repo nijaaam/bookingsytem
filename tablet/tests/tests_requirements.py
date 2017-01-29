@@ -32,7 +32,6 @@ class requirementsTest(LiveServerTestCase):
     def tearDown(self):  
         self.browser.quit()
     
-    '''
     def testBookRoom(self):
         self.browser.get(self.live_server_url + "/tablet/" + str(self.room_id))
     	users.objects.create_user('user','1yser@user.com')
@@ -57,7 +56,6 @@ class requirementsTest(LiveServerTestCase):
         self.assertEqual(str(booking.start_time),start_time.strip())
         self.assertEqual(str(booking.end_time),str(end_time))
     
-
     def testEndEvent(self):
         #Ongoing Booking
         room = rooms.objects.create(room_name="name",room_size="10",room_location="location",room_features="features")
@@ -80,5 +78,3 @@ class requirementsTest(LiveServerTestCase):
         time.sleep(1)
         self.assertEqual(len(bookings.objects.all()),0)
         
-
-    '''

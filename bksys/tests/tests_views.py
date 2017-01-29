@@ -3,11 +3,14 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from tablet.views import *
 from bksys.models import * 
 from bksys.views import * 
-'''
+
 class viewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.factory = RequestFactory()
+
+    def tearDown(self):
+        pass
 
     def add_session(self,request):
         middleware = SessionMiddleware()
@@ -206,5 +209,3 @@ class viewTest(TestCase):
         queryset = response.context['bookings']
         self.assertEqual(b1,queryset[0])
         self.assertEqual(b2,queryset[1])
-
-'''

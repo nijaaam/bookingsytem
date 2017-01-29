@@ -38,6 +38,7 @@ $.ajaxSetup({
         }
     }
 });
+
 function loadSearch() {
     $('#search').typeahead({
         hint: true,

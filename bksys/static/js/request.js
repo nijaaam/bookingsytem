@@ -11,17 +11,16 @@ $('#search').on('typeahead:selected', function(e, datum) {
 
 function testMoveEvent(id){
     var event = $('#calendar').fullCalendar('clientEvents',id);
-    var new_event = event;
-    var start = moment(event[0].start);
-    var end = moment(event[0].end);
-    start = start.add(15,'minutes');
-    end = end.add(30,'minutes');
-    new_event.start = start;
-    new_event.end = end;
-    new_event.id=id;
+    //alert(event[0].start);
+    var start = event[0].start;
+    var end = event[0].end;
+    var new_start = start.add(15,'minutes');
+    var new_end = end.add(30,'minutes');
+    event[0].start = new_start;
+    event[0].end  = new_end;
+    var new_event = event[0];
     //alert(start.format("DD-MM-YYYYTHH:mm") + " " + end.format("DD-MM-YYYYTHH:mm") );
-    $('#calendar').fullCalendar('removeEvents');
-    $('#calendar').fullCalendar('renderEvent',new_event);
+    $('#calendar').fullCalendar('updateEvent',event[0]);
 }
 
 function performAJAX(url, dataType, data, callback) {

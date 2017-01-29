@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'dbbackup',
     'storages',
+    'coverage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
