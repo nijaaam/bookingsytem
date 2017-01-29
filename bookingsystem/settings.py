@@ -4,7 +4,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 AZURE_ACCOUNT_NAME = "dbbackupbksys"
 AZURE_ACCOUNT_KEY  = 'CkD5/KNWSF/BV4sM0XcnyrfBgPmZXjQW4i/FR4l2wX2Mn/PMZtZ/5u9D2wP6JUpXHDyJUwDtaiAECnuOYBPmfw=='
-AZURE_CONTAINER = 'fullbkup'
+AZURE_CONTAINER = 'bksysdb'
 
 DEFAULT_FILE_STORAGE = 'storage.AzureStorage'
 DBBACKUP_STORAGE = DEFAULT_FILE_STORAGE

@@ -131,6 +131,7 @@ class DjangoDeployment(Node):
     def fullSetup(self):
         self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
         self.hosts.sudo('virtualenv ' + virtualenv)
+        #self.setproductionsettings()
         try:
             self.git.clone()
         except ActionException:
@@ -153,6 +154,13 @@ class DjangoDeployment(Node):
             self.hosts.sudo(cmd)
         except:
             pass
+
+    def setproductionsettings(self):
+        self.hosts.sudo('touch /etc/production.txt')
+        self.hosts.sudo("echo 'x3h)318k2awulf%&e@z08!tswh21&tbt!wdya4osy5o797l_7(' >> /etc/production.txt")
+        self.hosts.sudo('echo "dbbackupbksys" >> /etc/production.txt')
+        self.hosts.sudo('echo "CkD5/KNWSF/BV4sM0XcnyrfBgPmZXjQW4i/FR4l2wX2Mn/PMZtZ/5u9D2wP6JUpXHDyJUwDtaiAECnuOYBPmfw==" >> /etc/production.txt')
+        self.hosts.sudo('echo "bksysdb" >> /etc/production.txt')
 
 class remote_host(SSHHost):
     address = ip 
