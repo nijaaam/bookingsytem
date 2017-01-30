@@ -10,7 +10,7 @@ var insertEvents = function(json) {
             color: "#66cc00",
         });
     });
-};
+};  
 
 $('#prev,#next,#today').unbind('click').click(function() {
     $('#scheduler').fullCalendar(this.id);

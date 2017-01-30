@@ -19,3 +19,64 @@ $.validator.setDefaults({
         }
     },
 });
+
+$('#authUser').validate({
+    rules: {
+        'search': {
+            required: true,
+        }
+    },
+});
+
+$("#singupForm").validate({
+    rules: {
+        'id_name': {
+            required: true
+        },
+        'id_email': {
+            required: true,
+            email: true,
+        },
+    },
+});
+
+$.validator.addMethod("validate_date", function(value, element) {
+    if ($('#recurring').val() != 0) {
+        var input = $('#end').val();
+        if (input == "") {
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        return true;
+    }
+}, "This field is required");
+
+$("#booking_details").validate({
+    rules: {
+        'contact': {
+            required: true
+        },
+        'description': {
+            required: true
+        },
+        'recurr_end': {
+            validate_date: true,
+        },
+        'search': {
+            required: true,
+        }
+    },
+});
+
+$("#viewBookingForm").validate({
+    rules: {
+        'contact': {
+            required: true
+        },
+        'description': {
+            required: true
+        },
+    },
+});

@@ -29,7 +29,7 @@ def index(request):
         'rooms': json.dumps(rooms_json), 
         'bookings': json.dumps(room_bookings),
         'query_results': avaliable_rooms,
-        'current_date': time.strftime("%Y-%m-%d"),
+        'current_date': bk_date,
         'table_height': getTableHeight(len(avaliable_rooms)),
         'form': form,
     }
@@ -65,7 +65,7 @@ def getBKTableHeight(rowCount):
     
 def getUserBookings(request):
     id = request.POST['id']
-    res = bookings.objects.getUserBookings(users.objects.getUser(id))
+    res = bookings.objects.getUserBookings(users.objects.getUser(id)).order_by('date')
     return render(request, 'userBookings.html', {
         'bookings':res,
         'table_height': getBKTableHeight(len(res)),

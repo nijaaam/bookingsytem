@@ -35,8 +35,6 @@ STATICFILES_FINDERS = (
 )
 
 BOWER_INSTALLED_APPS = (
-    'eonasdan-bootstrap-datetimepicker#latest',
-    'fullcalendar',
     'fullcalendar-scheduler',
 )
 

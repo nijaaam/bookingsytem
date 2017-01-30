@@ -1,0 +1,38 @@
+{% block toolbar %}
+<div id="toolbar">
+            <div class="btn-toolbar hidden-xs" role="toolbar" style="text-align:center;">
+                <div class="btn-group pull-left" role="group">
+                    <button id="prev" type="button" class="btn btn-default ">Prev</button>
+                    <button id="next" type="button" class="btn btn-default">Next</button>
+                </div>
+                <button id="today" type="button" class="btn btn-default">Today</button>
+                <span id="calendarDate" style="text-align:center;"></span>
+                <div class="btn-group pull-right" role="group">
+                    <button id="day" type="button" class="btn btn-default">Day</button>
+                    <button id="week" type="button" class="btn btn-default">Week</button>
+                    <button id="month" type="button" class="btn btn-default">Month</button>
+                </div>
+            </div>
+            <div class="btn-toolbar visible-xs" role="toolbar" style="text-align:center;">
+                <div class="btn-group pull-left" role="group">
+                    <button id="prev" type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
+                    <button id="next" type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+                </div>
+                <span id="calendarDateMobile" style="text-align:center;"></span>
+                <button id="today" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-calendar"></span></button>
+                <span id="calendarDate" style="text-align:center;"></span>
+                <div class="btn-group pull-right" role="group">
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="  dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Change View<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li><a id="day">Day</a></li>
+                            <li><a id="week">Week</a></li>
+                            <li><a id="month">Month</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

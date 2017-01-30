@@ -4,22 +4,22 @@
     <title>Booking System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" /> {% load staticfiles %}
-    <meta http-equiv="cache-control" content="no-cache"> <!-- tells browser not to cache -->
-    <meta http-equiv="expires" content="0"> <!-- says that the cache expires 'now' -->
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
     <meta http-equiv="pragma" content="no-cache">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css">
+    <link rel="stylesheet" href="{% static 'fullcalendar-scheduler/dist/scheduler.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/css-loader.css' %}" type="text/css" />
-    <link rel="stylesheet" href="{% static 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'fullcalendar/dist/fullcalendar.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'fullcalendar-scheduler/dist/scheduler.min.css' %}" />
 </head>
 
-<body class="body" >
-<div class="loader loader-default" data-text="Loading"></div>
+<body class="body">
+    <div class="loader loader-default" data-text="Loading"></div>
     {% block navbar %} {% include "navbar.html" %} {% endblock %}
     <div class="container">
-    {% load widget_tweaks %}
+        {% load widget_tweaks %}
         <form method='POST' action="" class="form-inline" id="findRooms" style="float: right;">
             {% csrf_token %}
             <div class="form-group">
@@ -65,75 +65,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                            {% for item in query_results %}
-                            <tr>
-                                <td>{{ item.room_name}}</td>
-                                <td>{{ item.room_size}}</td>
-                                <td>{{ item.room_location}}</td>
-                                <td>{{ item.room_features}}</td>
-                                <td>
-                                    <form method="POST" action="/view_room/">
-                                        {% csrf_token %}
-                                        <input type="text" id="room_id" name = "room_id" value="{{item.room_id}}"hidden>
-                                        <button id= "view_room_btn"type="submit"class="btn btn-default">Book</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                 
+                        {% for item in query_results %}
+                        <tr>
+                            <td>{{ item.room_name}}</td>
+                            <td>{{ item.room_size}}</td>
+                            <td>{{ item.room_location}}</td>
+                            <td>{{ item.room_features}}</td>
+                            <td>
+                                <form method="POST" action="/view_room/">
+                                    {% csrf_token %}
+                                    <input type="text" id="room_id" name="room_id" value="{{item.room_id}}" hidden>
+                                    <button id="view_room_btn" type="submit" class="btn btn-default">Book</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
     <div class="container">
-        <div id="toolbar">
-            <div class="btn-toolbar hidden-xs" role="toolbar" style="text-align:center;">
-                <div class="btn-group pull-left" role="group">
-                    <button id="prev" type="button" class="btn btn-default ">Prev</button>
-                    <button id="next" type="button" class="btn btn-default">Next</button>
-                </div>
-                <button id="today" type="button" class="btn btn-default">Today</button>
-                <span id="calendarDate" style="text-align:center;"></span>
-                <div class="btn-group pull-right" role="group">
-                    <button id="day" type="button" class="btn btn-default">Day</button>
-                    <button id="week" type="button" class="btn btn-default">Week</button>
-                    <button id="month" type="button" class="btn btn-default">Month</button>
-                </div>
-            </div>
-            <div class="btn-toolbar visible-xs" role="toolbar" style="text-align:center;">
-                <div class="btn-group pull-left" role="group">
-                    <button id="prev" type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
-                    <button id="next" type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
-                </div>
-                <span id="calendarDateMobile" style="text-align:center;"></span>
-                <button id="today" type="button" class="btn btn-default">
-            <span class="glyphicon glyphicon-calendar"></span></button>
-                <span id="calendarDate" style="text-align:center;"></span>
-                <div class="btn-group pull-right" role="group">
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="  dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Change View<span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                            <li><a id="day">Day</a></li>
-                            <li><a id="week">Week</a></li>
-                            <li><a id="month">Month</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% block toolbar %} {% include "toolbar.html" %} {% endblock %}
         <div id="scheduler"></div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript"></script>
-    <script type="text/javascript" src="{% static 'moment/min/moment.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'fullcalendar/dist/fullcalendar.min.js'%}"></script>
-    <script type="text/javascript" src="{% static 'fullcalendar-scheduler/dist/scheduler.min.js'%}"></script>
-    <script type="text/javascript" src="{% static 'js/request.js'%}"></script>
-    <script type="text/javascript" src="{% static 'js/calendar.js'%}"></script>
-    <script type="text/javascript" src="{% static 'js/schedulerEvents.js'%}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js"></script>
+    <script src="{% static 'fullcalendar-scheduler/dist/scheduler.min.js'%}"></script>
+    <script src="{% static 'js/ajax_request.js'%}"></script>
+    <script src="{% static 'js/schedulerEvents.js'%}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $(window).on("orientationchange", function(event) {
