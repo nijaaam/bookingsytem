@@ -2,18 +2,20 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
 import requests, socket
 from django.db import connection
-import paramiko, subprocess
+import paramiko, subprocess, os
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
-            r = requests.head('http://localhost:8000')
+	    uwsgi.start()
+            r = requests.head('http://localhost')
             if r != 200:
-                call_command('runserver')
+                os.system('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
         except:
-            call_command('runserver')
-        self.testMySQLConnection()
+            os.system('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
+        #self.testMySQLConnection()
 
+        
     def testMySQLConnection(self):
         try:
             soc = socket.create_connection(('mysql2704.cloudapp.net','3306'),5)
