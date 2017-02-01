@@ -118,7 +118,7 @@ class DjangoDeployment(Node):
         backup = '0 0 * * * main ' + project_dir + ' manage.py dbbackup  ' + cronLog
         checkIfRunning = '@hourly ' + project_dir + ' manage.py checkIfRunning ' + cronLog
         removeStaleBookings = '0 0 * * * ' + project_dir + ' manage.py deleteStaleBk ' + cronLog
-        runOnBoot = '@reboot ' + project_dir + 'runOnBoot.sh'
+        runOnBoot = '@reboot ' + project_dir + 'scripts/runOnBoot.sh'
         backup = '{ crontab -l -u main; echo "'+ backup +'"; } | crontab -u main -'
         checkIfRunning = '{ crontab -l -u main; echo "'+ checkIfRunning +'"; } | crontab -u main -'
         removeStaleBookings = '{ crontab -l -u main; echo "'+ removeStaleBookings +'"; } | crontab -u main -'
@@ -146,7 +146,7 @@ class DjangoDeployment(Node):
             self.addCJ()
         self.runSpecialCmd('mkdir /etc/uwsgi')
         self.runSpecialCmd('mkdir /etc/uwsgi/vassals')
-        self.hosts.sudo('ln -f -s ' + project_dir + 'start_app.ini /etc/uwsgi/vassals/')
+        self.hosts.sudo('ln -f -s ' + project_dir + 'scripts/start_app.ini /etc/uwsgi/vassals/')
         self.hosts.run('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
 
     def runSpecialCmd(self,cmd):
