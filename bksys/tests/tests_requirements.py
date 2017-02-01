@@ -35,11 +35,19 @@ class requirementsTest(LiveServerTestCase):
         self.browser.find_element_by_xpath("//button[contains(text(), 'Sign Up')]").click()
         self.browser.implicitly_wait(3)
         self.browser.find_element_by_xpath("//a[contains(text(), 'Back')]").click()
-        
+    
     def testBookRoom(self):
-    	users.objects.create_user('user','yser@user.com') #User
+        '''
+        Pre-conditions: User needs to have an account
+        Post-conditions: Booked room
+        Steps: 1) User opens the website
+               2) User selects a room
+               3) User fills the form
+               4) User submits it 
+               5) System shows the confirmation of booking
+        '''
+    	users.objects.create_user('user','yser@user.com')
         self.browser.find_element_by_xpath("//button[contains(text(), 'Book')]").click()
-        #Enter values
         self.insertInput('contact','contact')
         self.insertInput('description','description')
         select = Select(self.browser.find_element_by_id('recurring'))

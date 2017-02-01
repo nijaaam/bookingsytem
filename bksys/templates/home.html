@@ -140,7 +140,6 @@
             $('#scheduler').fullCalendar({
                 schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
                 now: "{{ current_date }}",
-                contentHeight: 'auto',
                 editable: false,
                 aspectRatio: 1.8,
                 scrollTime: '{{ scroll_time }}',
@@ -161,6 +160,14 @@
                 resources: resources,
                 events: events,
             });
+            var len = '{{ length }}';
+            var height = 32;
+            if (len > 6){
+                height = 6*32
+            } else {
+                height = len * 32;
+            }
+            $('#scheduler').fullCalendar('option', 'contentHeight', height);
             var currentView = $('#scheduler').fullCalendar('getView');
             $('#calendarDate').text(currentView.title);
         });

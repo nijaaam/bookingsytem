@@ -64,4 +64,11 @@
             window.location = "/";
         }
     });
+    $(document).keydown( function(event) {
+        if (event.which === 13) {
+            if ($('#modal').hasClass('in')){
+                $('#exit_modal').click();
+            }
+        }
+    }); 
 </script>

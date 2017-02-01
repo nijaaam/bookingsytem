@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 import time, json
 from .forms import *
 from datetime import datetime, timedelta, date
-
+import calendar
 
 def index(request):
     if not request.session.session_key:
@@ -18,10 +18,14 @@ def index(request):
     bk_end_time = datetime.strptime(bk_start_time,"%H:%M") + timedelta(minutes=15)
     scroll_time = datetime.strptime(bk_start_time,"%H:%M") - timedelta(minutes=60)
     avaliable_rooms = avaliableRooms(request,bk_date,bk_start_time,bk_end_time)
-    rooms_json = [getJSONRooms(rm_instance) for rm_instance in avaliable_rooms]
+    rooms_json = [getJSONRooms(rm_instance) for rm_instance in rooms.objects.all()]
     room_bookings = []
-    for room in avaliable_rooms:
-        booking_list = bookings.objects.filter(room_id=room.room_id,date=bk_date)
+    date = datetime.strptime(bk_date,"%Y-%m-%d")
+    range = calendar.monthrange(date.year,date.month)
+    start = date.replace(day=range[0]).strftime("%Y-%m-%d")
+    end = date.replace(day=range[1]).strftime("%Y-%m-%d")
+    for room in rooms.objects.all():
+        booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[date,end])
         for booking in booking_list:
             room_bookings.append(getJSONBookings(booking))
     response = {
@@ -32,8 +36,20 @@ def index(request):
         'current_date': bk_date,
         'table_height': getTableHeight(len(avaliable_rooms)),
         'form': form,
+        'length': len(rooms_json),
     }
     return render(request,'home.html',response)
+
+def getRoomsBookings(request):
+    start = request.POST['start']
+    end = request.POST['end']
+    rooms_json = [getJSONRooms(rm_instance) for rm_instance in rooms.objects.all()]
+    bookings_list = []
+    for room in rooms.objects.all():
+        booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end])
+        for booking in booking_list:
+            bookings_list.append(getJSONBookings(booking))
+    return HttpResponse(json.dumps(bookings_list), content_type="application/json")
 
 def getJSONBookings(self):
     return dict(
@@ -96,19 +112,8 @@ def signup(request):
         'form': form,
     })
 
-def getRoomsBookings(request):
-    start = request.POST['start']
-    end = request.POST['end']
-    avaliable_rooms = avaliableRooms(request,start,getTime(request),getTime(request))
-    rooms_json = [getJSONRooms(rm_instance) for rm_instance in avaliable_rooms]
-    bookings_list = []
-    for room in avaliable_rooms:
-        booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end])
-        for booking in booking_list:
-            bookings_list.append(getJSONBookings(booking))
-    return HttpResponse(json.dumps(bookings_list), content_type="application/json")
-
 def avaliableRooms(request,date,start,end):
+    ongoingevents = []
     ongoingevents = bookings.objects.getOngoingEvents(date,start,end).values_list('room_id',flat=True)
     avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents).order_by('-room_size')
     reserved_rooms = []
