@@ -48,15 +48,6 @@ $("#search").on("input", function() {
     }
 });
 
-function book_event(){
-    alert("JER");
-    
-}
-
-var confirm_event =  function() {
-    
-};
-
 
 $(document).ready(function() {
     $('#cTime').html(new moment().format("HH:mm"));

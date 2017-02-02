@@ -170,6 +170,8 @@
             $('#scheduler').fullCalendar('option', 'contentHeight', height);
             var currentView = $('#scheduler').fullCalendar('getView');
             $('#calendarDate').text(currentView.title);
+            $('.fc-event-container').css('height','24px');
+            $('#scheduler .fc-timeline-event').css('height','27px');
         });
     </script>
 </body>

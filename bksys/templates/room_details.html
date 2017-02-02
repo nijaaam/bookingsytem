@@ -155,6 +155,15 @@
             var datetime = moment("{{ datetime }}", "DD-MM-YYYYTHH:mm");
             var settings = $.parseJSON('{{ settings | safe }}');
             settings.defaultDate = datetime;
+            settings.eventDrop = function(event, delta, revertFunc) {
+                var start = event.start;
+                var end = event.end;
+                if (moment() > start || moment() > end){
+                    if (moment().diff(start, 'minutes') > 0){
+                        revertFunc();
+                    }
+                }
+            };
             $('#calendar').fullCalendar(settings);
             updateTitle();
             loadEvents();
