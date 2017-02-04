@@ -6,7 +6,7 @@ from deployer.host import SSHHost
 from deployer.exceptions import ActionException
 
 home = '/home/main/'
-ip = 'bksystesting1818.cloudapp.net'
+ip = 'bkwebsite7468.cloudapp.net'
 project_name = "bookingsystem/"
 virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
@@ -40,12 +40,12 @@ class VirtualEnv(Node):
     def run_management_command(self, command):
         with self.hosts.prefix(self.activate_cmd):
             with self.hosts.cd(project_dir):
-                self.hosts.run('./manage.py %s' % command)
+                self.hosts.sudo('./manage.py %s' % command)
 
     def run_uwsgi(self):
         with self.hosts.prefix(self.activate_cmd):
             with self.hosts.cd(project_dir):
-                self.hosts.run('uwsgi start_app.ini')
+                self.hosts.sudo('uwsgi scripts/start_app.ini')
 
     def collectstatic(self):
         self.run_management_command('collectstatic --clear --noinput --settings=bookingsystem.production')
@@ -55,7 +55,7 @@ class VirtualEnv(Node):
 
     def clean(self):
         with self.hosts.cd(project_dir):
-            self.hosts.run('find . -name \'*.py?\' -exec rm -rf {} \;')
+            self.hosts.sudo('find . -name \'*.py?\' -exec rm -rf {} \;')
 
 class Git(Node):
     project_directory = required_property()
@@ -66,13 +66,13 @@ class Git(Node):
 
     def clone(self):
         with self.hosts.cd(self.project_directory, expand=True):
-            self.hosts.run("git clone '%s'" % esc1(self.repository))
+            self.hosts.sudo("git clone '%s'" % esc1(self.repository))
 
     def pull(self):
         with self.hosts.cd(self.project_directory, expand=True):
             with self.hosts.cd(project_dir):
                 try:
-                    self.hosts.run("git pull")
+                    self.hosts.sudo("git pull")
                 except ActionException:
                     self.stash()
                     self.pull()
@@ -103,12 +103,13 @@ class DjangoDeployment(Node):
         repository = repo
 
     def setup(self):
-        #self.git.checkout('release')
+        self.git.checkout('release')
         self.virtual_env.clean()
         self.git.pull()
         self.virtual_env.setup_env()
         self.virtual_env.update_database()
         self.virtual_env.collectstatic()
+        self.git.tag()
         self.virtual_env.run_uwsgi()
 
     def checkIfCJexists(self):
@@ -131,7 +132,7 @@ class DjangoDeployment(Node):
     def fullSetup(self):
         self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
         self.hosts.sudo('virtualenv ' + virtualenv)
-        #self.setproductionsettings()
+        self.setproductionsettings()
         try:
             self.git.clone()
         except ActionException:
@@ -147,7 +148,12 @@ class DjangoDeployment(Node):
         self.runSpecialCmd('mkdir /etc/uwsgi')
         self.runSpecialCmd('mkdir /etc/uwsgi/vassals')
         self.hosts.sudo('ln -f -s ' + project_dir + 'scripts/start_app.ini /etc/uwsgi/vassals/')
-        self.hosts.run('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
+        self.runSpecialCmd('mkdir /var/uwsgi')
+        self.runSpecialCmd('chown www-data:www-data /var/uwsgi')
+        self.runSpecialCmd('chown -R www-data:www-data BKSYSDEPLOY/')
+        self.setup()
+        #self.hosts.sudo('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
+
 
     def runSpecialCmd(self,cmd):
         try:
