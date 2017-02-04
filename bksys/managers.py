@@ -13,7 +13,7 @@ salt = salt.encode('utf-8')
 class UserManager(models.Manager):
     def create_user(self, name, email):
         now = timezone.now()
-        passcode = User.objects.make_random_password(length=6)
+        passcode = User.objects.make_random_password(length=4)
         passcode = passcode.encode('utf-8')
         hashed = bcrypt.hashpw(passcode, salt)
         encrypted_passcode = hashed
