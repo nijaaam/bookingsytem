@@ -154,7 +154,15 @@
             });
             var datetime = moment("{{ datetime }}", "DD-MM-YYYYTHH:mm");
             var settings = $.parseJSON('{{ settings | safe }}');
-            settings.defaultDate = datetime;
+            settings.defaultDate = datetime;      
+            settings.eventResize = function(event, delta, revertFunc){
+                var start = event.start;
+                var end = event.end;
+                var dur = moment.duration(end.diff(start));
+                if (dur.asMinutes() > 120){
+                    revertFunc();
+                }
+            };
             settings.eventDrop = function(event, delta, revertFunc) {
                 var start = event.start;
                 var end = event.end;

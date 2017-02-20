@@ -117,6 +117,14 @@
         var settings = $.parseJSON('{{ settings | safe }}');
         settings.defaultDate = datetime;
         settings.defaultView = view;
+        settings.eventResize = function(event, delta, revertFunc){
+            var start = event.start;
+            var end = event.end;
+            var dur = moment.duration(end.diff(start));
+            if (dur.asMinutes() > 120){
+                revertFunc();
+            }
+        };
         settings.eventConstraint = {
             start: moment().subtract(5, 'minutes'),
             end: moment().add(1, 'year'),

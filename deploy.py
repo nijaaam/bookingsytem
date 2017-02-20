@@ -83,7 +83,7 @@ class Git(Node):
 
     def checkout(self, commit):
         with self.hosts.cd(project_dir, expand=True):
-            self.hosts.run("git checkout '%s'" % esc1(commit))
+            self.hosts.sudo("git checkout '%s'" % esc1(commit))
 
     def tag(self):
         with self.hosts.cd(project_dir, expand=True):

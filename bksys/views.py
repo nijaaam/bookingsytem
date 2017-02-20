@@ -82,6 +82,13 @@ def getBKTableHeight(rowCount):
 def getUserBookings(request):
     id = request.POST['id']
     res = bookings.objects.getUserBookings(users.objects.getUser(id)).order_by('date')
+    for booking in res:
+        date = booking.date
+        dt = datetime(date.year,date.month,date.day)
+        print datetime.now(),dt
+        if dt < datetime.now():
+            booking.delete()
+    res = bookings.objects.getUserBookings(users.objects.getUser(id)).order_by('date')
     return render(request, 'userBookings.html', {
         'bookings':res,
         'table_height': getBKTableHeight(len(res)),
