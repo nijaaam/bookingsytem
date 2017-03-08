@@ -16,7 +16,7 @@ $('#prev,#next,#today').unbind('click').click(function() {
     $('#scheduler').fullCalendar(this.id);
     var currentView = $('#scheduler').fullCalendar('getView');
     if (currentView.name == "month") {
-        var start = $('#scheduler').fullCalendar('getDate').startOf('month').format("YYYY-MM-DD");
+        var start = $('#scheduler').fullCalendar('getDate').format("YYYY-MM-DD");
         var end = $('#scheduler').fullCalendar('getDate').endOf('month').format("YYYY-MM-DD");
         var data = {
             start: start,
@@ -38,8 +38,10 @@ $('#day,#month,#week').unbind('click').click(function() {
     var view = 'month';
     if (this.id == 'day') {
         view = 'timelineDay';
+        $('#scheduler').fullCalendar('option', 'contentHeight', height);
     } else if (this.id == 'month') {
         view = "month";
+        $('#scheduler').fullCalendar('option', 'contentHeight', 'auto');
         $('#scheduler').fullCalendar("removeEvents");
         var start = $('#scheduler').fullCalendar('getDate').startOf('month').format("YYYY-MM-DD");
         var end = $('#scheduler').fullCalendar('getDate').endOf('month').format("YYYY-MM-DD");
@@ -50,6 +52,7 @@ $('#day,#month,#week').unbind('click').click(function() {
         performAJAX(/getRoomsBookings/, 'json', data, insertEvents);
     } else if (this.id == 'week') {
         view = 'agendaWeek';
+        $('#scheduler').fullCalendar('option', 'contentHeight', 'auto');
     }
     $('#scheduler').fullCalendar('changeView', view);
     var currentView = $('#scheduler').fullCalendar('getView');
