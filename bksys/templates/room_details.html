@@ -108,6 +108,15 @@
         {% block toolbar %} {% include "toolbar.html" %} {% endblock %}
         <div id="calendar"></div>
     </div>
+<div class="modal fade" id="expiry" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+            <p class = "text-center">Page Expired, reloading</p>
+      </div>
+    </div>
+  </div>
+</div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
@@ -141,8 +150,11 @@
                 format: 'DD-MM-YYYY',
             });
             setTimeout(function() {
-                alert("page Expires");
-            }, 120000); //2 Minutes
+                $('#expiry').modal('show');
+                setTimeout(function(){
+                    window.location.href = "/";
+                },1000);
+            }, 120000);
             $(window).on("orientationchange", function(event) {
                 if (event.orientation == "portrait") {
                     $('#calendar').fullCalendar('changeView', 'agendaDay');
