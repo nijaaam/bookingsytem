@@ -16,7 +16,7 @@ class rooms(models.Model):
         db_table = "rooms"
 
 class reservations(models.Model):
-    room               = models.OneToOneField(rooms,  on_delete=models.CASCADE, null = False)
+    room               = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
     start_time         = models.DateTimeField(auto_now_add=True)
     session_id         = models.CharField(max_length=240,null=False)
     
@@ -47,8 +47,8 @@ class users(models.Model):
 
 class bookings(models.Model):
     booking_ref = models.AutoField(primary_key=True)
-    user        = models.OneToOneField(users,  on_delete=models.CASCADE, null = False)
-    room        = models.OneToOneField(rooms,  on_delete=models.CASCADE, null = False)
+    user        = models.ForeignKey(users,  on_delete=models.CASCADE, null = False)
+    room        = models.ForeignKey(rooms,  on_delete=models.CASCADE, null = False)
     recurrence  = models.OneToOneField(recurringEvents,  on_delete=models.CASCADE, null = True)
     date        = models.DateField(null = False)
     start_time  = models.TimeField(null = False)

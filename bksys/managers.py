@@ -64,7 +64,7 @@ class UserManager(models.Manager):
         return self.get(id=id).name
             
 class recurringEventsManager(models.Manager):
-    def newBooking(self,rm_id,start,end,recur_type):
+    def newBooking(self,start,end,recur_type):
         return self.create(start_date=start,end_date=end,recurrence=recur_type)
 
 class BookingsQueryset(models.query.QuerySet):
