@@ -13,7 +13,7 @@ salt = salt.encode('utf-8')
 class UserManager(models.Manager):
     def create_user(self, name, email):
         now = timezone.now()
-        passcode = User.objects.make_random_password(length=4)
+        passcode = User.objects.make_random_password(length=4,allowed_chars='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789')
         passcode = passcode.encode('utf-8')
         hashed = bcrypt.hashpw(passcode, salt)
         encrypted_passcode = hashed
@@ -65,7 +65,7 @@ class UserManager(models.Manager):
             
 class recurringEventsManager(models.Manager):
     def newBooking(self,rm_id,start,end,recur_type):
-        return self.create(room_id=rm_id,start_date=start,end_date=end,recurrence=recur_type)
+        return self.create(start_date=start,end_date=end,recurrence=recur_type)
 
 class BookingsQueryset(models.query.QuerySet):
     def get_booking(self,id):
@@ -147,7 +147,7 @@ class BookingsManager(models.Manager):
             else:
                 dates.append(start_date)
         recur_end = recur_end.strftime("%Y-%m-%d")
-        r_booking = recurringEvents.objects.newBooking(room_id,date,recur_end,type)
+        r_booking = recurringEvents.objects.newBooking(date,recur_end,type)
         booking = self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id,user_id=user)
         for date in dates:
             self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id,user_id=user)
