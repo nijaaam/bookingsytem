@@ -167,7 +167,7 @@
             } else {
                 height = len * 32;
             }
-            $('#scheduler').fullCalendar('option', 'contentHeight', height);
+            $('#scheduler').fullCalendar('option', 'contentHeight', height + 27);
             var currentView = $('#scheduler').fullCalendar('getView');
             $('#calendarDate').text(currentView.title);
             $('.fc-event-container').css('height','24px');

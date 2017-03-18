@@ -43,7 +43,7 @@ class users(models.Model):
     objects = UserManager()
     
     class Meta:
-        db_table = "user"
+        db_table = "users"
 
 class bookings(models.Model):
     booking_ref = models.AutoField(primary_key=True)

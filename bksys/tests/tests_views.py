@@ -46,9 +46,9 @@ class viewsTest(TestCase):
         #Only Room 1 should be in list since Room 2 is booked
         self.assertEqual(len(avaliable_rooms),1)
         rooms_json = json.loads(response.context['rooms'])
-        self.assertEqual(len(rooms_json),1)
+        self.assertEqual(len(rooms_json),len(rooms.objects.all()))
         bookings_json = json.loads(response.context['bookings'])
-        self.assertEqual(len(bookings_json),0)
+        self.assertEqual(len(bookings_json),1)
         self.assertEqual(response.context['current_date'],time.strftime("%Y-%m-%d"))
 
     def testViewRoom(self):

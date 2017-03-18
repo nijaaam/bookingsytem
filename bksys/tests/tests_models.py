@@ -67,8 +67,8 @@ class recurringEventsTest(TestCase):
         self.id = room.room_id
 
     def test_new_event(self):
-        recurringEvents.objects.newBooking(self.id,"2017-01-01","2017-01-30",2)
-        obj = recurringEvents.objects.get(room_id=self.id,recurrence=2,end_date="2017-01-30")
+        recurringEvents.objects.newBooking("2017-01-01","2017-01-30",2)
+        obj = recurringEvents.objects.get(recurrence=2,end_date="2017-01-30")
         self.assertEqual(str(obj.start_date),"2017-01-01")
 
 class reservationsTest(TestCase):
@@ -86,7 +86,7 @@ class bookingsTest(TestCase):
         self.room_id = room.room_id
         users.objects.create_user('name','email')
         self.user_id = users.objects.getUser('name')
-
+        
     def test_new_booking(self):
         bk = bookings.objects.newBooking(self.room_id,"2017-01-10","10:00","11:00","des","con",self.user_id)
         bk_id = bk.booking_ref
@@ -95,7 +95,7 @@ class bookingsTest(TestCase):
         self.assertEqual(bookings.objects.isRecurring(bk_id),False)
 
     def test_recurring_bookings_and_delete(self):
-        booking = bookings.objects.newRecurringBooking(self.room_id,"2017-01-10","10:00","11:00","con","des",2,"29-01-2017",self.user_id)
+        booking = bookings.objects.newRecurringBooking(self.room_id,"2017-05-10","10:00","11:00","con","des",2,"29-05-2017",self.user_id)
         #should create three bookings and recurr object
         self.assertEqual(len(bookings.objects.all()),3)
         self.assertEqual(len(recurringEvents.objects.all()),1)
