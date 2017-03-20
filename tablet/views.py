@@ -56,7 +56,7 @@ def quickBook(request,id):
 	    "end": end,
 	})
 
-def bookRoom(request,id):
+def showCalendar(request,id):
 	date = time.strftime("%d-%m-%Y")
 	bk_time = time.strftime("%H:%M")
 	scroll_time = datetime.strptime(bk_time,"%H:%M") - timedelta(minutes=60)
@@ -65,7 +65,7 @@ def bookRoom(request,id):
 		"settings" : json.dumps(set_default_values(scroll_time.strftime("%H:%M"))),
 		'room_name': rooms.objects.get(room_id=id).room_name,
 	}
-	return render(request,"book_room.html",res)
+	return render(request,"show_calendar.html",res)
 
 def get_upcoming_events():
 	cTime = time.strftime("%H:%M")

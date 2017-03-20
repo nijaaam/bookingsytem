@@ -33,7 +33,7 @@ function performAJAX(url, dataType, data, callback) {
 
 $('#backTablet').click(function() {
     var string = window.location.pathname;
-    string = string.replace("/bookRoom/", "")
+    string = string.replace("showCalendar/", "")
     window.location.href = string;
     return false;
 });
