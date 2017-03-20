@@ -57,7 +57,7 @@
     $('#modal').on('hidden.bs.modal', function () {
         if (window.location.pathname.search('tablet') == 1){
             var string = window.location.pathname;
-            string = string.replace("/bookRoom/","")
+            string = string.replace("showCalendar/","")
             window.location = string;
         }
         else {
