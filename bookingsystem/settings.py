@@ -54,7 +54,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
 )
 def custom_show_toolbar(self):
     return True
