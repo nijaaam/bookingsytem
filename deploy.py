@@ -6,8 +6,8 @@ from deployer.host import SSHHost
 from deployer.exceptions import ActionException
 
 home = '/home/main/'
-ip = 'bkwebtesting2086.cloudapp.net'
-#ip = 'bkwebsiteproduction9834.cloudapp.net'
+#ip = 'bkwebtesting2086.cloudapp.net'
+ip = 'bkwebsiteproduction9834.cloudapp.net'
 project_name = "bookingsystem/"
 virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
