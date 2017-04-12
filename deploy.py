@@ -6,20 +6,13 @@ from deployer.host import SSHHost
 from deployer.exceptions import ActionException
 
 home = '/home/main/'
-<<<<<<< HEAD
-ip = 'bksystesting1818.cloudapp.net'
-=======
-ip = '51.140.115.255'
->>>>>>> master
+ip = 'bkwebsite7468.cloudapp.net'
 project_name = "bookingsystem/"
 virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
 repo = 'https://github.com/nijaaam/bookingsystem.git'
 keyLocation = '/home/jamun-g/Desktop/keys/bookingsystem'
-<<<<<<< HEAD
-=======
 cronLog = ' & >> /var/log/cronjobs.log'
->>>>>>> master
 
 class VirtualEnv(Node):
     location = required_property()
@@ -137,11 +130,6 @@ class DjangoDeployment(Node):
         self.hosts.run(runOnBoot)
     
     def fullSetup(self):
-<<<<<<< HEAD
-        self.hosts.sudo('apt-get update && apt-get install build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
-        self.hosts.run('virtualenv' + virtualenv)
-        self.git.clone()
-=======
         self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
         self.hosts.sudo('virtualenv ' + virtualenv)
         self.setproductionsettings()
@@ -149,7 +137,6 @@ class DjangoDeployment(Node):
             self.git.clone()
         except ActionException:
             pass
->>>>>>> master
         self.virtual_env.setup_env()
         self.runSpecialCmd('rm /etc/nginx/sites-enabled/default')
         self.hosts.sudo('ln -f -s ' + project_dir + 'config/bksys.conf /etc/nginx/sites-enabled/')
