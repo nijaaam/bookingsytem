@@ -1,4 +1,30 @@
 var footer_date = "";
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            // Only send the token to relative URLs i.e. locally.
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+});
+
+
 $(document).ready(function() {
     $('#cTime').html(new moment().format("HH:mm"));
     footer_date = new moment();
@@ -54,8 +80,46 @@ $(document).ready(function() {
     $('#scheduler').find('.fc-timeline-event').css('overflow', 'hidden');
 });
 
+$('#end').click(function() {
+    $('#authModel').modal('show');
+});
+$("#search").on("input", function() {
+    var str = $(this).closest('.form-group').attr('class');
+    if (str.indexOf("has-error") >= 0) {
+        var element = $('#search');
+        $(element).closest('.form-group').removeClass('has-error has-feedback');
+        $('#search_error').removeClass('glyphicon-remove');
+        $('#ident_error').remove();
+    }
+});
+function performAJAX(url, dataType, data, callback) {
+    $.ajax({
+        type: 'POST',
+        url: url,
+        dataType: dataType,
+        data: data,
+        success: callback,
+    });
+    return false;
+}
+$('#confirm').click(function() {
+    performAJAX("/validateID/", "html", {
+        'id': $('#search').val(),
+    }, function(res) {
+        if (res == "0") {
+            var element = $('#search');
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
+            $('#search_error').addClass('glyphicon-remove');
+            $('<span id="ident_error" class="help-block">Identification Failed.</span>').insertAfter(element);
+        } else {
+            $('#authModel').modal('hide');
+            end_event($('#booking_id').val());
+        }
+    });
+    return false;
+})
 
-function end_event() {
+function end_event(id) {
     $.ajax({
         type: 'POST',
         dataType: 'html',
@@ -63,6 +127,10 @@ function end_event() {
         data: {
             'bk_id': id,
         },
+        success: function() {
+            var string = window.location.pathname;
+            window.location = string;
+        }
     });
 }
 

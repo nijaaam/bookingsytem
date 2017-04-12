@@ -12,25 +12,25 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-3 control-label">Booking ID</label>
                         <div class="col-sm-9">
-                            <input type="email" id = "booking_id" class="form-control" id="inputEmail3" readonly value= "{{ booking_id }}">
+                            <input type="text" id = "booking_id" class="form-control" readonly value= "{{ booking_id }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-3 control-label">Room Name</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" id="inputEmail3" readonly value = "{{ room_name }}">
+                            <input type="text" class="form-control" id ="modal_roomname" readonly value = "{{ room_name }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-3 control-label">Start Time</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" id="inputEmail3" readonly value =" {{ start_time }}">
+                            <input type="text" class="form-control" id="modal_stime" readonly value = "{{ start_time }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-3 control-label">End Time</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" id="inputEmail3" readonly value="{{ end }}">
+                            <input type="text" class="form-control" id="modal_etime" readonly value="{{ end }}">
                         </div>
                     </div>
                 </form>
@@ -46,10 +46,29 @@
     $("#calendar").fullCalendar( 'removeEvent', 999 );
     $("[id^='exit_modal']").click(function() {
         if (window.location.pathname.search('tablet') == 1){
-            window.location = "/tablet";
+            var string = window.location.pathname;
+            string = string.replace("/bookRoom/","")
+            window.location = string;
         }
         else {
             window.location = "/";
         }
     });
+    $('#modal').on('hidden.bs.modal', function () {
+        if (window.location.pathname.search('tablet') == 1){
+            var string = window.location.pathname;
+            string = string.replace("showCalendar/","")
+            window.location = string;
+        }
+        else {
+            window.location = "/";
+        }
+    });
+    $(document).keydown( function(event) {
+        if (event.which === 13) {
+            if ($('#modal').hasClass('in')){
+                $('#exit_modal').click();
+            }
+        }
+    }); 
 </script>

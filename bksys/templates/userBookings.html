@@ -1,0 +1,48 @@
+<div class="panel panel-default">
+    <div class="panel-heading text-center">Bookings</div>
+    <div class="table-responsive" style="height:{{ table_height }}px; overflow-y: auto">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Room</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.date | date:"d-M-Y"}}</td>
+                    <td>{{ booking.start_time | time:"H:i"}}</td>
+                    <td>{{ booking.end_time | time:"H:i"}}</td>
+                    <td>{{ booking.room.room_name}}</td>
+                    <td>
+                        <div>
+                            <input hidden value="{{ booking.booking_ref }}">
+                            <button name="view" class="btn btn-default">View</button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $("button[name='view']").click(function(){
+    	var id = $(this).prev().val();
+    	$.ajax({
+    		type: 'POST',
+    		url: '/findBooking/',
+    		data: {
+    			'booking_id': id,
+    		},
+    		dataType: 'html',
+    		success: function(res){
+    			$('#viewBooking').html(res);
+    		}
+    	});
+    });
+</script>

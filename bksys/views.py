@@ -2,41 +2,102 @@ from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
 from .models import *
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 import time, json
 from .forms import *
 from datetime import datetime, timedelta, date
+import calendar, pytz
 
 def index(request):
+    if not request.session.session_key:
+        request.session.save()
     form = processForm(request)
     bk_date = getDate(request)
     bk_date = datetime.strptime(bk_date,"%d-%m-%Y").strftime("%Y-%m-%d")
     bk_start_time = getTime(request)
     bk_end_time = datetime.strptime(bk_start_time,"%H:%M") + timedelta(minutes=15)
     scroll_time = datetime.strptime(bk_start_time,"%H:%M") - timedelta(minutes=60)
-    avaliable_rooms = avaliableRooms(bk_date,bk_start_time,bk_end_time)
-    rooms_json = [rm_instance.getJSON() for rm_instance in avaliable_rooms]
+    avaliable_rooms = avaliableRooms(request,bk_date,bk_start_time,bk_end_time)
+    rooms_json = [getJSONRooms(rm_instance) for rm_instance in rooms.objects.all()]
     room_bookings = []
-    for room in avaliable_rooms:
-        booking_list = bookings.objects.filter(room_id=room.room_id,date=bk_date)
+    date = datetime.strptime(bk_date,"%Y-%m-%d")
+    range = calendar.monthrange(date.year,date.month)
+    start = date.replace(day=range[0]).strftime("%Y-%m-%d")
+    end = date.replace(day=range[1]).strftime("%Y-%m-%d")
+    for room in rooms.objects.all():
+        booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[date,end])
         for booking in booking_list:
-            room_bookings.append(booking.getJSON())
+            room_bookings.append(getJSONBookings(booking))
     response = {
         'scroll_time': scroll_time.strftime("%H:%M"),
         'rooms': json.dumps(rooms_json), 
         'bookings': json.dumps(room_bookings),
         'query_results': avaliable_rooms,
-        'current_date': time.strftime("%Y-%m-%d"),
+        'current_date': bk_date,
         'table_height': getTableHeight(len(avaliable_rooms)),
         'form': form,
+        'length': len(rooms_json),
     }
     return render(request,'home.html',response)
 
+def getRoomsBookings(request):
+    start = request.POST['start']
+    end = request.POST['end']
+    rooms_json = [getJSONRooms(rm_instance) for rm_instance in rooms.objects.all()]
+    bookings_list = []
+    for room in rooms.objects.all():
+        booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end])
+        for booking in booking_list:
+            bookings_list.append(getJSONBookings(booking))
+    return HttpResponse(json.dumps(bookings_list), content_type="application/json")
+
+def getJSONBookings(self):
+    return dict(
+        booking_ref = self.booking_ref,
+        room_id = self.room_id,
+        date = str(self.date),
+        start_time = str(self.start_time),
+        end_time = str(self.end_time),
+        contact = self.contact,
+        description = self.description
+    )
+
+def getJSONRooms(self):
+    return dict(
+        room_id = self.room_id,
+        room_name = self.room_name,
+        room_size = self.room_size,
+        room_location = self.room_location,
+        room_features = self.room_features,
+    )
+
+def getBKTableHeight(rowCount):
+    if rowCount == 0:
+        return 79
+    elif rowCount < 4:
+        return rowCount*51 + 39
+    else:
+        return 250
+    
+def getUserBookings(request):
+    id = request.POST['id']
+    res = bookings.objects.getUserBookings(users.objects.getUser(id)).order_by('date')
+    for booking in res:
+        date = booking.date
+        dt = datetime(date.year,date.month,date.day)
+        print datetime.now(),dt
+        if dt < datetime.now():
+            booking.delete()
+    res = bookings.objects.getUserBookings(users.objects.getUser(id)).order_by('date')
+    return render(request, 'userBookings.html', {
+        'bookings':res,
+        'table_height': getBKTableHeight(len(res)),
+    })
+
 def autocomplete(request):
     query = request.POST['search']
-    rooms_list = User.objects.filter(name__contains=query)
-    results = [rm_instance.name for rm_instance in rooms_list]
-    print results
+    users_list = users.objects.filter(name__contains=query)
+    results = [user_instance.name for user_instance in users_list]
     return HttpResponse(json.dumps(results), content_type="application/json")
 
 def signup(request):
@@ -48,47 +109,64 @@ def signup(request):
                 'form': form,
                 'code': passcode,
             })
+        else:
+            return render(request, 'signup.html', {
+                'form': form,
+            })
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {
         'form': form,
     })
 
-def getRoomsBookings(request):
-    start = request.POST['start']
-    end = request.POST['end']
-    avaliable_rooms = avaliableRooms(start,getTime(request),getTime(request))
-    rooms_json = [rm_instance.getJSON() for rm_instance in avaliable_rooms]
-    bookings_list = []
-    for room in avaliable_rooms:
-        booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end])
-        for booking in booking_list:
-            bookings_list.append(booking.getJSON())
-    return HttpResponse(json.dumps(bookings_list), content_type="application/json")
-
-def avaliableRooms(date,start,end):
+def avaliableRooms(request,date,start,end):
+    ongoingevents = []
     ongoingevents = bookings.objects.getOngoingEvents(date,start,end).values_list('room_id',flat=True)
-    avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents)
+    avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents).order_by('-room_size')
+    reserved_rooms = []
+    for room in avaliable_rooms:
+        reservation_list = reservations.objects.filter(
+            room_id = room.room_id,
+            session_id = request.session.session_key,
+        )
+        if (len(reservation_list) > 0 and checkIfExpired(room.room_id,request.session.session_key)):
+            reserved_rooms.append(room)
+        else:
+            reserved_rooms.append(room)
+    avaliable_rooms = reserved_rooms
     return avaliable_rooms
 
-def checkIfExpired(id):
-    reserve = reservations.objects.get(room_id=id)
-    expires =  reserve.expiry.replace(tzinfo=None)
-    elapsed_time = datetime.now() - expires
+def checkIfExpired(id,session):
+    query = reservations.objects.filter(room_id=id,session_id=session)
+    if len(query) == 0:
+        return 0
+    elif len(query) > 1:
+        query = query.order_by('start_time')[:1]
+        reservation = query[0]
+        to_delete = reservations.objects.filter(
+            session_id = reservation.session_id,
+            room_id = reservation.room_id,
+        ).exclude(
+            start_time = reservation.start_time
+        ).delete()
+    else:
+        reservation = query[0]
+    start_time = reservation.start_time.replace(tzinfo=None)
+    elapsed_time = datetime.now() - start_time
     if (elapsed_time - timedelta(minutes = 2)).total_seconds() > 0:
+        reservation.delete()
         return 1
     else:
         return 0
 
 def validateID(request):
     id = request.POST['id']
-    if User.objects.authenticate(id):
+    if users.objects.authenticate(id):
         return HttpResponse(1)
     else:
         return HttpResponse(0)
 
 def getDate(request):
-    #print request.session['bk_date'], time.strftime("%d-%m-%Y")
     if 'bk_date' in request.session:
         return request.session['bk_date']
     else:
@@ -104,11 +182,6 @@ def findBooking(request):
     booking_id = request.POST['booking_id']
     try:
         booking = bookings.objects.get(booking_ref=booking_id)
-        if datetime.strptime(str(booking.date)+str(booking.end_time),"%Y-%m-%d%H:%M:%S") < datetime.now():
-            bookings.objects.delete(booking_id)
-            error_msg = "Booking not found for " + booking_id
-            html = "<span class = 'help-block' style ='color:#a94442'>" + error_msg + "</span>"
-            return HttpResponse(html)
         room = rooms.objects.get(room_id=booking.room_id)
         start = booking.start_time.strftime("%H:%M")
         end = booking.end_time.strftime("%H:%M")
@@ -139,8 +212,10 @@ def if_values_are_set(f):
 
 @if_values_are_set
 def view_room(request):
-    #reservations(room_id=id).save()
+    if not request.session.session_key:
+        request.session.save()
     id = request.POST['room_id']
+    reservations(room_id=id,session_id=request.session.session_key).save()
     request.session['bk_rm_id'] = id
     query = rooms.objects.get(room_id=id)
     date = getDate(request)
@@ -157,7 +232,7 @@ def view_room(request):
     return render(request,'room_details.html',res)
 
 def book_room(request):
-    user = User.objects.getUser(request.POST['id'])
+    user = users.objects.getUser(request.POST['id'])
     recurring = request.POST.getlist('recurring')[0]
     contact         = request.POST['contact']
     description     = request.POST['description']
@@ -168,7 +243,7 @@ def book_room(request):
     if recurring == "0":
         entry = bookings.objects.newBooking(room_id,date,start,end,contact,description,user)
     else:
-        entry = bookings.objects.newRecurringBooking(room_id,date,start,end,contact,description,recurring,request.POST['recurr_end'])
+        entry = bookings.objects.newRecurringBooking(room_id,date,start,end,contact,description,recurring,request.POST['recurr_end'],user)
     room_name = rooms.objects.get_name(room_id)
     return render(request,'modal.html',{
         "booking_id":entry.booking_ref,
@@ -177,10 +252,8 @@ def book_room(request):
         "start_time":start,
         "end":end,
     })
-
 def viewBooking(request):
     return render(request,'viewBooking.html',{})
-
 
 def updateBooking(request):
     booking_id = request.POST['booking_id']
@@ -213,7 +286,6 @@ def cancelBooking(request):
         bookings.objects.delete(request.POST['id'])
         return HttpResponse("Booking Canceled")
    
-
 def getCalendarEventJson(booking):
     return dict(
         id = booking.booking_ref,
@@ -233,7 +305,6 @@ def getBookings(request):
     end = datetime.strptime(end,"%d-%m-%Y").strftime("%Y-%m-%d")
     booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end]) 
     results = [getCalendarEventJson(bk_instance) for bk_instance in booking_list]
-    #results = [bk_instance.getJSON() for bk_instance in booking_list]
     return HttpResponse(json.dumps(results), content_type="application/json")
 
 def set_default_values(scrollTime):
@@ -250,7 +321,7 @@ def set_default_values(scrollTime):
         margin         = '0 auto',
         defaultDate  = 'datetime',
         defaultView  = 'agendaWeek',
-        maxTime      = "19:00:00",
+        maxTime      = "21:00:00",
         allDaySlot   = False,
         editable     = True,
         eventLimit   = True,
@@ -258,6 +329,7 @@ def set_default_values(scrollTime):
         slotDuration = '00:05:00',
         nowIndicator = True,
         scrollTime   = scrollTime,
+        slotEventOverlap = False,
     )
 
 def processForm(request):

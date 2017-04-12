@@ -6,12 +6,20 @@ from deployer.host import SSHHost
 from deployer.exceptions import ActionException
 
 home = '/home/main/'
+<<<<<<< HEAD
 ip = 'bksystesting1818.cloudapp.net'
+=======
+ip = '51.140.115.255'
+>>>>>>> master
 project_name = "bookingsystem/"
 virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
 repo = 'https://github.com/nijaaam/bookingsystem.git'
 keyLocation = '/home/jamun-g/Desktop/keys/bookingsystem'
+<<<<<<< HEAD
+=======
+cronLog = ' & >> /var/log/cronjobs.log'
+>>>>>>> master
 
 class VirtualEnv(Node):
     location = required_property()
@@ -39,22 +47,22 @@ class VirtualEnv(Node):
     def run_management_command(self, command):
         with self.hosts.prefix(self.activate_cmd):
             with self.hosts.cd(project_dir):
-                self.hosts.run('./manage.py %s' % command)
+                self.hosts.sudo('./manage.py %s' % command)
 
     def run_uwsgi(self):
         with self.hosts.prefix(self.activate_cmd):
             with self.hosts.cd(project_dir):
-                self.hosts.run('uwsgi start_app.ini')
+                self.hosts.sudo('uwsgi scripts/start_app.ini')
 
     def collectstatic(self):
-        self.run_management_command('collectstatic --clear --noinput')
+        self.run_management_command('collectstatic --clear --noinput --settings=bookingsystem.production')
 
     def update_database(self):
-        self.run_management_command('migrate --noinput')
+        self.run_management_command('migrate --noinput --settings=bookingsystem.production')
 
     def clean(self):
         with self.hosts.cd(project_dir):
-            self.hosts.run('find . -name \'*.py?\' -exec rm -rf {} \;')
+            self.hosts.sudo('find . -name \'*.py?\' -exec rm -rf {} \;')
 
 class Git(Node):
     project_directory = required_property()
@@ -65,13 +73,16 @@ class Git(Node):
 
     def clone(self):
         with self.hosts.cd(self.project_directory, expand=True):
-            self.hosts.run("git clone '%s'" % esc1(self.repository))
+            self.hosts.sudo("git clone '%s'" % esc1(self.repository))
 
     def pull(self):
         with self.hosts.cd(self.project_directory, expand=True):
             with self.hosts.cd(project_dir):
-                self.hosts.run("git pull")
-    
+                try:
+                    self.hosts.sudo("git pull")
+                except ActionException:
+                    self.stash()
+                    self.pull()
     def stash(self):
         with self.hosts.cd(self.project_directory, expand=True):
             with self.hosts.cd(project_dir):
@@ -79,9 +90,15 @@ class Git(Node):
 
     def checkout(self, commit):
         with self.hosts.cd(project_dir, expand=True):
-            self.hosts.run("git checkout '%s'" % esc1(commit))
+            self.hosts.sudo("git checkout '%s'" % esc1(commit))
 
     def tag(self):
+        with self.hosts.cd(project_dir, expand=True):
+            self.hosts.run("git tag LIVE")
+            self.hosts.run('export TAG="date +DEPLOYED-%F/%H%M"')
+            self.hosts.run("git tag $TAG")
+            self.hosts.run("git push origin LIVE $TAG")
+
 class DjangoDeployment(Node):
     class virtual_env(VirtualEnv):
         location = home + virtualenv
@@ -93,56 +110,76 @@ class DjangoDeployment(Node):
         repository = repo
 
     def setup(self):
+        self.git.checkout('release')
+        self.virtual_env.clean()
         self.git.pull()
-        self.hosts.run('export DJANGO_SETTINGS_MODULE=bookingsystem.production')
         self.virtual_env.setup_env()
         self.virtual_env.update_database()
         self.virtual_env.collectstatic()
+        self.git.tag()
         self.virtual_env.run_uwsgi()
 
+    def checkIfCJexists(self):
+        self.hosts.run('crontab -l')
 
-    def run_cmd(self,cmd):
-        self.hosts.run(cmd)
-
+    def addCJ(self):
+        backup = '0 0 * * * main ' + project_dir + ' manage.py dbbackup  ' + cronLog
+        checkIfRunning = '@hourly ' + project_dir + ' manage.py checkIfRunning ' + cronLog
+        removeStaleBookings = '0 0 * * * ' + project_dir + ' manage.py deleteStaleBk ' + cronLog
+        runOnBoot = '@reboot ' + project_dir + 'scripts/runOnBoot.sh'
+        backup = '{ crontab -l -u main; echo "'+ backup +'"; } | crontab -u main -'
+        checkIfRunning = '{ crontab -l -u main; echo "'+ checkIfRunning +'"; } | crontab -u main -'
+        removeStaleBookings = '{ crontab -l -u main; echo "'+ removeStaleBookings +'"; } | crontab -u main -'
+        runOnBoot = '{ crontab -l -u main; echo "'+ runOnBoot +'"; } | crontab -u main -'
+        self.hosts.run(removeStaleBookings)
+        self.hosts.run(backup)
+        self.hosts.run(checkIfRunning)
+        self.hosts.run(runOnBoot)
+    
     def fullSetup(self):
+<<<<<<< HEAD
         self.hosts.sudo('apt-get update && apt-get install build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
         self.hosts.run('virtualenv' + virtualenv)
         self.git.clone()
+=======
+        self.hosts.sudo('apt-get update && apt-get install mysql-client-5.7 build-essential libssl-dev libffi-dev virtualenv uwsgi nginx libmysqlclient-dev python-pip')
+        self.hosts.sudo('virtualenv ' + virtualenv)
+        self.setproductionsettings()
+        try:
+            self.git.clone()
+        except ActionException:
+            pass
+>>>>>>> master
         self.virtual_env.setup_env()
-        self.remove_defaultconf()
-        self.copy_nginx_conf()
-        self.restart_nginx()
-        self.setup_emperor()
-
-    def load_django_settings(self):
-        self.hosts.run()
-
-    def remove_defaultconf(self):
-        self.hosts.sudo('rm /etc/nginx/sites-enabled/default')
-
-    def copy_nginx_conf(self):
+        self.runSpecialCmd('rm /etc/nginx/sites-enabled/default')
         self.hosts.sudo('ln -f -s ' + project_dir + 'config/bksys.conf /etc/nginx/sites-enabled/')
-
-    def restart_nginx(self):
         self.hosts.sudo('/etc/init.d/nginx restart')
+        try:
+            self.checkIfCJexists()
+        except ActionException:
+            self.addCJ()
+        self.runSpecialCmd('mkdir /etc/uwsgi')
+        self.runSpecialCmd('mkdir /etc/uwsgi/vassals')
+        self.hosts.sudo('ln -f -s ' + project_dir + 'scripts/start_app.ini /etc/uwsgi/vassals/')
+        self.runSpecialCmd('mkdir /var/uwsgi')
+        self.runSpecialCmd('chown www-data:www-data /var/uwsgi')
+        self.runSpecialCmd('chown -R www-data:www-data BKSYSDEPLOY/')
+        self.setup()
+        #self.hosts.sudo('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
 
-    def setup_emperor(self):
-        self.create_dir('/etc/uwsgi')
-        self.create_dir('/etc/uwsgi/vassals')
-        self.copyConfig()
-        self.start()
 
-    def set_autowakeup(self):
-        self.hosts.sudo('ln -f -s ' + project_dir + 'config/rc.local  /etc/rc.local')
+    def runSpecialCmd(self,cmd):
+        try:
+            self.hosts.sudo(cmd)
+        except:
+            pass
 
-    def create_dir(self,cmd):
-        self.hosts.sudo('mkdir ' + cmd)
-
-    def start(self):
-        self.hosts.run('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
-
-    def copyConfig(self):
-        self.hosts.sudo('ln -f -s ' + project_dir + 'start_app.ini /etc/uwsgi/vassals/')
+    def setproductionsettings(self):
+        self.hosts.sudo('touch /etc/production.txt')
+        self.hosts.sudo("echo 'x3h)318k2awulf%&e@z08!tswh21&tbt!wdya4osy5o797l_7(' >> /etc/production.txt")
+        self.hosts.sudo('echo "dbbackupbksys" >> /etc/production.txt')
+        self.hosts.sudo('echo "CkD5/KNWSF/BV4sM0XcnyrfBgPmZXjQW4i/FR4l2wX2Mn/PMZtZ/5u9D2wP6JUpXHDyJUwDtaiAECnuOYBPmfw==" >> /etc/production.txt')
+        self.hosts.sudo('echo "bksysdb" >> /etc/production.txt')
 
 class remote_host(SSHHost):
     address = ip 

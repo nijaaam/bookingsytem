@@ -65,7 +65,7 @@ $('#day,#month,#week').click(function() {
     if (this.id == 'day') {
         view = 'agendaDay';
     } else if (this.id == 'month'){
-        loadEvents($('#booking_id').val());
+        loadEvents(booking_id);
     } else if (this.id == 'week') {
         view = 'agendaWeek';
     }

@@ -1,4 +1,15 @@
 var cache = {};
+
+$("#search").on("input", function() {
+    var str = $(this).closest('.form-group').attr('class');
+    if (str.indexOf("has-error") >= 0) {
+        var element = $('#search');
+        $(element).closest('.form-group').removeClass('has-error has-feedback');
+        $('#search_error').removeClass('glyphicon-remove');
+        $('#ident_error').remove();
+    }
+});
+
 function loadSearch() {
     $('#search').typeahead({
         hint: true,
@@ -30,7 +41,7 @@ function autocomplete(query, process) {
     } else {
         $.ajax({
             type: 'POST',
-            url: '/autocomplete/',
+            url: '/',
             dataType: 'json',
             async: false,
             data: 'search=' + $('#search').val(),

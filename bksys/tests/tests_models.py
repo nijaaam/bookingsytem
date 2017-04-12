@@ -1,190 +1,142 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 from bksys.models import *
+import time
 
-class RoomsTest(TestCase):
+class roomsTest(TestCase):
     def setUp(self):
-        room = rooms(
-            room_id = 1,
-            room_name = "Room Test 1", 
-            room_size = 11, 
-            room_location = "Location",
-            room_features =  "Features",
-        )
-        room.save()
+        room = rooms.objects.create(room_name="test1",room_size=10,room_features="feat",room_location="loc")
+        self.id = room.room_id
 
-    def test_save_and_retreive(self):
-        room = rooms.objects.get(room_id=1)
-        self.assertEqual(room.room_id,1)
-        self.assertEqual(room.room_name,"Room Test 1")
-        self.assertEqual(room.room_size,11)
-        self.assertEqual(room.room_location,"Location")
-        self.assertEqual(room.room_features,"Features")
+    def tearDown(self):
+        rooms.objects.all().delete()
 
-    def testGetJSON(self):
-        room = rooms.objects.get(room_id=1)
-        json = room.getJSON()
-        self.assertEqual(json['room_id'],1)
-        self.assertEqual(json['room_name'],"Room Test 1")
-        self.assertEqual(json['room_size'],11)
-        self.assertEqual(json['room_location'],"Location")
-        self.assertEqual(json['room_features'],"Features")
+    def test_get_name(self):
+        self.assertEqual(rooms.objects.get_name(self.id),"test1")
+
+    def test_retrieve(self):
+        room = rooms.objects.get(room_id=self.id)
+        self.assertEqual(room.room_name,"test1")
 
     def test_update_db(self):
-        rooms.objects.filter(room_id=1).update(room_name="New name")
-        room = rooms.objects.get(room_id=1)
+        room = rooms.objects.get(room_id=self.id)
+        room.room_name = "New name"
+        room.save()
+        room = rooms.objects.get(room_id=self.id)
         self.assertEqual(room.room_name,"New name")
 
     def test_delete(self):
-        rooms.objects.filter(room_id=1).delete()
-        self.assertRaises(ObjectDoesNotExist,rooms.objects.get,room_id=1)
-    
+        rooms.objects.filter(room_id=self.id).delete()
+        self.assertRaises(ObjectDoesNotExist,rooms.objects.get,room_id=self.id)
 
-class BookingsTest(TestCase):
+class usersTest(TestCase):
     def setUp(self):
-        room = rooms(
-            room_id = 1,
-            room_name = "Room Test 1", 
-            room_size = 11, 
-            room_location = "Location",
-            room_features =  "Features",
-        )
-        room.save()
-        booking = bookings(
-            booking_ref=1,
-            room_id = 1,
-            date = "2017-01-13",
-            start_time = "09:15:00",
-            end_time = "10:15:00",
-            contact = "contact",
-            description = "description",
-        )
-        booking.save()
+        self.passcode = users.objects.create_user('name','email')
 
-    def test_save_and_retreive(self):
-        booking = bookings.objects.get(booking_ref=1)
-        self.assertEqual(booking.booking_ref,1)
-        self.assertEqual(booking.room_id,1)
-        self.assertEqual(str(booking.date),"2017-01-13")
-        self.assertEqual(str(booking.start_time),"09:15:00")
-        self.assertEqual(str(booking.end_time),"10:15:00")
-        self.assertEqual(booking.contact,"contact")
-        self.assertEqual(booking.description,"description")
-        
-    def testGetJSON(self):
-        booking = bookings.objects.get(booking_ref=1)
-        json = booking.getJSON()
-        self.assertEqual(json['booking_ref'],1)
-        self.assertEqual(json['room_id'],1)
-        self.assertEqual(str(json['date']),"2017-01-13")
-        self.assertEqual(str(json['start_time']),"09:15:00")
-        self.assertEqual(str(json['end_time']),"10:15:00")
-        self.assertEqual(json['contact'],"contact")
-        self.assertEqual(json['description'],"description")
+    def tearDown(self):
+        users.objects.all().delete()
 
-    def test_update_db(self):
-        bookings.objects.filter(booking_ref=1).update(contact="New contact")
-        booking = bookings.objects.get(booking_ref=1)
-        self.assertEqual(booking.contact,"New contact")
+    def test_get_user(self):
+        user_id = users.objects.getUser('name')
+        user = users.objects.get(id=user_id)
+        self.assertEqual(user.email,'email')
+        #Fail
+        self.assertEqual(None,users.objects.getUser('name1'))
 
-    def test_delete(self):
-        bookings.objects.get(booking_ref=1).delete()
-        self.assertRaises(ObjectDoesNotExist,bookings.objects.get,booking_ref=1)    
-
-class RoomsManagerTest(TestCase):
-    def setUp(self):
-        room = rooms(
-            room_id = 1,
-            room_name = "Room Test 1", 
-            room_size = 11, 
-            room_location = "Location",
-            room_features =  "Features",
-        )
-        room.save()
+    def test_auth(self):
+        self.assertEqual(True,users.objects.authenticate('name'))
+        self.assertEqual(False,users.objects.authenticate('1name'))
+        self.assertEqual(True,users.objects.authenticate(self.passcode))
+        self.assertEqual(False,users.objects.authenticate('random'))
 
     def test_get_name(self):
-        self.assertEqual(rooms.objects.get_name(1),"Room Test 1")
+        user_id = users.objects.getUser('name')
+        self.assertEqual('name',users.objects.getName(user_id))
 
-    def test_get_queryset(self):
-        self.assertQuerysetEqual(rooms.objects.get_queryset(),[repr(r) for r in rooms.objects.all()])
+    def test_exists_name(self):
+        self.assertEqual(users.objects.exists_name('name'),1)
+        self.assertEqual(users.objects.exists_name('name1'),0)
 
-class BookingsManagerTest(TestCase):
+    def test_exists_email(self):
+        self.assertEqual(users.objects.exists_email('email'),1)
+        self.assertEqual(users.objects.exists_email('email1'),0)
+
+class recurringEventsTest(TestCase):
     def setUp(self):
-        room = rooms(
-            room_id = 1,
-            room_name = "Room Test 1", 
-            room_size = 11, 
-            room_location = "Location",
-            room_features =  "Features",
-        )
-        room.save()
+        room = rooms.objects.create(room_name="test1",room_size=10,room_features="feat",room_location="loc")
+        self.id = room.room_id
 
-    def getInterval(self,value):
-        if value == "1":
-            return 1
-        elif value == "2":
-            return 7
-        elif value == "3":
-            return 14
-
-    def testMethods(self):
-        booking = bookings.objects.newBooking(1,"2017-01-13","09:15:00","10:15:00","contact","description")
-        id = booking.booking_ref
-        self.assertEqual(bookings.objects.description(id),"description")
-        self.assertEqual(bookings.objects.contact(id),"contact")
-        self.assertEqual(bookings.objects.formatDate(id),"13-01-2017 09:15:00 - 10:15:00")
-        self.assertQuerysetEqual(bookings.objects.get_queryset(),[repr(r) for r in bookings.objects.all()])
-        ongoingevent = bookings.objects.getOngoingEvents("2017-01-13","09:30","09:30")
-        self.assertQuerysetEqual(bookings.objects.get_queryset(),[repr(r) for r in ongoingevent])
-        bookings.objects.delete(id)
-        self.assertRaises(ObjectDoesNotExist,bookings.objects.get,booking_ref=id)
-        #Weekly Repeat from Jan 13 - Feb 25 - 7 Bookings
-        bookings.objects.newRecurringBooking(1,"2017-01-13","09:15:00","10:15:00","contact","description","2","25-02-2017")
-        query =  bookings.objects.all().order_by('date')
-        start_date = datetime.strptime("2017-01-13","%Y-%m-%d")
-        end_date = datetime.strptime("2017-02-25","%Y-%m-%d")
-        for booking in query:
-            if start_date < end_date:
-                self.assertEqual(start_date.strftime("%Y-%m-%d"),str(booking.date))
-                start_date = start_date + timedelta(days=self.getInterval("2"))
-              
-class RecurringEventsManagerTest(TestCase):
-    def setUp(self):
-        room = rooms(
-            room_id = 1,
-            room_name = "Room Test 1", 
-            room_size = 11, 
-            room_location = "Location",
-            room_features =  "Features",
-        )
-        room.save()
-
-    def testnewBooking(self):
-        booking = recurringEvents.objects.newBooking(1,"2017-01-01","2017-05-20","2")
-        self.assertEqual(recurringEvents.objects.all()[0],booking)
-
+    def test_new_event(self):
+        recurringEvents.objects.newBooking("2017-01-01","2017-01-30",2)
+        obj = recurringEvents.objects.get(recurrence=2,end_date="2017-01-30")
+        self.assertEqual(str(obj.start_date),"2017-01-01")
 
 class reservationsTest(TestCase):
     def setUp(self):
-        room = rooms(
-            room_id = 1,
-            room_name = "Room Test 1", 
-            room_size = 11, 
-            room_location = "Location",
-            room_features =  "Features",
-        )
-        room.save()
+        room = rooms.objects.create(room_name="test1",room_size=10,room_features="feat",room_location="loc")
+        self.id = room.room_id
 
-    def test_save_and_retreive(self):
-        start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        reservation = reservations(room_id=1)
-        reservation.save()
-        reserve = reservations.objects.get(room_id=1)
-        start_time_db =  reserve.start_time.replace(tzinfo=None)
-        self.assertEqual(start_time,str(start_time_db))
-            
-    def test_delete(self):
-    	reservations(room_id=1).save()
-        reservations.objects.get(room_id=1).delete()
-        self.assertRaises(ObjectDoesNotExist,reservations.objects.get,id=1)    
+    def test_save_retrieve(self):
+        obj = reservations.objects.create(room_id=self.id,start_time="2017-01-01 10:00")
+        self.assertEqual(reservations.objects.get(id=obj.id).room_id,self.id)
+
+class bookingsTest(TestCase):
+    def setUp(self):
+        room = rooms.objects.create(room_name="test1",room_size=10,room_features="feat",room_location="loc")
+        self.room_id = room.room_id
+        users.objects.create_user('name','email')
+        self.user_id = users.objects.getUser('name')
         
+    def test_new_booking(self):
+        bk = bookings.objects.newBooking(self.room_id,"2017-01-10","10:00","11:00","des","con",self.user_id)
+        bk_id = bk.booking_ref
+        self.assertEqual(bookings.objects.get(booking_ref=bk_id).room_id,self.room_id)
+        self.assertEqual(bookings.objects.get(booking_ref=bk_id).user_id,self.user_id)
+        self.assertEqual(bookings.objects.isRecurring(bk_id),False)
+
+    def test_recurring_bookings_and_delete(self):
+        booking = bookings.objects.newRecurringBooking(self.room_id,"2017-05-10","10:00","11:00","con","des",2,"29-05-2017",self.user_id)
+        #should create three bookings and recurr object
+        self.assertEqual(len(bookings.objects.all()),3)
+        self.assertEqual(len(recurringEvents.objects.all()),1)
+        self.assertEqual(bookings.objects.isRecurring(booking.booking_ref),True)
+        bookings.objects.deleteAllRecurring(booking.booking_ref)
+        self.assertEqual(len(bookings.objects.all()),0)
+
+    def test_get_attributes(self):
+        bk = bookings.objects.newBooking(self.room_id,"2017-01-10","10:00","11:00","con","des",self.user_id)
+        self.assertEqual(bookings.objects.description(bk.booking_ref),"des")
+        self.assertEqual(bookings.objects.contact(bk.booking_ref),"con")
+        self.assertEqual(bookings.objects.formatDate(bk.booking_ref),"10-01-2017 10:00:00 - 11:00:00")
+
+    def test_delete(self):
+        bk = bookings.objects.newBooking(self.room_id,"2017-01-10","10:00","11:00","con","des",self.user_id)
+        id = bk.booking_ref
+        bookings.objects.delete(id)
+        self.assertRaises(ObjectDoesNotExist,bookings.objects.get,booking_ref=id)
+
+    def test_ongoing_events(self):
+        date = time.strftime("%Y-%m-%d")
+        start = datetime.now().strftime('%H:%M')
+        end = datetime.now() + timedelta(minutes=15)
+        end = end.strftime("%H:%M")
+        self.assertEqual(len(bookings.objects.getOngoingEvents(date,start,start)),0)
+        bk = bookings.objects.newBooking(self.room_id,date,start,end,"des","con",self.user_id)
+        self.assertEqual(len(bookings.objects.getOngoingEvents(date,start,start)),1)
+
+    def test_user_bookings(self):
+        bk = bookings.objects.newBooking(self.room_id,"2017-01-10","10:00","11:00","des","con",self.user_id)
+        self.assertEqual(len(bookings.objects.getUserBookings(self.user_id)),1)
+
+    def test_remove_expired_entries(self):
+        date = time.strftime("%Y-%m-%d")
+        prev_date = datetime.now() - timedelta(days=1)
+        prev_date.strftime("%Y-%m-%d")
+        start = datetime.now().strftime('%H:%M')
+        end = datetime.now() + timedelta(minutes=15)
+        end = end.strftime("%H:%M")
+        bk = bookings.objects.newBooking(self.room_id,date,start,end,"des","con",self.user_id)
+        bk = bookings.objects.newBooking(self.room_id,prev_date,start,end,"des","con",self.user_id)
+        self.assertEqual(len(bookings.objects.all()),2)
+        bookings.objects.removeStaleBookings()
+        self.assertEqual(len(bookings.objects.all()),1)

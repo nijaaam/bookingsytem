@@ -1,23 +1,39 @@
 from django.db import models
 from django.utils import timezone
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.exceptions import ObjectDoesNotExist
-import bcrypt
+import bcrypt, time
+
+
 salt = "$2b$12$CaEVuEJ6b/WTplB83zfZ/."
 salt = salt.encode('utf-8')
 
 class UserManager(models.Manager):
     def create_user(self, name, email):
         now = timezone.now()
-        passcode = User.objects.make_random_password(length=6)
+        passcode = User.objects.make_random_password(length=4,allowed_chars='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789')
         passcode = passcode.encode('utf-8')
         hashed = bcrypt.hashpw(passcode, salt)
         encrypted_passcode = hashed
         user = self.create(name=name,email=email,passcode=encrypted_passcode)
         return passcode
 
+    def exists_email(self,email):
+        query = self.filter(email=email)
+        if len(query) != 1:
+            return 0
+        return 1
+
+    def exists_name(self,name):
+        query = self.filter(name=name)
+        if len(query) != 1:
+            return 0
+        return 1
+
     def authenticate(self,id):
+        id = str(id)
         try: 
             self.get(name=id)
             return True
@@ -29,9 +45,10 @@ class UserManager(models.Manager):
                 return True
             except ObjectDoesNotExist:
                 return False
-        return False
+    
 
     def getUser(self,id):
+        id = str(id)
         try: 
             return self.get(name=id).id
         except ObjectDoesNotExist:
@@ -41,29 +58,22 @@ class UserManager(models.Manager):
                 return self.get(passcode=passcode).id
             except ObjectDoesNotExist:
                 return None
-        return None
+        
 
     def getName(self,id):
-        try: 
-            return self.get(name=id).name
-        except ObjectDoesNotExist:
-            id = id.encode('utf-8')
-            passcode = bcrypt.hashpw(id, salt)
-            try:
-                return self.get(passcode=passcode).name
-            except ObjectDoesNotExist:
-                return None
-        return None
+        return self.get(id=id).name
             
-
 class recurringEventsManager(models.Manager):
-    def newBooking(self,rm_id,start,end,recur_type):
-        return self.create(room_id=rm_id,start_date=start,end_date=end,recurrence=recur_type)
+    def newBooking(self,start,end,recur_type):
+        return self.create(start_date=start,end_date=end,recurrence=recur_type)
 
 class BookingsQueryset(models.query.QuerySet):
     def get_booking(self,id):
         return self.get(booking_ref=id)
     
+    def get_user_bookings(self,user_id):
+        return self.filter(user_id=user_id)
+
     def get_description(self,id):
         return self.get_booking(id).description
 
@@ -93,10 +103,17 @@ class BookingsQueryset(models.query.QuerySet):
         else:
             return 1
 
+    def removeStaleBookings(self):
+        for x in self.filter(date__lt=time.strftime("%Y-%m-%d")):
+            self.delete(x.booking_ref)
+
 class BookingsManager(models.Manager):
     def newBooking(self,room_id,date,start,end,contact,description,user):
         booking = self.create(user_id=user,room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description)
         return booking
+
+    def removeStaleBookings(self):
+        self.get_queryset().removeStaleBookings()
 
     def getInterval(self,value):
         if value == "1":
@@ -106,28 +123,34 @@ class BookingsManager(models.Manager):
         elif value == "3":
             return 14
 
+    def getUserBookings(self,user_id):
+        return self.get_queryset().get_user_bookings(user_id)
+
     def deleteAllRecurring(self,id):
         recurrence = self.get_queryset().get_booking(id).recurrence
         self.get_queryset().deleteAllRecurring(recurrence.id)
 
-    def newRecurringBooking(self,room_id,date,start,end,contact,description,type,recur_end):
+    def newRecurringBooking(self,room_id,date,start,end,contact,description,type,recur_end,user):
+        from bksys.models import recurringEvents
         recur_end = datetime.strptime(recur_end,"%d-%m-%Y")
         start_date = datetime.strptime(date,"%Y-%m-%d")
         dates = []
         weekend = set([5, 6])
+        type = str(type)
         while True:
             start_date = start_date + timedelta(days=self.getInterval(type))
             if start_date > recur_end:
-                break;
+                break
+                '''
             elif start_date.weekday() in weekend:
-                print start_date
+                print start_date '''
             else:
                 dates.append(start_date)
         recur_end = recur_end.strftime("%Y-%m-%d")
-        r_booking = recurringEvents.objects.newBooking(room_id,date,recur_end,type)
-        booking = self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id)
+        r_booking = recurringEvents.objects.newBooking(date,recur_end,type)
+        booking = self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id,user_id=user)
         for date in dates:
-            self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id)
+            self.create(room_id=room_id,date=date,start_time=start,end_time=end,contact=contact,description=description,recurrence_id=r_booking.id,user_id=user)
         return booking
 
     def isRecurring(self,id):

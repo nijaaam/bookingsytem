@@ -1,0 +1,98 @@
+<html>
+
+<head>
+    <title>Booking System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> {% load staticfiles %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/tablet_styles.css' %}" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css">
+    <link rel="stylesheet" href="{% static 'css/typeahead.css' %}" type="text/css" />
+</head>
+
+<body class="body">
+    <div class="container">
+        <div class="row">
+            <input id="room_name" hidden value="{{ room_name }}">
+            <span style="font-size: 170%;" class="pull-left">
+            <a href="" id ="backTablet">
+                <span class="glyphicon glyphicon-chevron-left" style="color:black"></span>
+            </a>
+            </span>
+            <span style="font-size: 150%;" id="cTime" class="pull-right"></span>​
+            <hr/>
+        </div>
+        <div class="row">
+            <div>
+                <div class="panel-body">
+                    <span><strong>Start Time: </strong><span id ="start"> -</span></span>
+                    <span class="pull-right">
+                        <a href = "/tablet" class="btn btn-default">Cancel</a>
+                    </span>
+                    <br/><br/>
+                    <span class="pull-right">
+                        <button id="book" class="btn btn-default">Book</button>
+                    </span>
+                    <span><strong>End Time: </strong><span id ="end"> -</span></span>
+                </div>
+            </div>
+        </div>
+        <div id="authModel" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Confirm ID</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <div class="form-group has-feedback">
+                                <label class="col-sm-2 control-label">ID</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="search" name="search" placeholder="Enter passcode/name">
+                                    <span class="glyphicon form-control-feedback" id="search_error"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="confirm" type="button" class="btn btn-default">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="btn-toolbar" role="toolbar" style="text-align:center;">
+            <div class="btn-group pull-left" role="group">
+                <button id="prev" type="button" class="btn btn-default ">Prev</button>
+                <button id="next" type="button" class="btn btn-default">Next</button>
+            </div>
+            <button id="today" type="button" class="btn btn-default">Today</button>
+            <span id="calendarDate" style="text-align:center;"></span>
+            <div class="btn-group pull-right" role="group">
+                <button id="day" type="button" class="btn btn-default">Day</button>
+                <button id="week" type="button" class="btn btn-default">Week</button>
+                <button id="month" type="button" class="btn btn-default">Month</button>
+            </div>
+        </div>
+        <div id="calendar">
+
+        </div>
+        <div id="showModal">
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js"></script>
+        <script src="{% static 'fullcalendar-scheduler/dist/scheduler.min.js'%}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.1.1/typeahead.jquery.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/calendar.js'%}"></script>
+        <script type="text/javascript" src="{% static 'js/autocomplete.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/tablet_bookRoom.js' %}"></script>
+        <script type="text/javascript">
+            loadSearch();
+            var datetime = moment("{{ datetime }}", "DD-MM-YYYYTHH:mm");
+            var settings = $.parseJSON('{{ settings | safe }}');
+        </script>
+</body>
+</html>
