@@ -22,7 +22,7 @@ $('#prev,#next,#today').unbind('click').click(function() {
             start: start,
             end: end,
         };
-        performAJAX(/getRoomsBookings/, 'json', data, insertEvents);
+        performAJAX('/getRoomsBookings/', 'json', data, insertEvents);
     }
     $('#calendarDate').text(currentView.title);
     var date = $('#scheduler').fullCalendar('getDate');
@@ -49,7 +49,7 @@ $('#day,#month,#week').unbind('click').click(function() {
             start: start,
             end: end,
         };
-        performAJAX(/getRoomsBookings/, 'json', data, insertEvents);
+        performAJAX('/getRoomsBookings/', 'json', data, insertEvents);
     } else if (this.id == 'week') {
         view = 'agendaWeek';
         $('#scheduler').fullCalendar('option', 'contentHeight', 'auto');

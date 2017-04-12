@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 import time, json
 from .forms import *
 from datetime import datetime, timedelta, date
-import calendar
+import calendar, pytz
 
 def index(request):
     if not request.session.session_key:
@@ -305,7 +305,6 @@ def getBookings(request):
     end = datetime.strptime(end,"%d-%m-%Y").strftime("%Y-%m-%d")
     booking_list = bookings.objects.filter(room_id=room.room_id,date__range=[start,end]) 
     results = [getCalendarEventJson(bk_instance) for bk_instance in booking_list]
-    #results = [bk_instance.getJSON() for bk_instance in booking_list]
     return HttpResponse(json.dumps(results), content_type="application/json")
 
 def set_default_values(scrollTime):
