@@ -4,7 +4,7 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'bksysdev',
+        'NAME': 'bksys',
         'USER': 'root',
         'PASSWORD': 'Bksysuser_2017',
         'HOST': 'mysql2704.cloudapp.net',

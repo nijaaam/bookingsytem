@@ -7,14 +7,18 @@ import time, json
 from .forms import *
 from datetime import datetime, timedelta, date
 import calendar, pytz
+from django.utils.timezone import localtime
+from time import gmtime, strftime
 
 def index(request):
+    now = timezone.now()
     if not request.session.session_key:
         request.session.save()
     form = processForm(request)
     bk_date = getDate(request)
     bk_date = datetime.strptime(bk_date,"%d-%m-%Y").strftime("%Y-%m-%d")
     bk_start_time = getTime(request)
+    print bk_start_time
     bk_end_time = datetime.strptime(bk_start_time,"%H:%M") + timedelta(minutes=15)
     scroll_time = datetime.strptime(bk_start_time,"%H:%M") - timedelta(minutes=60)
     avaliable_rooms = avaliableRooms(request,bk_date,bk_start_time,bk_end_time)
