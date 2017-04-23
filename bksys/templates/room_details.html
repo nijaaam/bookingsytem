@@ -178,6 +178,9 @@
             settings.eventDrop = function(event, delta, revertFunc) {
                 var start = event.start;
                 var end = event.end;
+                if (moment().diff(start, 'minutes') > 0){
+                    revertFunc();
+                }
                 if (moment() > start || moment() > end){
                     if (moment().diff(start, 'minutes') > 0){
                         revertFunc();
