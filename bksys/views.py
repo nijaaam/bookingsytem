@@ -171,6 +171,8 @@ def getDate(request):
 
 def getTime(request):
     if 'bk_time' in request.session:
+        if datetime.strptime(getDate(request) + " " + request.session['bk_time'] ,"%d-%m-%Y %H:%M") < datetime.now():
+            return time.strftime("%H:%M")
         return request.session['bk_time']
     else:
         return time.strftime("%H:%M")
