@@ -18,7 +18,6 @@ def index(request):
     bk_date = getDate(request)
     bk_date = datetime.strptime(bk_date,"%d-%m-%Y").strftime("%Y-%m-%d")
     bk_start_time = getTime(request)
-    print bk_start_time
     bk_end_time = datetime.strptime(bk_start_time,"%H:%M") + timedelta(minutes=15)
     scroll_time = datetime.strptime(bk_start_time,"%H:%M") - timedelta(minutes=60)
     avaliable_rooms = avaliableRooms(request,bk_date,bk_start_time,bk_end_time)
@@ -126,7 +125,8 @@ def signup(request):
 def avaliableRooms(request,date,start,end):
     ongoingevents = []
     ongoingevents = bookings.objects.getOngoingEvents(date,start,end).values_list('room_id',flat=True)
-    avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents,in_use=False).order_by('-room_size')
+    avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents).order_by('-room_size')
+    avaliable_rooms = avaliable_rooms.filter(in_use=True)
     reserved_rooms = []
     for room in avaliable_rooms:
         reservation_list = reservations.objects.filter(
