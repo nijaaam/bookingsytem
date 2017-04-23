@@ -33,7 +33,7 @@ function performAJAX(url, dataType, data, callback) {
 
 $('#backTablet').click(function() {
     var string = window.location.pathname;
-    string = string.replace("/bookRoom/", "")
+    string = string.replace("showCalendar/", "")
     window.location.href = string;
     return false;
 });
@@ -67,7 +67,6 @@ $(document).ready(function() {
     };
     settings.eventDrop = updateTimes;
     settings.eventResize = updateTimes;
-
     function checkOverlap(one, two) {
         var start_1 = one.start;
         var end_1 = one.end;
@@ -115,6 +114,7 @@ $(document).ready(function() {
             }
         }
     }
+    
     $('#calendar').fullCalendar(settings);
     updateTitle();
     loadEvents();
@@ -166,36 +166,38 @@ var getJSON = function(data, callback) {
     });
     return false;
 }
+
 $('#book').click(function() {
-                var events = $('#calendar').fullCalendar('clientEvents', "new_event")[0];
-                if (events != undefined) {
-                    $('#authModel').modal('show');
-                }
+    var events = $('#calendar').fullCalendar('clientEvents', "new_event")[0];
+    if (events != undefined) {
+        $('#authModel').modal('show');
+    }
+});
+
+$('#confirm').click(function() {
+    performAJAX("/validateID/", "html", {
+        'id': $('#search').val(),
+    }, function(res) {
+        if (res == "0") {
+            var element = $('#search');
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
+            $('#search_error').addClass('glyphicon-remove');
+            $('<span id="ident_error" class="help-block">Identification Failed.</span>').insertAfter(element);
+        } else {
+            $('#authModel').modal('hide');
+            var events = $('#calendar').fullCalendar('clientEvents', "new_event");
+            var start = events[0].start;
+            var end = events[0].end;
+            var date = events[0].date;
+            performAJAX('quickBook/', 'html', {
+                'start': start.format('HH:mm'),
+                'end': end.format('HH:mm'),
+                'date': start.format('YYYY-MM-DD'),
+                'id': $('#search').val(),
+            }, function(data) {
+                $('#showModal').html(data);
+                $('#modal').modal('show');
             });
-            $('#confirm').click(function() {
-                performAJAX("/validateID/", "html", {
-                    'id': $('#search').val(),
-                }, function(res) {
-                    if (res == "0") {
-                        var element = $('#search');
-                        $(element).closest('.form-group').removeClass('has-success').addClass('has-error has-feedback');
-                        $('#search_error').addClass('glyphicon-remove');
-                        $('<span id="ident_error" class="help-block">Identification Failed.</span>').insertAfter(element);
-                    } else {
-                                            $('#authModel').modal('hide');
-                        var events = $('#calendar').fullCalendar('clientEvents', "new_event");
-                        var start = events[0].start;
-                        var end = events[0].end;
-                        var date = events[0].date;
-                        performAJAX('quickBook/', 'html', {
-                            'start': start.format('HH:mm'),
-                            'end': end.format('HH:mm'),
-                            'date': start.format('YYYY-MM-DD'),
-                            'id': $('#search').val(),
-                        }, function(data) {
-                            $('#showModal').html(data);
-                            $('#modal').modal('show');
-                        });
-                    }
-                });
-            });
+        }
+    });
+});

@@ -41,7 +41,7 @@ function autocomplete(query, process) {
     } else {
         $.ajax({
             type: 'POST',
-            url: '/',
+            url: '/autocomplete/',
             dataType: 'json',
             async: false,
             data: 'search=' + $('#search').val(),
