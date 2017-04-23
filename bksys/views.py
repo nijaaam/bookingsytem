@@ -126,7 +126,7 @@ def signup(request):
 def avaliableRooms(request,date,start,end):
     ongoingevents = []
     ongoingevents = bookings.objects.getOngoingEvents(date,start,end).values_list('room_id',flat=True)
-    avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents).order_by('-room_size')
+    avaliable_rooms = rooms.objects.exclude(room_id__in = ongoingevents,in_use=False).order_by('-room_size')
     reserved_rooms = []
     for room in avaliable_rooms:
         reservation_list = reservations.objects.filter(

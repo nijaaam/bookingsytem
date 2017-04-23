@@ -46,7 +46,7 @@ class VirtualEnv(Node):
     def run_uwsgi(self):
         with self.hosts.prefix(self.activate_cmd):
             with self.hosts.cd(project_dir):
-                self.hosts.sudo('uwsgi scripts/start_app.ini')
+                self.hosts.sudo('uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data')
 
     def collectstatic(self):
         self.run_management_command('collectstatic --clear --noinput --settings=bookingsystem.production')
@@ -106,6 +106,7 @@ class DjangoDeployment(Node):
     def setup(self):
         #self.git.checkout('release')
         self.virtual_env.clean()
+        self.git.checkout('release')
         self.git.pull()
         self.virtual_env.setup_env()
         self.virtual_env.update_database()
