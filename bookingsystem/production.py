@@ -1,6 +1,6 @@
 from bookingsystem.settings import *
 
-DEBUG = True
+DEBUG = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
