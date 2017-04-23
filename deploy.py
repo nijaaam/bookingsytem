@@ -110,7 +110,7 @@ class DjangoDeployment(Node):
         self.virtual_env.setup_env()
         self.virtual_env.update_database()
         self.virtual_env.collectstatic()
-        self.git.tag()
+        #self.git.tag()
         self.virtual_env.run_uwsgi()
 
     def checkIfCJexists(self):
