@@ -6,7 +6,8 @@ from deployer.host import SSHHost
 from deployer.exceptions import ActionException
 
 home = '/home/main/'
-ip = 'bkwebsite7468.cloudapp.net'
+#ip = 'bkwebtesting2086.cloudapp.net'
+ip = 'bkwebsiteproduction9834.cloudapp.net'
 project_name = "bookingsystem/"
 virtualenv = "BKSYSDEPLOY/"
 project_dir = home + virtualenv + project_name
@@ -103,13 +104,13 @@ class DjangoDeployment(Node):
         repository = repo
 
     def setup(self):
-        self.git.checkout('release')
+        #self.git.checkout('release')
         self.virtual_env.clean()
         self.git.pull()
         self.virtual_env.setup_env()
         self.virtual_env.update_database()
         self.virtual_env.collectstatic()
-        self.git.tag()
+        #self.git.tag()
         self.virtual_env.run_uwsgi()
 
     def checkIfCJexists(self):
